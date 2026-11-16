@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lanh_app/app/app_router.dart';
-import 'package:lanh_app/app/lanh_app.dart';
+import 'package:lanh_app/app/app.dart';
 import 'package:lanh_app/features/onboarding/onboarding_providers.dart';
 
 import 'support/test_onboarding_repository.dart';
@@ -21,10 +21,64 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [onboardingRepositoryProvider.overrideWithValue(repository)],
-        child: const LanhApp(),
+        child: const Application(),
       ),
     );
     await tester.pumpAndSettle();
+  }
+
+  for (final viewport in const [
+    Size(320, 700),
+    Size(360, 800),
+    Size(390, 844),
+    Size(430, 932),
+  ]) {
+    testWidgets('goal and tabs fit ${viewport.width.toInt()}dp', (
+      tester,
+    ) async {
+      tester.view.physicalSize = viewport;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await openApp(tester);
+      final goalButton = find.text('Đặt mục tiêu của tôi');
+      await tester.ensureVisible(goalButton);
+      await tester.tap(goalButton);
+      await tester.pumpAndSettle();
+      expect(find.text('Bạn muốn hướng đến điều gì?'), findsOneWidget);
+      final choice = find.text('Giảm cân');
+      await tester.ensureVisible(choice);
+      await tester.tap(choice);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('goal-primary-action')).hitTestable(),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      for (
+        var i = 0;
+        i < 2 && find.byKey(const Key('goal-screen')).evaluate().isNotEmpty;
+        i++
+      ) {
+        final back = find.text('Quay lại');
+        await tester.ensureVisible(back);
+        await tester.tap(back);
+        await tester.pumpAndSettle();
+      }
+      final mealButton = find.text('Ghi bữa ăn đầu tiên');
+      await tester.ensureVisible(mealButton);
+      await tester.tap(mealButton);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('close-meal-sheet')));
+      await tester.pumpAndSettle();
+      for (final tab in ['today', 'progress', 'achievements', 'menu']) {
+        await tester.tap(find.byKey(Key('nav-$tab')));
+        await tester.pumpAndSettle();
+        expect(find.byKey(Key('$tab-screen')), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      }
+    });
   }
 
   testWidgets('first meal opens the picker over Today after onboarding', (
@@ -94,12 +148,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [onboardingRepositoryProvider.overrideWithValue(repository)],
-        child: const LanhApp(),
+        child: const Application(),
       ),
     );
     await tester.pump();
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(LanhApp)),
+      tester.element(find.byType(Application)),
     );
     container.read(appRouterProvider).go('/menu/about');
     await tester.pump();
@@ -110,7 +164,7 @@ void main() {
   testWidgets('unknown route has a usable recovery path', (tester) async {
     await openApp(tester, returning: true);
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(LanhApp)),
+      tester.element(find.byType(Application)),
     );
     container.read(appRouterProvider).go('/missing-page');
     await tester.pumpAndSettle();
@@ -124,7 +178,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [onboardingRepositoryProvider.overrideWithValue(repository)],
-        child: const LanhApp(),
+        child: const Application(),
       ),
     );
     await tester.pumpAndSettle();
@@ -141,7 +195,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [onboardingRepositoryProvider.overrideWithValue(repository)],
-        child: const LanhApp(locale: Locale('en')),
+        child: const Application(locale: Locale('en')),
       ),
     );
     await tester.pumpAndSettle();

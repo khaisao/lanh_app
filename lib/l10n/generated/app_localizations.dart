@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeGoalUnavailable.
   ///
   /// In vi, this message translates to:
-  /// **'Đặt mục tiêu của tôi (Sắp có)'**
+  /// **'Đặt mục tiêu của tôi'**
   String get welcomeGoalUnavailable;
 
   /// No description provided for @welcomeLogFirstMeal.
@@ -185,7 +185,7 @@ abstract class AppLocalizations {
   /// No description provided for @logMeal.
   ///
   /// In vi, this message translates to:
-  /// **'Ghi bữa'**
+  /// **'Ghi bữa ăn'**
   String get logMeal;
 
   /// No description provided for @todayHeading.
@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @chooseMealMethod.
   ///
   /// In vi, this message translates to:
-  /// **'Bạn muốn ghi bữa bằng cách nào?'**
+  /// **'Ghi bữa ăn'**
   String get chooseMealMethod;
 
   /// No description provided for @close.
@@ -278,12 +278,6 @@ abstract class AppLocalizations {
   /// **'Bữa quen'**
   String get templates;
 
-  /// No description provided for @comingSoon.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sắp có'**
-  String get comingSoon;
-
   /// No description provided for @mealMethodsNotice.
   ///
   /// In vi, this message translates to:
@@ -305,7 +299,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyBase.
   ///
   /// In vi, this message translates to:
-  /// **'Bản nền tảng chỉ lưu việc bạn đã xem phần giới thiệu. Chưa thu thập ảnh bữa ăn, cân nặng hoặc dữ liệu sức khỏe.'**
+  /// **'Bản nền tảng lưu lựa chọn mục tiêu và việc bạn đã xem phần giới thiệu trên thiết bị. Ảnh bữa ăn và dữ liệu sức khỏe chưa được đồng bộ.'**
   String get privacyBase;
 
   /// No description provided for @notFound.

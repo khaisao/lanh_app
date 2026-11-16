@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanh_app/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
 class StartupScreen extends ConsumerWidget {
@@ -10,17 +11,18 @@ class StartupScreen extends ConsumerWidget {
     final strings = AppLocalizations.of(context);
     final failed = ref.watch(onboardingControllerProvider).hasError;
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.pageHorizontal),
             child: failed
                 ? Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(strings.startupError),
-                      const SizedBox(height: 16),
-                      FilledButton(
+                      const SizedBox(height: AppSpacing.md),
+                      AppButton(
                         onPressed: () =>
                             ref.invalidate(onboardingControllerProvider),
                         child: Text(strings.retry),

@@ -3,7 +3,7 @@
   "appTitle": "Lành",
   "welcomeHeadline": "A little joy in every nourishing meal.",
   "welcomeBody": "Start with the meal you just ate, or set a goal of your own. No need to enter your weight.",
-  "welcomeGoalUnavailable": "Set my goal (Coming soon)",
+  "welcomeGoalUnavailable": "Set my goal",
   "welcomeLogFirstMeal": "Log my first meal",
   "saving": "Saving…",
   "welcomeDisclaimer": "Calorie values in Lành are estimates for reference only.",
@@ -30,11 +30,10 @@
   "search": "Search foods",
   "manual": "Enter manually",
   "templates": "Saved meals",
-  "comingSoon": "Coming soon",
   "mealMethodsNotice": "Meal logging methods will arrive in a later version. This build does not request camera access or upload photos.",
   "about": "About Lành",
   "aboutBody": "Lành supports mindful eating and self-care. Your intention may be to lose, gain or maintain weight, or simply understand your meals.",
-  "privacyBase": "This foundation build only saves whether you have seen the introduction. It does not collect meal photos, body weight or health data.",
+  "privacyBase": "This foundation build stores your goal choice and introduction status on this device. Meal photos and health data are not synced yet.",
   "notFound": "Page not found",
   "backToToday": "Go to Today"
 }

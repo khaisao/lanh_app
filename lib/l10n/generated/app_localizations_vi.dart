@@ -20,7 +20,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Bắt đầu từ bữa bạn vừa ăn, hoặc đặt một hướng riêng. Không cần nhập cân nặng.';
 
   @override
-  String get welcomeGoalUnavailable => 'Đặt mục tiêu của tôi (Sắp có)';
+  String get welcomeGoalUnavailable => 'Đặt mục tiêu của tôi';
 
   @override
   String get welcomeLogFirstMeal => 'Ghi bữa ăn đầu tiên';
@@ -56,7 +56,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu => 'Menu';
 
   @override
-  String get logMeal => 'Ghi bữa';
+  String get logMeal => 'Ghi bữa ăn';
 
   @override
   String get todayHeading => 'Hôm nay của bạn';
@@ -87,7 +87,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đây là bản nền tảng. Ghi bữa và theo dõi sức khỏe chưa được triển khai.';
 
   @override
-  String get chooseMealMethod => 'Bạn muốn ghi bữa bằng cách nào?';
+  String get chooseMealMethod => 'Ghi bữa ăn';
 
   @override
   String get close => 'Đóng';
@@ -108,9 +108,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get templates => 'Bữa quen';
 
   @override
-  String get comingSoon => 'Sắp có';
-
-  @override
   String get mealMethodsNotice =>
       'Các cách ghi bữa sẽ được phát triển ở phiên bản tiếp theo. Hiện ứng dụng chưa xin quyền camera hoặc gửi ảnh.';
 
@@ -123,7 +120,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get privacyBase =>
-      'Bản nền tảng chỉ lưu việc bạn đã xem phần giới thiệu. Chưa thu thập ảnh bữa ăn, cân nặng hoặc dữ liệu sức khỏe.';
+      'Bản nền tảng lưu lựa chọn mục tiêu và việc bạn đã xem phần giới thiệu trên thiết bị. Ảnh bữa ăn và dữ liệu sức khỏe chưa được đồng bộ.';
 
   @override
   String get notFound => 'Không tìm thấy trang';

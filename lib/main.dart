@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lanh_app/app/lanh_app.dart';
+import 'package:lanh_app/app/app.dart';
 import 'package:material_ui/material_ui.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: LanhApp()));
+  runApp(const ProviderScope(child: Application()));
 }

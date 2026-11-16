@@ -20,7 +20,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Start with the meal you just ate, or set a goal of your own. No need to enter your weight.';
 
   @override
-  String get welcomeGoalUnavailable => 'Set my goal (Coming soon)';
+  String get welcomeGoalUnavailable => 'Set my goal';
 
   @override
   String get welcomeLogFirstMeal => 'Log my first meal';
@@ -108,9 +108,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get templates => 'Saved meals';
 
   @override
-  String get comingSoon => 'Coming soon';
-
-  @override
   String get mealMethodsNotice =>
       'Meal logging methods will arrive in a later version. This build does not request camera access or upload photos.';
 
@@ -123,7 +120,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyBase =>
-      'This foundation build only saves whether you have seen the introduction. It does not collect meal photos, body weight or health data.';
+      'This foundation build stores your goal choice and introduction status on this device. Meal photos and health data are not synced yet.';
 
   @override
   String get notFound => 'Page not found';
