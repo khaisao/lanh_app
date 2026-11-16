@@ -40,6 +40,7 @@ abstract final class AppSpacing {
   static const navInset = 16.0;
   static const navBottom = 16.0;
   static const navInner = 8.0;
+  static const navFabRise = md;
   static const contentBottom = 96.0;
   static const fieldGap = 6.0;
   static const navLabelGap = 2.0;
@@ -87,6 +88,7 @@ abstract final class AppBorders {
 abstract final class AppScales {
   static const pressed = 0.97;
   static const pressedCard = 0.98;
+  static const pressedNavFab = 0.95;
 }
 
 abstract final class AppFractions {
@@ -97,10 +99,6 @@ abstract final class AppChartFactors {
   static const empty = 0.08;
 }
 
-abstract final class AppOffsets {
-  static const navFab = Offset(0, -16);
-}
-
 abstract final class AppShadows {
   static const nav = [
     BoxShadow(
@@ -108,6 +106,20 @@ abstract final class AppShadows {
       blurRadius: 36,
       spreadRadius: -12,
       offset: Offset(0, 16),
+    ),
+  ];
+  static const navFab = [
+    BoxShadow(
+      color: Color(0x1A000000),
+      blurRadius: 15,
+      spreadRadius: -3,
+      offset: Offset(0, 10),
+    ),
+    BoxShadow(
+      color: Color(0x1A000000),
+      blurRadius: 6,
+      spreadRadius: -4,
+      offset: Offset(0, 4),
     ),
   ];
 }

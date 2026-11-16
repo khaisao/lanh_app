@@ -27,6 +27,8 @@ Feature screens consume semantic roles from `AppTypography` and aliases from `Ap
 
 The package is presentation-only. Feature modules keep their own domain contracts, repositories, controllers, and route behavior. Shared UI must not import a feature package.
 
+`AppBottomBar` follows the nav in `today-no-goal.html`. The capsule is 64 dp high and up to 448 dp wide, with a 16 dp outer margin above the device safe area and an 8 dp inner inset inside the border. The 64 dp meal action rises 16 dp above the capsule and keeps that width when the four tab columns shrink. Tab presses scale the icon and label together. The active icon crossfades, and the meal action briefly scales to 95%. Reduced motion skips these transitions.
+
 ## Assets
 
 All exported icons and images are copied into `assets/design/icons` and `assets/design/images`. Use the original file names and explicit dimensions. Do not replace an exported icon with a platform icon when an exported asset exists.

@@ -48,6 +48,13 @@ abstract final class AppTheme {
 }
 
 abstract final class AppMotion {
+  static const feedbackCurve = Curves.easeOutCubic;
+  static const feedbackPress = Duration(milliseconds: 75);
+  static const feedbackRelease = Duration(milliseconds: 150);
+
+  static Duration feedbackDuration(BuildContext context) =>
+      MediaQuery.disableAnimationsOf(context) ? Duration.zero : feedbackRelease;
+
   static Duration duration(BuildContext context) =>
       MediaQuery.disableAnimationsOf(context)
       ? Duration.zero

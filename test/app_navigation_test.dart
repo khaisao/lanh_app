@@ -72,6 +72,22 @@ void main() {
       expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
       await tester.tap(find.byKey(const Key('close-meal-sheet')));
       await tester.pumpAndSettle();
+      final bar = tester.getRect(find.byKey(const Key('nav-surface')));
+      final action = tester.getRect(find.byKey(const Key('nav-log-meal')));
+      final today = tester.getRect(find.byKey(const Key('nav-today')));
+      final menu = tester.getRect(find.byKey(const Key('nav-menu')));
+      expect(
+        bar,
+        Rect.fromLTWH(16, viewport.height - 80, viewport.width - 32, 64),
+      );
+      expect(
+        action,
+        Rect.fromLTWH(viewport.width / 2 - 32, bar.top - 16, 64, 64),
+      );
+      expect(today.left - bar.left, 9);
+      expect(bar.right - menu.right, 9);
+      expect(today.width, closeTo(menu.width, 0.01));
+      if (viewport.width == 320) expect(today.width, 51.5);
       for (final tab in ['today', 'progress', 'achievements', 'menu']) {
         await tester.tap(find.byKey(Key('nav-$tab')));
         await tester.pumpAndSettle();
@@ -80,6 +96,61 @@ void main() {
       }
     });
   }
+
+  testWidgets(
+    'bottom bar responds to fast taps and the raised action is tappable',
+    (tester) async {
+      await openApp(tester, returning: true);
+      final tab = find.byKey(const Key('nav-progress'));
+      final action = find.byKey(const Key('nav-log-meal'));
+      double scaleOf(Finder target) => tester
+          .widget<Transform>(
+            find.ancestor(of: target, matching: find.byType(Transform)).first,
+          )
+          .transform
+          .entry(0, 0);
+      await tester.tap(tab);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(scaleOf(tab), lessThan(1));
+      await tester.pumpAndSettle();
+      expect(scaleOf(tab), 1);
+      expect(find.byKey(const Key('progress-screen')), findsOneWidget);
+
+      final actionBounds = tester.getRect(action);
+      await tester.tapAt(Offset(actionBounds.center.dx, actionBounds.top + 8));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(scaleOf(action), lessThan(1));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
+    },
+  );
+
+  testWidgets('bottom bar switches tabs with reduced motion', (tester) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    await openApp(tester, returning: true);
+    final progress = find.byKey(const Key('nav-progress'));
+    await tester.tap(progress);
+    await tester.pump();
+    expect(
+      find.descendant(of: progress, matching: find.byType(AnimatedSwitcher)),
+      findsNothing,
+    );
+    expect(
+      tester
+          .widget<Transform>(
+            find.ancestor(of: progress, matching: find.byType(Transform)).first,
+          )
+          .transform
+          .entry(0, 0),
+      1,
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('progress-screen')), findsOneWidget);
+  });
 
   testWidgets('first meal opens the picker over Today after onboarding', (
     tester,
