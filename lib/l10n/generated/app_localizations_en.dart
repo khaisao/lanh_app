@@ -17,20 +17,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeBody =>
-      'Start with the meal you just ate, or set a goal of your own. No need to enter your weight.';
+      'Get to know your meals a little at a time. No weight needed to get started.';
 
   @override
-  String get welcomeGoalUnavailable => 'Set my goal';
-
-  @override
-  String get welcomeLogFirstMeal => 'Log my first meal';
+  String get welcomeGoalAction => 'Set my goal';
 
   @override
   String get saving => 'Saving…';
 
   @override
-  String get welcomeDisclaimer =>
-      'Calorie values in Lành are estimates for reference only.';
+  String get welcomeDisclaimer => 'All calorie counts in Lành are estimates.';
 
   @override
   String get saveIntroductionError =>
@@ -127,4 +123,140 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backToToday => 'Go to Today';
+
+  @override
+  String get profileGoal => 'Goal';
+
+  @override
+  String get profileGoalHeading => 'What would you like?';
+
+  @override
+  String get profileGoalCaption => 'You can change this any time.';
+
+  @override
+  String get profileGain => 'Gain weight';
+
+  @override
+  String get profileLose => 'Lose weight';
+
+  @override
+  String get profileMaintain => 'Maintain weight';
+
+  @override
+  String get profileBody => 'About you';
+
+  @override
+  String get profileBodyCaption => 'Used for estimates only.';
+
+  @override
+  String get profileAge => 'Age';
+
+  @override
+  String get profileYears => 'years';
+
+  @override
+  String get profileHeight => 'Height';
+
+  @override
+  String get profileCurrentWeight => 'Current weight';
+
+  @override
+  String get profileSex => 'Sex';
+
+  @override
+  String get profileFemale => 'Female';
+
+  @override
+  String get profileMale => 'Male';
+
+  @override
+  String get profileTarget => 'Your target';
+
+  @override
+  String get profileTargetWeight => 'Target weight';
+
+  @override
+  String get profileTargetDate => 'Target date';
+
+  @override
+  String get profilePickDate => 'Choose a date';
+
+  @override
+  String get profileWeeklyEstimate => 'Weekly estimate';
+
+  @override
+  String get profileEstimate => 'Estimate';
+
+  @override
+  String get profileEstimateCaption => 'For planning only, not medical advice.';
+
+  @override
+  String get profileActivity => 'Daily activity';
+
+  @override
+  String get profileActivityHeading => 'A typical day';
+
+  @override
+  String get profileActivityCaption => 'Choose the closest match.';
+
+  @override
+  String get profileSitting => 'Mostly sitting';
+
+  @override
+  String get profileLight => 'Some standing and walking';
+
+  @override
+  String get profileModerate => 'Standing or walking most of the day';
+
+  @override
+  String get profileHeavy => 'Regular physical work';
+
+  @override
+  String get profileVariable => 'Schedule varies / Not sure';
+
+  @override
+  String get profileContinue => 'Continue';
+
+  @override
+  String get profileConfirm => 'Confirm';
+
+  @override
+  String get profileBack => 'Go back';
+
+  @override
+  String profileStepStatus(int step) {
+    return 'Step $step of 4';
+  }
+
+  @override
+  String profileEditStep(String title) {
+    return 'Edit: $title';
+  }
+
+  @override
+  String get profileInvalidAge => 'Enter an age in whole years.';
+
+  @override
+  String get profileInvalidNumber => 'Enter a number greater than zero.';
+
+  @override
+  String get profileMissingSex => 'Choose an option to continue.';
+
+  @override
+  String get profileLowerTarget =>
+      'Target weight must be below current weight.';
+
+  @override
+  String get profileHigherTarget =>
+      'Target weight must be above current weight.';
+
+  @override
+  String get profileFutureDate => 'Choose a date after today.';
+
+  @override
+  String get profileReview => 'Review your information';
+
+  @override
+  String get profileReviewNotice =>
+      'This information is only shown during this setup session.';
 }

@@ -107,26 +107,20 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeHeadline.
   ///
   /// In vi, this message translates to:
-  /// **'Mỗi bữa lành, một mầm vui.'**
+  /// **'Mỗi bữa lành,\nmột mầm vui.'**
   String get welcomeHeadline;
 
   /// No description provided for @welcomeBody.
   ///
   /// In vi, this message translates to:
-  /// **'Bắt đầu từ bữa bạn vừa ăn, hoặc đặt một hướng riêng. Không cần nhập cân nặng.'**
+  /// **'Hiểu bữa ăn của bạn từng chút một. Không cần cân nặng để bắt đầu.'**
   String get welcomeBody;
 
-  /// No description provided for @welcomeGoalUnavailable.
+  /// No description provided for @welcomeGoalAction.
   ///
   /// In vi, this message translates to:
   /// **'Đặt mục tiêu của tôi'**
-  String get welcomeGoalUnavailable;
-
-  /// No description provided for @welcomeLogFirstMeal.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ghi bữa ăn đầu tiên'**
-  String get welcomeLogFirstMeal;
+  String get welcomeGoalAction;
 
   /// No description provided for @saving.
   ///
@@ -137,7 +131,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeDisclaimer.
   ///
   /// In vi, this message translates to:
-  /// **'Mọi con số calo trong Lành là ước tính, chỉ mang tính tham khảo.'**
+  /// **'Mọi con số calo trong Lành là ước tính.'**
   String get welcomeDisclaimer;
 
   /// No description provided for @saveIntroductionError.
@@ -313,6 +307,264 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Về Hôm nay'**
   String get backToToday;
+
+  /// No description provided for @profileGoal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu'**
+  String get profileGoal;
+
+  /// No description provided for @profileGoalHeading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn muốn gì?'**
+  String get profileGoalHeading;
+
+  /// No description provided for @profileGoalCaption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi được bất cứ lúc nào.'**
+  String get profileGoalCaption;
+
+  /// No description provided for @profileGain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng cân'**
+  String get profileGain;
+
+  /// No description provided for @profileLose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giảm cân'**
+  String get profileLose;
+
+  /// No description provided for @profileMaintain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ cân'**
+  String get profileMaintain;
+
+  /// No description provided for @profileBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Về bạn'**
+  String get profileBody;
+
+  /// No description provided for @profileBodyCaption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ để ước tính.'**
+  String get profileBodyCaption;
+
+  /// No description provided for @profileAge.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuổi'**
+  String get profileAge;
+
+  /// No description provided for @profileYears.
+  ///
+  /// In vi, this message translates to:
+  /// **'năm'**
+  String get profileYears;
+
+  /// No description provided for @profileHeight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều cao'**
+  String get profileHeight;
+
+  /// No description provided for @profileCurrentWeight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng hiện tại'**
+  String get profileCurrentWeight;
+
+  /// No description provided for @profileSex.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới tính'**
+  String get profileSex;
+
+  /// No description provided for @profileFemale.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nữ'**
+  String get profileFemale;
+
+  /// No description provided for @profileMale.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nam'**
+  String get profileMale;
+
+  /// No description provided for @profileTarget.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mong muốn'**
+  String get profileTarget;
+
+  /// No description provided for @profileTargetWeight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng mong muốn'**
+  String get profileTargetWeight;
+
+  /// No description provided for @profileTargetDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày muốn đạt'**
+  String get profileTargetDate;
+
+  /// No description provided for @profilePickDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get profilePickDate;
+
+  /// No description provided for @profileWeeklyEstimate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước tính mỗi tuần'**
+  String get profileWeeklyEstimate;
+
+  /// No description provided for @profileEstimate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước tính'**
+  String get profileEstimate;
+
+  /// No description provided for @profileEstimateCaption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ để lên kế hoạch, không phải chỉ dẫn y tế.'**
+  String get profileEstimateCaption;
+
+  /// No description provided for @profileActivity.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vận động thường ngày'**
+  String get profileActivity;
+
+  /// No description provided for @profileActivityHeading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một ngày thường'**
+  String get profileActivityHeading;
+
+  /// No description provided for @profileActivityCaption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn mức gần nhất.'**
+  String get profileActivityCaption;
+
+  /// No description provided for @profileSitting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ yếu ngồi'**
+  String get profileSitting;
+
+  /// No description provided for @profileLight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đứng và đi lại xen kẽ'**
+  String get profileLight;
+
+  /// No description provided for @profileModerate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đứng hoặc đi lại phần lớn ngày'**
+  String get profileModerate;
+
+  /// No description provided for @profileHeavy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thường xuyên làm việc thể lực'**
+  String get profileHeavy;
+
+  /// No description provided for @profileVariable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch thay đổi / Chưa rõ'**
+  String get profileVariable;
+
+  /// No description provided for @profileContinue.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếp tục'**
+  String get profileContinue;
+
+  /// No description provided for @profileConfirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận'**
+  String get profileConfirm;
+
+  /// No description provided for @profileBack.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại'**
+  String get profileBack;
+
+  /// No description provided for @profileStepStatus.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bước {step} trên 4'**
+  String profileStepStatus(int step);
+
+  /// No description provided for @profileEditStep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa: {title}'**
+  String profileEditStep(String title);
+
+  /// No description provided for @profileInvalidAge.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tuổi bằng số nguyên dương.'**
+  String get profileInvalidAge;
+
+  /// No description provided for @profileInvalidNumber.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập một số lớn hơn 0.'**
+  String get profileInvalidNumber;
+
+  /// No description provided for @profileMissingSex.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn giới tính để tiếp tục.'**
+  String get profileMissingSex;
+
+  /// No description provided for @profileLowerTarget.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng mong muốn phải thấp hơn cân hiện tại.'**
+  String get profileLowerTarget;
+
+  /// No description provided for @profileHigherTarget.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng mong muốn phải cao hơn cân hiện tại.'**
+  String get profileHigherTarget;
+
+  /// No description provided for @profileFutureDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày sau hôm nay.'**
+  String get profileFutureDate;
+
+  /// No description provided for @profileReview.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lại thông tin'**
+  String get profileReview;
+
+  /// No description provided for @profileReviewNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin chỉ hiển thị trong phiên thiết lập này.'**
+  String get profileReviewNotice;
 }
 
 class _AppLocalizationsDelegate

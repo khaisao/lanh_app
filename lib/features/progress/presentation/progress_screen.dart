@@ -241,7 +241,7 @@ class _GoalProgressCard extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () => context.push('/goal'),
+              onPressed: () => context.push('/profile-setup'),
               child: Text(goal == null ? 'Đặt mục tiêu' : 'Chỉnh'),
             ),
           ],

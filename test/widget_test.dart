@@ -7,6 +7,9 @@ import 'support/test_onboarding_repository.dart';
 
 void main() {
   testWidgets('app starts on the welcome screen', (tester) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -20,6 +23,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Lành'), findsOneWidget);
-    expect(find.text('Ghi bữa ăn đầu tiên'), findsOneWidget);
+    expect(find.text('Đặt mục tiêu của tôi'), findsOneWidget);
   });
 }

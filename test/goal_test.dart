@@ -2,15 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanh_app/features/goal/goal.dart';
 
-class _GoalRepository implements GoalRepository {
-  Goal? value;
-  @override
-  Future<Goal?> read() async => value;
-  @override
-  Future<void> save(Goal goal) async => value = goal;
-  @override
-  Future<void> clear() async => value = null;
-}
+import 'support/test_goal_repository.dart';
 
 void main() {
   test('goal JSON round trips with versioned fields', () {
@@ -31,7 +23,7 @@ void main() {
   });
 
   test('controller persists a log-only goal', () async {
-    final goals = _GoalRepository();
+    final goals = TestGoalRepository();
     final container = ProviderContainer.test(
       overrides: [goalRepositoryProvider.overrideWithValue(goals)],
     );

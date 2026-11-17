@@ -11,15 +11,41 @@ void main() {
   testWidgets('native preferences retain introduction across a new app scope', (
     tester,
   ) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     app.main();
     await tester.pumpAndSettle();
-    final start = find.text('Ghi bữa ăn đầu tiên');
+    final start = find.text('Đặt mục tiêu của tôi');
     if (start.evaluate().isNotEmpty) {
-      await tester.ensureVisible(start);
-      await tester.tap(start);
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('close-meal-sheet')));
-      await tester.pumpAndSettle();
+      Future<void> tap(Finder finder) async {
+        await tester.ensureVisible(finder);
+        await tester.tap(finder);
+        await tester.pumpAndSettle();
+      }
+
+      final action = find.byKey(const Key('profile-setup-action'));
+      await tap(start);
+      await tap(find.text('Giữ cân'));
+      await tap(action);
+      for (final (field, value) in [
+        ('age', '32'),
+        ('height', '160'),
+        ('current-weight', '62'),
+      ]) {
+        final input = find.descendant(
+          of: find.byKey(Key('profile-$field')),
+          matching: find.byType(EditableText),
+        );
+        await tester.ensureVisible(input);
+        await tester.enterText(input, value);
+        await tester.pumpAndSettle();
+      }
+      await tap(find.text('Nữ'));
+      await tap(action);
+      await tap(find.text('Chủ yếu ngồi'));
+      await tap(action);
+      await tap(find.text('Về Hôm nay'));
     }
     expect(find.byKey(const Key('today-screen')), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());

@@ -1,12 +1,11 @@
 {
   "@@locale": "vi",
   "appTitle": "Lành",
-  "welcomeHeadline": "Mỗi bữa lành, một mầm vui.",
-  "welcomeBody": "Bắt đầu từ bữa bạn vừa ăn, hoặc đặt một hướng riêng. Không cần nhập cân nặng.",
-  "welcomeGoalUnavailable": "Đặt mục tiêu của tôi",
-  "welcomeLogFirstMeal": "Ghi bữa ăn đầu tiên",
+  "welcomeHeadline": "Mỗi bữa lành,\nmột mầm vui.",
+  "welcomeBody": "Hiểu bữa ăn của bạn từng chút một. Không cần cân nặng để bắt đầu.",
+  "welcomeGoalAction": "Đặt mục tiêu của tôi",
   "saving": "Đang lưu…",
-  "welcomeDisclaimer": "Mọi con số calo trong Lành là ước tính, chỉ mang tính tham khảo.",
+  "welcomeDisclaimer": "Mọi con số calo trong Lành là ước tính.",
   "saveIntroductionError": "Chưa lưu được lựa chọn. Vui lòng thử lại.",
   "startupError": "Chưa đọc được thiết lập của bạn. Thử lại để tiếp tục.",
   "retry": "Thử lại",
@@ -35,5 +34,62 @@
   "aboutBody": "Lành đồng hành cùng bạn trong việc ăn uống có ý thức và chăm sóc bản thân. Bạn có thể muốn giảm cân, tăng cân, giữ cân hoặc đơn giản là hiểu bữa ăn của mình.",
   "privacyBase": "Bản nền tảng lưu lựa chọn mục tiêu và việc bạn đã xem phần giới thiệu trên thiết bị. Ảnh bữa ăn và dữ liệu sức khỏe chưa được đồng bộ.",
   "notFound": "Không tìm thấy trang",
-  "backToToday": "Về Hôm nay"
+  "backToToday": "Về Hôm nay",
+  "profileGoal": "Mục tiêu",
+  "profileGoalHeading": "Bạn muốn gì?",
+  "profileGoalCaption": "Đổi được bất cứ lúc nào.",
+  "profileGain": "Tăng cân",
+  "profileLose": "Giảm cân",
+  "profileMaintain": "Giữ cân",
+  "profileBody": "Về bạn",
+  "profileBodyCaption": "Chỉ để ước tính.",
+  "profileAge": "Tuổi",
+  "profileYears": "năm",
+  "profileHeight": "Chiều cao",
+  "profileCurrentWeight": "Cân nặng hiện tại",
+  "profileSex": "Giới tính",
+  "profileFemale": "Nữ",
+  "profileMale": "Nam",
+  "profileTarget": "Mong muốn",
+  "profileTargetWeight": "Cân nặng mong muốn",
+  "profileTargetDate": "Ngày muốn đạt",
+  "profilePickDate": "Chọn ngày",
+  "profileWeeklyEstimate": "Ước tính mỗi tuần",
+  "profileEstimate": "Ước tính",
+  "profileEstimateCaption": "Chỉ để lên kế hoạch, không phải chỉ dẫn y tế.",
+  "profileActivity": "Vận động thường ngày",
+  "profileActivityHeading": "Một ngày thường",
+  "profileActivityCaption": "Chọn mức gần nhất.",
+  "profileSitting": "Chủ yếu ngồi",
+  "profileLight": "Đứng và đi lại xen kẽ",
+  "profileModerate": "Đứng hoặc đi lại phần lớn ngày",
+  "profileHeavy": "Thường xuyên làm việc thể lực",
+  "profileVariable": "Lịch thay đổi / Chưa rõ",
+  "profileContinue": "Tiếp tục",
+  "profileConfirm": "Xác nhận",
+  "profileBack": "Quay lại",
+  "profileStepStatus": "Bước {step} trên 4",
+  "profileEditStep": "Chỉnh sửa: {title}",
+  "profileInvalidAge": "Nhập tuổi bằng số nguyên dương.",
+  "profileInvalidNumber": "Nhập một số lớn hơn 0.",
+  "profileMissingSex": "Chọn giới tính để tiếp tục.",
+  "profileLowerTarget": "Cân nặng mong muốn phải thấp hơn cân hiện tại.",
+  "profileHigherTarget": "Cân nặng mong muốn phải cao hơn cân hiện tại.",
+  "profileFutureDate": "Chọn ngày sau hôm nay.",
+  "profileReview": "Xem lại thông tin",
+  "profileReviewNotice": "Thông tin chỉ hiển thị trong phiên thiết lập này.",
+  "@profileStepStatus": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "@profileEditStep": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }

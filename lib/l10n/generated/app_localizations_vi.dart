@@ -13,24 +13,20 @@ class AppLocalizationsVi extends AppLocalizations {
   String get appTitle => 'Lành';
 
   @override
-  String get welcomeHeadline => 'Mỗi bữa lành, một mầm vui.';
+  String get welcomeHeadline => 'Mỗi bữa lành,\nmột mầm vui.';
 
   @override
   String get welcomeBody =>
-      'Bắt đầu từ bữa bạn vừa ăn, hoặc đặt một hướng riêng. Không cần nhập cân nặng.';
+      'Hiểu bữa ăn của bạn từng chút một. Không cần cân nặng để bắt đầu.';
 
   @override
-  String get welcomeGoalUnavailable => 'Đặt mục tiêu của tôi';
-
-  @override
-  String get welcomeLogFirstMeal => 'Ghi bữa ăn đầu tiên';
+  String get welcomeGoalAction => 'Đặt mục tiêu của tôi';
 
   @override
   String get saving => 'Đang lưu…';
 
   @override
-  String get welcomeDisclaimer =>
-      'Mọi con số calo trong Lành là ước tính, chỉ mang tính tham khảo.';
+  String get welcomeDisclaimer => 'Mọi con số calo trong Lành là ước tính.';
 
   @override
   String get saveIntroductionError =>
@@ -127,4 +123,141 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get backToToday => 'Về Hôm nay';
+
+  @override
+  String get profileGoal => 'Mục tiêu';
+
+  @override
+  String get profileGoalHeading => 'Bạn muốn gì?';
+
+  @override
+  String get profileGoalCaption => 'Đổi được bất cứ lúc nào.';
+
+  @override
+  String get profileGain => 'Tăng cân';
+
+  @override
+  String get profileLose => 'Giảm cân';
+
+  @override
+  String get profileMaintain => 'Giữ cân';
+
+  @override
+  String get profileBody => 'Về bạn';
+
+  @override
+  String get profileBodyCaption => 'Chỉ để ước tính.';
+
+  @override
+  String get profileAge => 'Tuổi';
+
+  @override
+  String get profileYears => 'năm';
+
+  @override
+  String get profileHeight => 'Chiều cao';
+
+  @override
+  String get profileCurrentWeight => 'Cân nặng hiện tại';
+
+  @override
+  String get profileSex => 'Giới tính';
+
+  @override
+  String get profileFemale => 'Nữ';
+
+  @override
+  String get profileMale => 'Nam';
+
+  @override
+  String get profileTarget => 'Mong muốn';
+
+  @override
+  String get profileTargetWeight => 'Cân nặng mong muốn';
+
+  @override
+  String get profileTargetDate => 'Ngày muốn đạt';
+
+  @override
+  String get profilePickDate => 'Chọn ngày';
+
+  @override
+  String get profileWeeklyEstimate => 'Ước tính mỗi tuần';
+
+  @override
+  String get profileEstimate => 'Ước tính';
+
+  @override
+  String get profileEstimateCaption =>
+      'Chỉ để lên kế hoạch, không phải chỉ dẫn y tế.';
+
+  @override
+  String get profileActivity => 'Vận động thường ngày';
+
+  @override
+  String get profileActivityHeading => 'Một ngày thường';
+
+  @override
+  String get profileActivityCaption => 'Chọn mức gần nhất.';
+
+  @override
+  String get profileSitting => 'Chủ yếu ngồi';
+
+  @override
+  String get profileLight => 'Đứng và đi lại xen kẽ';
+
+  @override
+  String get profileModerate => 'Đứng hoặc đi lại phần lớn ngày';
+
+  @override
+  String get profileHeavy => 'Thường xuyên làm việc thể lực';
+
+  @override
+  String get profileVariable => 'Lịch thay đổi / Chưa rõ';
+
+  @override
+  String get profileContinue => 'Tiếp tục';
+
+  @override
+  String get profileConfirm => 'Xác nhận';
+
+  @override
+  String get profileBack => 'Quay lại';
+
+  @override
+  String profileStepStatus(int step) {
+    return 'Bước $step trên 4';
+  }
+
+  @override
+  String profileEditStep(String title) {
+    return 'Chỉnh sửa: $title';
+  }
+
+  @override
+  String get profileInvalidAge => 'Nhập tuổi bằng số nguyên dương.';
+
+  @override
+  String get profileInvalidNumber => 'Nhập một số lớn hơn 0.';
+
+  @override
+  String get profileMissingSex => 'Chọn giới tính để tiếp tục.';
+
+  @override
+  String get profileLowerTarget =>
+      'Cân nặng mong muốn phải thấp hơn cân hiện tại.';
+
+  @override
+  String get profileHigherTarget =>
+      'Cân nặng mong muốn phải cao hơn cân hiện tại.';
+
+  @override
+  String get profileFutureDate => 'Chọn ngày sau hôm nay.';
+
+  @override
+  String get profileReview => 'Xem lại thông tin';
+
+  @override
+  String get profileReviewNotice =>
+      'Thông tin chỉ hiển thị trong phiên thiết lập này.';
 }

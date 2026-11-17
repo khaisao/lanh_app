@@ -1,11 +1,8 @@
-import 'dart:async';
-
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lanh_app/features/meal_logging/meal_logging.dart';
 import 'package:lanh_app/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
-import 'package:app_ui/app_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
 class WelcomeScreen extends ConsumerWidget {
@@ -17,70 +14,99 @@ class WelcomeScreen extends ConsumerWidget {
     final status = ref.watch(onboardingControllerProvider).value;
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(
-          AppSpacing.pageHorizontal,
-          AppSpacing.onboardingTop,
-          AppSpacing.pageHorizontal,
-          AppSpacing.onboardingBottom,
-        ),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
+          child: SafeArea(
+            minimum: const EdgeInsets.fromLTRB(
+              0,
+              AppSpacing.onboardingTop,
+              0,
+              AppSpacing.onboardingBottom,
+            ),
             child: LayoutBuilder(
               builder: (context, constraints) => SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox.shrink(),
-                      _WelcomeHero(strings: strings),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (status?.saveFailed ?? false) ...[
-                            Semantics(
-                              liveRegion: true,
-                              child: Text(
-                                strings.saveIntroductionError,
-                                key: const Key('onboarding-save-error'),
-                                textAlign: TextAlign.center,
-                                style: AppTypography.caption.copyWith(
-                                  color: AppColors.destructive,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.pageHorizontal,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            const ExcludeSemantics(
+                              child: SizedBox.square(
+                                dimension: AppSpacing.xl,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: AppIcon.asset(
+                                      'ph-leaf-bold',
+                                      size: AppSizes.iconXs,
+                                      color: AppColors.primaryForeground,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: AppSpacing.sm),
-                          ],
-                          AppButton(
-                            onPressed: status == null || status.isSaving
-                                ? null
-                                : () => context.push('/goal'),
-                            child: Text(strings.welcomeGoalUnavailable),
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          AppButton.secondary(
-                            onPressed: status == null || status.isSaving
-                                ? null
-                                : () => unawaited(_logFirstMeal(context, ref)),
-                            child: Text(
-                              status?.isSaving ?? false
-                                  ? strings.saving
-                                  : strings.welcomeLogFirstMeal,
+                            const SizedBox(width: AppSpacing.xs),
+                            Flexible(
+                              child: Text(
+                                strings.appTitle,
+                                style: AppTypography.welcomeWordmark,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          Text(
-                            strings.welcomeDisclaimer,
-                            textAlign: TextAlign.center,
-                            style: AppTypography.caption,
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                        _WelcomeHero(strings: strings),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            AppButton(
+                              animatePress: true,
+                              onPressed: status == null || status.isSaving
+                                  ? null
+                                  : () => context.push('/profile-setup'),
+                              child: Text(
+                                strings.welcomeGoalAction,
+                                textAlign: TextAlign.center,
+                                style: AppTypography.welcomeAction,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const ExcludeSemantics(
+                                  child: AppIcon.asset(
+                                    'ph-info',
+                                    size: AppSizes.iconInfo,
+                                    color: AppColors.mutedForeground,
+                                  ),
+                                ),
+                                const SizedBox(width: AppSpacing.xs),
+                                Flexible(
+                                  child: Text(
+                                    strings.welcomeDisclaimer,
+                                    style: AppTypography.navLabel,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -89,21 +115,6 @@ class WelcomeScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _logFirstMeal(BuildContext context, WidgetRef ref) async {
-    final status = ref.read(onboardingControllerProvider).value;
-    if (status == null || status.isSaving || status.completed) return;
-    final navigator = Navigator.of(context, rootNavigator: true);
-    await ref.read(onboardingControllerProvider.notifier).complete();
-    if (!context.mounted ||
-        ref.read(onboardingControllerProvider).value?.completed != true) {
-      return;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final overlay = navigator.overlay;
-      if (overlay != null) unawaited(showMealMethodSheet(overlay.context));
-    });
   }
 }
 
@@ -115,49 +126,16 @@ class _WelcomeHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      ExcludeSemantics(
-        child: SizedBox(
-          width: AppSizes.hero,
-          height: AppSizes.hero,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              const Center(
-                child: Image(
-                  image: AssetImage('assets/design/images/xQ84zhEVfCY.png'),
-                  width: AppSizes.hero,
-                  height: AppSizes.hero,
-                  fit: BoxFit.contain,
-                ),
-              ),
-              const PositionedDirectional(
-                top: -AppSpacing.xs,
-                end: -AppSpacing.xs,
-                child: AppIcon.asset(
-                  'fluent-emoji-sparkles',
-                  size: AppSpacing.xl,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      const SizedBox(height: AppSpacing.lg),
+      const ExcludeSemantics(child: _WelcomeArtwork()),
+      const SizedBox(height: AppSpacing.xl),
       Semantics(
         header: true,
         child: Text(
-          strings.appTitle,
+          strings.welcomeHeadline,
           textAlign: TextAlign.center,
-          style: AppTypography.display,
+          style: AppTypography.welcomeHeadline,
         ),
-      ),
-      const SizedBox(height: AppSpacing.xs),
-      Text(
-        strings.welcomeHeadline,
-        textAlign: TextAlign.center,
-        style: AppTypography.subtitle,
       ),
       const SizedBox(height: AppSpacing.md),
       ConstrainedBox(
@@ -165,9 +143,95 @@ class _WelcomeHero extends StatelessWidget {
         child: Text(
           strings.welcomeBody,
           textAlign: TextAlign.center,
-          style: AppTypography.bodySmall,
+          style: AppTypography.welcomeBody,
         ),
       ),
     ],
   );
+}
+
+class _WelcomeArtwork extends StatefulWidget {
+  const _WelcomeArtwork();
+
+  @override
+  State<_WelcomeArtwork> createState() => _WelcomeArtworkState();
+}
+
+class _WelcomeArtworkState extends State<_WelcomeArtwork>
+    with SingleTickerProviderStateMixin {
+  late final _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _pulse.reset();
+    } else if (!_pulse.isAnimating) {
+      _pulse.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    // Use the raster export to retain the source icon's SVG filters.
+    const sparkles = Image(
+      image: AssetImage('assets/design/images/fluent-emoji-sparkles.png'),
+      width: AppSpacing.xl,
+      height: AppSpacing.xl,
+      filterQuality: FilterQuality.medium,
+    );
+    return SizedBox.square(
+      dimension: AppSizes.hero,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          const OverflowBox(
+            minWidth: AppSizes.welcomeOuterHalo,
+            maxWidth: AppSizes.welcomeOuterHalo,
+            minHeight: AppSizes.welcomeOuterHalo,
+            maxHeight: AppSizes.welcomeOuterHalo,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.welcomeHalo,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          const SizedBox.square(
+            dimension: AppSizes.welcomeInnerHalo,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.secondary,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          const AppMascot(size: AppSizes.hero, bounce: true),
+          PositionedDirectional(
+            top: AppSpacing.md,
+            end: AppSpacing.xs,
+            child: reduceMotion
+                ? sparkles
+                : FadeTransition(
+                    opacity: _pulse
+                        .drive(CurveTween(curve: const Cubic(0.4, 0, 0.6, 1)))
+                        .drive(Tween(begin: 1.0, end: 0.5)),
+                    child: sparkles,
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
 }

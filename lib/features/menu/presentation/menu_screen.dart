@@ -52,7 +52,7 @@ class MenuScreen extends ConsumerWidget {
                       'Chỉnh mục tiêu',
                       goalName,
                       'ph-target',
-                      route: '/goal',
+                      route: '/profile-setup',
                     ),
                     const _MenuItem('Bữa đã lưu', '', 'ph-bookmark-simple'),
                     const _MenuItem('Nhắc nhở', '', 'ph-bell-simple-ringing'),

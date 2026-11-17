@@ -62,7 +62,7 @@ class TodayScreen extends ConsumerWidget {
                     Expanded(
                       child: _GoalCard(
                         goalName: goalName,
-                        onTap: () => context.push('/goal'),
+                        onTap: () => context.push('/profile-setup'),
                         hasGoal: goal != null,
                         schedule: goal?.schedule,
                       ),

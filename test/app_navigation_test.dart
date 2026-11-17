@@ -5,22 +5,102 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lanh_app/app/app_router.dart';
 import 'package:lanh_app/app/app.dart';
+import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/features/onboarding/onboarding_providers.dart';
+import 'package:material_ui/material_ui.dart'
+    show DatePickerDialog, FilledButton, MaterialLocalizations;
 
+import 'support/test_goal_repository.dart';
 import 'support/test_onboarding_repository.dart';
 
 void main() {
+  void reduceMotion(WidgetTester tester) {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+  }
+
+  Future<void> tapText(WidgetTester tester, String label) async {
+    final target = find.text(label);
+    if (target.evaluate().isEmpty) {
+      await tester.scrollUntilVisible(target, 120);
+    }
+    await tester.ensureVisible(target);
+    await tester.pump();
+    await tester.tap(target);
+    await tester.pumpAndSettle();
+  }
+
+  const goalAction = 'Đặt mục tiêu của tôi';
+  const setupActionKey = Key('profile-setup-action');
+
+  Future<void> tapSetupAction(WidgetTester tester) async {
+    await tester.tap(find.byKey(setupActionKey));
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> enterProfileValue(
+    WidgetTester tester,
+    String field,
+    String value,
+  ) async {
+    final input = find.descendant(
+      of: find.byKey(Key('profile-$field')),
+      matching: find.byType(EditableText),
+    );
+    await tester.ensureVisible(input);
+    await tester.enterText(input, value);
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> fillBody(WidgetTester tester) async {
+    await enterProfileValue(tester, 'age', '32');
+    await enterProfileValue(tester, 'height', '160');
+    await enterProfileValue(tester, 'current-weight', '62,5');
+    await tapText(tester, 'Nữ');
+    await tapSetupAction(tester);
+  }
+
+  Future<void> pickTargetDate(WidgetTester tester) async {
+    final date = find.byKey(const Key('profile-target-date'));
+    await tester.ensureVisible(date);
+    await tester.tap(date);
+    await tester.pumpAndSettle();
+    final localizations = MaterialLocalizations.of(
+      tester.element(find.byType(DatePickerDialog)),
+    );
+    await tapText(tester, localizations.okButtonLabel);
+  }
+
+  Future<void> reachActivity(WidgetTester tester) async {
+    await tapText(tester, goalAction);
+    await tapText(tester, 'Giữ cân');
+    await tapSetupAction(tester);
+    await fillBody(tester);
+    expect(find.text('Một ngày thường'), findsOneWidget);
+  }
+
+  Future<void> openReview(WidgetTester tester) async {
+    await tapText(tester, 'Chủ yếu ngồi');
+    await tapSetupAction(tester);
+    expect(find.text('Xem lại thông tin'), findsOneWidget);
+  }
+
   Future<void> openApp(
     WidgetTester tester, {
     bool returning = false,
     bool fail = false,
   }) async {
+    if (!returning) reduceMotion(tester);
     final repository = TestOnboardingRepository()
       ..completed = returning
       ..failWrite = fail;
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [onboardingRepositoryProvider.overrideWithValue(repository)],
+        overrides: [
+          onboardingRepositoryProvider.overrideWithValue(repository),
+          goalRepositoryProvider.overrideWithValue(TestGoalRepository()),
+        ],
         child: const Application(),
       ),
     );
@@ -33,7 +113,7 @@ void main() {
     Size(390, 844),
     Size(430, 932),
   ]) {
-    testWidgets('goal and tabs fit ${viewport.width.toInt()}dp', (
+    testWidgets('profile setup and tabs fit ${viewport.width.toInt()}dp', (
       tester,
     ) async {
       tester.view.physicalSize = viewport;
@@ -41,37 +121,20 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       await openApp(tester);
-      final goalButton = find.text('Đặt mục tiêu của tôi');
-      await tester.ensureVisible(goalButton);
-      await tester.tap(goalButton);
-      await tester.pumpAndSettle();
-      expect(find.text('Bạn muốn hướng đến điều gì?'), findsOneWidget);
-      final choice = find.text('Giảm cân');
-      await tester.ensureVisible(choice);
-      await tester.tap(choice);
-      await tester.pumpAndSettle();
-      expect(
-        find.byKey(const Key('goal-primary-action')).hitTestable(),
-        findsOneWidget,
+      await tapText(tester, goalAction);
+      await tapText(tester, 'Giảm cân');
+      await tapSetupAction(tester);
+      await fillBody(tester);
+      await enterProfileValue(tester, 'target-weight', '58');
+      await pickTargetDate(tester);
+      await tapSetupAction(tester);
+      await openReview(tester);
+      await tapText(tester, 'Về Hôm nay');
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(Application)),
       );
+      expect(container.read(goalControllerProvider).value, isNull);
       expect(tester.takeException(), isNull);
-      for (
-        var i = 0;
-        i < 2 && find.byKey(const Key('goal-screen')).evaluate().isNotEmpty;
-        i++
-      ) {
-        final back = find.text('Quay lại');
-        await tester.ensureVisible(back);
-        await tester.tap(back);
-        await tester.pumpAndSettle();
-      }
-      final mealButton = find.text('Ghi bữa ăn đầu tiên');
-      await tester.ensureVisible(mealButton);
-      await tester.tap(mealButton);
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
-      await tester.tap(find.byKey(const Key('close-meal-sheet')));
-      await tester.pumpAndSettle();
       final bar = tester.getRect(find.byKey(const Key('nav-surface')));
       final action = tester.getRect(find.byKey(const Key('nav-log-meal')));
       final today = tester.getRect(find.byKey(const Key('nav-today')));
@@ -152,33 +215,68 @@ void main() {
     expect(find.byKey(const Key('progress-screen')), findsOneWidget);
   });
 
-  testWidgets('first meal opens the picker over Today after onboarding', (
-    tester,
-  ) async {
-    await openApp(tester);
-    expect(find.text('Ghi bữa ăn đầu tiên'), findsOneWidget);
-    await tester.ensureVisible(find.text('Ghi bữa ăn đầu tiên'));
-    await tester.pump();
-    await tester.tap(find.text('Ghi bữa ăn đầu tiên'));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('close-meal-sheet')));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('today-screen')), findsOneWidget);
-    expect(find.text('Ghi bữa ăn đầu tiên'), findsNothing);
-  });
-  testWidgets('failed storage stays on welcome and exposes retry', (
+  for (final (goal, invalid, valid, error) in [
+    ('Giảm cân', '64', '58', 'Cân nặng mong muốn phải thấp hơn cân hiện tại.'),
+    ('Tăng cân', '58', '65', 'Cân nặng mong muốn phải cao hơn cân hiện tại.'),
+  ]) {
+    testWidgets(
+      '$goal validates the target and preserves the draft when going back',
+      (tester) async {
+        await openApp(tester);
+        await tapText(tester, goalAction);
+        final button = find.descendant(
+          of: find.byKey(setupActionKey),
+          matching: find.byType(FilledButton),
+        );
+        expect(tester.widget<FilledButton>(button).onPressed, isNull);
+        await tapText(tester, goal);
+        await tapSetupAction(tester);
+        await tapSetupAction(tester);
+        expect(find.text('Nhập tuổi bằng số nguyên dương.'), findsOneWidget);
+        await fillBody(tester);
+        expect(find.byKey(const Key('profile-setup-target')), findsOneWidget);
+        await enterProfileValue(tester, 'target-weight', invalid);
+        await tapSetupAction(tester);
+        expect(find.text(error), findsOneWidget);
+        expect(find.text('Chọn ngày sau hôm nay.'), findsOneWidget);
+        await enterProfileValue(tester, 'target-weight', valid);
+
+        await pickTargetDate(tester);
+        await tapSetupAction(tester);
+        expect(find.byKey(const Key('profile-setup-activity')), findsOneWidget);
+        expect(tester.widget<FilledButton>(button).onPressed, isNull);
+
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('profile-setup-target')), findsOneWidget);
+        expect(find.text(valid), findsOneWidget);
+        await tapSetupAction(tester);
+        await openReview(tester);
+        expect(find.text('Cân nặng mong muốn · $valid kg'), findsOneWidget);
+      },
+    );
+  }
+
+  testWidgets('failed onboarding stays on Profile Setup and can retry', (
     tester,
   ) async {
     await openApp(tester, fail: true);
-    await tester.ensureVisible(find.text('Ghi bữa ăn đầu tiên'));
-    await tester.pump();
-    await tester.tap(find.text('Ghi bữa ăn đầu tiên'));
-    await tester.pumpAndSettle();
-    expect(find.text('Ghi bữa ăn đầu tiên'), findsOneWidget);
+    await reachActivity(tester);
+    await openReview(tester);
+    await tapText(tester, 'Về Hôm nay');
     expect(find.byKey(const Key('onboarding-save-error')), findsOneWidget);
-    expect(find.byKey(const Key('meal-method-sheet')), findsNothing);
     expect(find.byKey(const Key('today-screen')), findsNothing);
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(Application)),
+    );
+    final repository = container.read(
+      onboardingRepositoryProvider,
+    ) as TestOnboardingRepository;
+    repository.failWrite = false;
+    await openReview(tester);
+    await tapText(tester, 'Về Hôm nay');
+    expect(find.byKey(const Key('today-screen')), findsOneWidget);
   });
   testWidgets('closing meal sheet preserves each origin tab', (tester) async {
     await openApp(tester, returning: true);
@@ -245,6 +343,7 @@ void main() {
     expect(find.byKey(const Key('today-screen')), findsOneWidget);
   });
   testWidgets('startup read error exposes a usable retry', (tester) async {
+    reduceMotion(tester);
     final repository = TestOnboardingRepository()..failRead = true;
     await tester.pumpWidget(
       ProviderScope(
@@ -257,7 +356,7 @@ void main() {
     repository.failRead = false;
     await tester.tap(find.text('Thử lại'));
     await tester.pumpAndSettle();
-    expect(find.text('Ghi bữa ăn đầu tiên'), findsOneWidget);
+    expect(find.text(goalAction), findsOneWidget);
   });
   testWidgets('English localization uses the same navigation flow', (
     tester,
@@ -276,24 +375,20 @@ void main() {
     expect(find.text('How would you like to log your meal?'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-  testWidgets('large text on a small phone keeps welcome and sheet usable', (
+  testWidgets('large text on a small phone keeps profile setup usable', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(320, 700);
     tester.view.devicePixelRatio = 1;
     tester.platformDispatcher.textScaleFactorTestValue = 2;
-    tester.platformDispatcher.accessibilityFeaturesTestValue =
-        FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     await openApp(tester);
-    await tester.ensureVisible(find.text('Ghi bữa ăn đầu tiên'));
-    await tester.pump();
-    await tester.tap(find.text('Ghi bữa ăn đầu tiên'));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
+    await reachActivity(tester);
+    await openReview(tester);
+    await tapText(tester, 'Về Hôm nay');
+    expect(find.byKey(const Key('today-screen')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

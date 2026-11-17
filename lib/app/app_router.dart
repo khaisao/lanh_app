@@ -2,9 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lanh_app/app/app_shell.dart';
 import 'package:lanh_app/features/achievements/achievements.dart';
-import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/features/menu/menu.dart';
 import 'package:lanh_app/features/onboarding/onboarding.dart';
+import 'package:lanh_app/features/profile_setup/profile_setup.dart';
 import 'package:lanh_app/features/progress/progress.dart';
 import 'package:lanh_app/features/today/today.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
@@ -24,14 +24,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final onboarding = ref.read(onboardingControllerProvider);
       final location = state.matchedLocation;
       final isEntry = location == '/startup' || location == '/welcome';
-      final isGoal = location == '/goal';
+      final isSetup = location == '/profile-setup' || location == '/goal';
       if (!onboarding.hasValue) {
-        if (!isEntry && !isGoal) pendingLocation = state.uri.toString();
-        return location == '/startup' || isGoal ? null : '/startup';
+        if (!isEntry && !isSetup) pendingLocation = state.uri.toString();
+        return location == '/startup' || isSetup ? null : '/startup';
       }
       if (!onboarding.requireValue.completed) {
-        if (!isEntry && !isGoal) pendingLocation = state.uri.toString();
-        return location == '/welcome' || isGoal ? null : '/welcome';
+        if (!isEntry && !isSetup) pendingLocation = state.uri.toString();
+        return location == '/welcome' || isSetup ? null : '/welcome';
       }
       if (isEntry) {
         final destination = pendingLocation ?? '/today';
@@ -49,7 +49,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/welcome',
         builder: (context, state) => const WelcomeScreen(),
       ),
-      GoRoute(path: '/goal', builder: (context, state) => const GoalScreen()),
+      GoRoute(path: '/goal', redirect: (_, _) => '/profile-setup'),
+      GoRoute(
+        path: '/profile-setup',
+        builder: (context, state) => const ProfileSetupScreen(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [

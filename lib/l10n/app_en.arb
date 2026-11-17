@@ -2,11 +2,10 @@
   "@@locale": "en",
   "appTitle": "Lành",
   "welcomeHeadline": "A little joy in every nourishing meal.",
-  "welcomeBody": "Start with the meal you just ate, or set a goal of your own. No need to enter your weight.",
-  "welcomeGoalUnavailable": "Set my goal",
-  "welcomeLogFirstMeal": "Log my first meal",
+  "welcomeBody": "Get to know your meals a little at a time. No weight needed to get started.",
+  "welcomeGoalAction": "Set my goal",
   "saving": "Saving…",
-  "welcomeDisclaimer": "Calorie values in Lành are estimates for reference only.",
+  "welcomeDisclaimer": "All calorie counts in Lành are estimates.",
   "saveIntroductionError": "Your choice could not be saved. Please try again.",
   "startupError": "Your settings could not be loaded. Try again to continue.",
   "retry": "Try again",
@@ -35,5 +34,62 @@
   "aboutBody": "Lành supports mindful eating and self-care. Your intention may be to lose, gain or maintain weight, or simply understand your meals.",
   "privacyBase": "This foundation build stores your goal choice and introduction status on this device. Meal photos and health data are not synced yet.",
   "notFound": "Page not found",
-  "backToToday": "Go to Today"
+  "backToToday": "Go to Today",
+  "profileGoal": "Goal",
+  "profileGoalHeading": "What would you like?",
+  "profileGoalCaption": "You can change this any time.",
+  "profileGain": "Gain weight",
+  "profileLose": "Lose weight",
+  "profileMaintain": "Maintain weight",
+  "profileBody": "About you",
+  "profileBodyCaption": "Used for estimates only.",
+  "profileAge": "Age",
+  "profileYears": "years",
+  "profileHeight": "Height",
+  "profileCurrentWeight": "Current weight",
+  "profileSex": "Sex",
+  "profileFemale": "Female",
+  "profileMale": "Male",
+  "profileTarget": "Your target",
+  "profileTargetWeight": "Target weight",
+  "profileTargetDate": "Target date",
+  "profilePickDate": "Choose a date",
+  "profileWeeklyEstimate": "Weekly estimate",
+  "profileEstimate": "Estimate",
+  "profileEstimateCaption": "For planning only, not medical advice.",
+  "profileActivity": "Daily activity",
+  "profileActivityHeading": "A typical day",
+  "profileActivityCaption": "Choose the closest match.",
+  "profileSitting": "Mostly sitting",
+  "profileLight": "Some standing and walking",
+  "profileModerate": "Standing or walking most of the day",
+  "profileHeavy": "Regular physical work",
+  "profileVariable": "Schedule varies / Not sure",
+  "profileContinue": "Continue",
+  "profileConfirm": "Confirm",
+  "profileBack": "Go back",
+  "profileStepStatus": "Step {step} of 4",
+  "profileEditStep": "Edit: {title}",
+  "profileInvalidAge": "Enter an age in whole years.",
+  "profileInvalidNumber": "Enter a number greater than zero.",
+  "profileMissingSex": "Choose an option to continue.",
+  "profileLowerTarget": "Target weight must be below current weight.",
+  "profileHigherTarget": "Target weight must be above current weight.",
+  "profileFutureDate": "Choose a date after today.",
+  "profileReview": "Review your information",
+  "profileReviewNotice": "This information is only shown during this setup session.",
+  "@profileStepStatus": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "@profileEditStep": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }
