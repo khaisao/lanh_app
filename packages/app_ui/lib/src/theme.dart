@@ -51,6 +51,22 @@ abstract final class AppMotion {
   static const feedbackCurve = Curves.easeOutCubic;
   static const feedbackPress = Duration(milliseconds: 75);
   static const feedbackRelease = Duration(milliseconds: 150);
+  static const dockCurve = Curves.easeInOutSine;
+
+  static Duration dockSelectionDuration(BuildContext context) =>
+      MediaQuery.disableAnimationsOf(context)
+      ? Duration.zero
+      : const Duration(milliseconds: 300);
+
+  static Duration dockIconDuration(BuildContext context) =>
+      MediaQuery.disableAnimationsOf(context)
+      ? Duration.zero
+      : const Duration(milliseconds: 220);
+
+  static Duration dockDuration(BuildContext context, {required bool showing}) {
+    if (MediaQuery.disableAnimationsOf(context)) return Duration.zero;
+    return Duration(milliseconds: showing ? 240 : 360);
+  }
 
   static Duration feedbackDuration(BuildContext context) =>
       MediaQuery.disableAnimationsOf(context) ? Duration.zero : feedbackRelease;

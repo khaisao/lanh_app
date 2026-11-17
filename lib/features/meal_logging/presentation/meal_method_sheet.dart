@@ -1,5 +1,5 @@
-import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:app_ui/app_ui.dart';
+import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 Future<void> showMealMethodSheet(BuildContext context) =>
@@ -12,13 +12,15 @@ Future<void> showMealMethodSheet(BuildContext context) =>
       barrierColor: AppColors.modalBarrier,
       constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
       shape: const RoundedRectangleBorder(
+        side: BorderSide(color: AppColors.border),
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.xl)),
       ),
       sheetAnimationStyle: AnimationStyle(
         duration: AppMotion.duration(context),
         reverseDuration: AppMotion.duration(context),
       ),
-      builder: (context) => const MealMethodSheet(),
+      builder: (context) =>
+          const SafeArea(top: false, child: MealMethodSheet()),
     );
 
 class MealMethodSheet extends StatelessWidget {
@@ -27,12 +29,6 @@ class MealMethodSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
-    const methods = [
-      ('ph-camera', 'Chụp ảnh', 'Lành ước lượng món trong ảnh'),
-      ('ph-magnifying-glass', 'Tìm món ăn', 'Ví dụ: phở bò, cơm tấm'),
-      ('ph-chat-text', 'Mô tả bữa ăn', 'Ví dụ: nửa tô phở bò'),
-      ('ph-bookmark-simple', 'Bữa đã lưu', 'Những bữa bạn hay ăn'),
-    ];
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight:
@@ -61,7 +57,7 @@ class MealMethodSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: AppSpacing.sm,
               children: [
                 Expanded(
                   child: Column(
@@ -74,55 +70,46 @@ class MealMethodSheet extends StatelessWidget {
                           style: AppTypography.pageHeading,
                         ),
                       ),
-                      SizedBox(height: AppSpacing.xxs),
-                      Text('Chọn cách bắt đầu', style: AppTypography.bodySmall),
+                      const SizedBox(height: AppSpacing.xxs),
+                      Text(
+                        strings.mealMethodSubtitle,
+                        style: AppTypography.optionDescription,
+                      ),
                     ],
                   ),
                 ),
-                TextButton.icon(
+                IconButton(
                   key: const Key('close-meal-sheet'),
+                  tooltip: strings.close,
                   onPressed: () => Navigator.of(context).pop(),
-                  style: TextButton.styleFrom(
+                  style: IconButton.styleFrom(
                     backgroundColor: AppColors.muted,
-                    foregroundColor: AppColors.foreground,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                    ),
-                    minimumSize: const Size(0, AppSizes.backAction),
+                    fixedSize: const Size.square(AppSizes.compactAction),
                   ),
-                  icon: const AppIcon.asset('ph-x-bold', size: AppSizes.iconXs),
-                  label: Text(strings.close, style: AppTypography.button),
+                  icon: const AppIcon.asset(
+                    'ph-x-bold',
+                    color: AppColors.foreground,
+                    size: AppSizes.iconSm,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            for (final method in methods) ...[
-              AppOptionCard(
-                caretSize: AppSizes.iconMd,
-                icon: method.$1,
-                title: method.$2,
-                description: method.$3,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-            ],
-            OutlinedButton.icon(
-              onPressed: null,
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(AppSizes.compactAction),
-                foregroundColor: AppColors.foreground,
-                side: const BorderSide(color: AppColors.border),
-                shape: const StadiumBorder(),
-              ),
-              icon: const AppIcon.asset(
-                'ph-pencil-simple-line',
-                size: AppSizes.iconSm,
-              ),
-              label: const Text(
-                'Nhập tay tên món và calo',
-                style: AppTypography.button,
-              ),
+            AppOptionCard(
+              primary: true,
+              caretSize: AppSizes.iconMd,
+              icon: 'ph-camera-fill',
+              title: strings.camera,
+              description: strings.mealPhotoDescription,
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.sm),
+            AppOptionCard(
+              caretSize: AppSizes.iconMd,
+              icon: 'ph-microphone',
+              title: strings.mealVoice,
+              description: strings.mealVoiceDescription,
+            ),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               strings.mealMethodsNotice,
               textAlign: TextAlign.center,

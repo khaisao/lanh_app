@@ -1,0 +1,22 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lanh_app/features/goal/goal.dart';
+
+import 'data/sqlite_profile_repository.dart';
+import 'domain/profile.dart';
+
+final profileRepositoryProvider = Provider<ProfileRepository>(
+  (ref) => SqliteProfileRepository(),
+);
+
+final savedProfileProvider = FutureProvider<Profile?>(
+  (ref) => ref.watch(profileRepositoryProvider).read(),
+  retry: (_, _) => null,
+);
+
+final profileGoalProvider = Provider<AsyncValue<Goal?>>((ref) {
+  final profile = ref.watch(savedProfileProvider);
+  if (profile.hasValue && profile.value == null) {
+    return ref.watch(goalControllerProvider);
+  }
+  return profile.whenData((value) => value?.goal);
+});

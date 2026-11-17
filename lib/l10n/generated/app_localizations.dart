@@ -236,6 +236,30 @@ abstract class AppLocalizations {
   /// **'Ghi bữa ăn'**
   String get chooseMealMethod;
 
+  /// No description provided for @mealMethodSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn cách bắt đầu'**
+  String get mealMethodSubtitle;
+
+  /// No description provided for @mealPhotoDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành ước lượng món trong ảnh'**
+  String get mealPhotoDescription;
+
+  /// No description provided for @mealVoice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi bằng giọng nói'**
+  String get mealVoice;
+
+  /// No description provided for @mealVoiceDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nói tên món và lượng ăn'**
+  String get mealVoiceDescription;
+
   /// No description provided for @close.
   ///
   /// In vi, this message translates to:
@@ -275,7 +299,7 @@ abstract class AppLocalizations {
   /// No description provided for @mealMethodsNotice.
   ///
   /// In vi, this message translates to:
-  /// **'Các cách ghi bữa sẽ được phát triển ở phiên bản tiếp theo. Hiện ứng dụng chưa xin quyền camera hoặc gửi ảnh.'**
+  /// **'Chụp ảnh và ghi bằng giọng nói · Sắp có'**
   String get mealMethodsNotice;
 
   /// No description provided for @about.
@@ -563,8 +587,116 @@ abstract class AppLocalizations {
   /// No description provided for @profileReviewNotice.
   ///
   /// In vi, this message translates to:
-  /// **'Thông tin chỉ hiển thị trong phiên thiết lập này.'**
+  /// **'Thông tin này sẽ được lưu trên thiết bị.'**
   String get profileReviewNotice;
+
+  /// No description provided for @profileSaveError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu xong hồ sơ. Vui lòng thử lại.'**
+  String get profileSaveError;
+
+  /// No description provided for @todayGreeting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào bạn'**
+  String get todayGreeting;
+
+  /// No description provided for @todayGainGoal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu tăng cân'**
+  String get todayGainGoal;
+
+  /// No description provided for @todayLosePlan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kế hoạch hôm nay'**
+  String get todayLosePlan;
+
+  /// No description provided for @todayMaintainRange.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dải duy trì'**
+  String get todayMaintainRange;
+
+  /// No description provided for @todayEnergy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Năng lượng hôm nay'**
+  String get todayEnergy;
+
+  /// No description provided for @todayTargetUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có mục tiêu kcal.'**
+  String get todayTargetUnavailable;
+
+  /// No description provided for @todayRangeUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có dải kcal duy trì.'**
+  String get todayRangeUnavailable;
+
+  /// No description provided for @todayLoadingProfile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tải hồ sơ…'**
+  String get todayLoadingProfile;
+
+  /// No description provided for @todayProfileReadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đọc được hồ sơ.'**
+  String get todayProfileReadError;
+
+  /// No description provided for @todayNoEnergy.
+  ///
+  /// In vi, this message translates to:
+  /// **'—'**
+  String get todayNoEnergy;
+
+  /// No description provided for @todayLoggedKcal.
+  ///
+  /// In vi, this message translates to:
+  /// **'kcal đã ghi'**
+  String get todayLoggedKcal;
+
+  /// No description provided for @todayNoWater.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi'**
+  String get todayNoWater;
+
+  /// No description provided for @todayWater.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nước'**
+  String get todayWater;
+
+  /// No description provided for @todayNoMeals.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi món nào hôm nay.'**
+  String get todayNoMeals;
+
+  /// No description provided for @todayJournal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký ăn uống'**
+  String get todayJournal;
+
+  /// No description provided for @todayDetails.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết'**
+  String get todayDetails;
+
+  /// No description provided for @todayEstimated.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước tính'**
+  String get todayEstimated;
 }
 
 class _AppLocalizationsDelegate

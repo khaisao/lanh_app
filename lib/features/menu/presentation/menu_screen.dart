@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanh_app/features/goal/goal.dart';
+import 'package:lanh_app/features/profile_setup/profile_setup.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:material_ui/material_ui.dart';
@@ -11,89 +12,69 @@ class MenuScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
-    final goal = ref.watch(goalControllerProvider).value;
+    final goal = ref.watch(profileGoalProvider).value;
     final goalName = goal == null ? 'Chưa đặt mục tiêu' : _goalName(goal.type);
     return Scaffold(
       key: const Key('menu-screen'),
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.pageHorizontal,
-                AppSpacing.pageTop,
-                AppSpacing.pageHorizontal,
-                AppSpacing.contentBottom,
+      body: AppPageList(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(strings.menu, style: AppTypography.screenTitle),
               ),
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        strings.menu,
-                        style: AppTypography.screenTitle,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => context.go('/menu/about'),
-                      child: Text(strings.about, style: AppTypography.button),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                _ProfileCard(goalName: goalName),
-                const SizedBox(height: AppSpacing.lg),
-                _MenuGroup(
-                  title: 'Mục tiêu và bữa ăn',
-                  items: [
-                    _MenuItem(
-                      'Chỉnh mục tiêu',
-                      goalName,
-                      'ph-target',
-                      route: '/profile-setup',
-                    ),
-                    const _MenuItem('Bữa đã lưu', '', 'ph-bookmark-simple'),
-                    const _MenuItem('Nhắc nhở', '', 'ph-bell-simple-ringing'),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                const _MenuGroup(
-                  title: 'Riêng tư và thiết bị',
-                  items: [
-                    _MenuItem('Quyền riêng tư', '', 'ph-shield-check'),
-                    _MenuItem(
-                      'Ảnh và camera',
-                      'Chỉ dùng để ước lượng bữa ăn',
-                      'ph-camera',
-                    ),
-                    _MenuItem('Thông báo', '', 'ph-bell'),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                const _MenuGroup(
-                  title: 'Tài khoản và hỗ trợ',
-                  items: [
-                    _MenuItem('Tài khoản', '', 'ph-user-circle'),
-                    _MenuItem(
-                      'Trợ giúp và phản hồi',
-                      '',
-                      'ph-chat-circle-dots',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                const Center(
-                  child: Text(
-                    'Lành · Mỗi bữa lành, một mầm vui.',
-                    style: AppTypography.caption,
-                  ),
-                ),
-              ],
+              TextButton(
+                onPressed: () => context.go('/menu/about'),
+                child: Text(strings.about, style: AppTypography.button),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          _ProfileCard(goalName: goalName),
+          const SizedBox(height: AppSpacing.lg),
+          _MenuGroup(
+            title: 'Mục tiêu và bữa ăn',
+            items: [
+              _MenuItem(
+                'Chỉnh mục tiêu',
+                goalName,
+                'ph-target',
+                route: '/profile-setup',
+              ),
+              const _MenuItem('Bữa đã lưu', '', 'ph-bookmark-simple'),
+              const _MenuItem('Nhắc nhở', '', 'ph-bell-simple-ringing'),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          const _MenuGroup(
+            title: 'Riêng tư và thiết bị',
+            items: [
+              _MenuItem('Quyền riêng tư', '', 'ph-shield-check'),
+              _MenuItem(
+                'Ảnh và camera',
+                'Chỉ dùng để ước lượng bữa ăn',
+                'ph-camera',
+              ),
+              _MenuItem('Thông báo', '', 'ph-bell'),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          const _MenuGroup(
+            title: 'Tài khoản và hỗ trợ',
+            items: [
+              _MenuItem('Tài khoản', '', 'ph-user-circle'),
+              _MenuItem('Trợ giúp và phản hồi', '', 'ph-chat-circle-dots'),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          const Center(
+            child: Text(
+              'Lành · Mỗi bữa lành, một mầm vui.',
+              style: AppTypography.caption,
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -242,45 +223,30 @@ class AboutScreen extends StatelessWidget {
     return Scaffold(
       key: const Key('about-screen'),
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.pageHorizontal,
-                AppSpacing.pageTop,
-                AppSpacing.pageHorizontal,
-                AppSpacing.contentBottom,
+      body: AppPageList(
+        children: [
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: () => context.pop(),
+              icon: const AppIcon.asset(
+                'ph-arrow-left-bold',
+                size: AppSizes.iconMd,
               ),
-              children: [
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: TextButton.icon(
-                    onPressed: () => context.pop(),
-                    icon: const AppIcon.asset(
-                      'ph-arrow-left-bold',
-                      size: AppSizes.iconMd,
-                    ),
-                    label: const Text('Quay lại'),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      padding: const EdgeInsetsDirectional.only(
-                        start: AppSpacing.xs,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(strings.about, style: AppTypography.screenTitle),
-                const SizedBox(height: AppSpacing.md),
-                Text(strings.aboutBody, style: AppTypography.body),
-                const SizedBox(height: AppSpacing.lg),
-                Text(strings.baseNotice, style: AppTypography.bodySmall),
-              ],
+              label: const Text('Quay lại'),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                padding: const EdgeInsetsDirectional.only(start: AppSpacing.xs),
+              ),
             ),
           ),
-        ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(strings.about, style: AppTypography.screenTitle),
+          const SizedBox(height: AppSpacing.md),
+          Text(strings.aboutBody, style: AppTypography.body),
+          const SizedBox(height: AppSpacing.lg),
+          Text(strings.baseNotice, style: AppTypography.bodySmall),
+        ],
       ),
     );
   }

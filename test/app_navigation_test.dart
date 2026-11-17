@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:ui' show PointerDeviceKind;
 
+import 'package:app_ui/app_ui.dart' show AppBottomBar;
+
+import 'package:flutter/rendering.dart' show BackdropFilterLayer;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,11 +11,13 @@ import 'package:lanh_app/app/app_router.dart';
 import 'package:lanh_app/app/app.dart';
 import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/features/onboarding/onboarding_providers.dart';
+import 'package:lanh_app/features/profile_setup/profile_setup_providers.dart';
 import 'package:material_ui/material_ui.dart'
-    show DatePickerDialog, FilledButton, MaterialLocalizations;
+    show DatePickerDialog, FilledButton, Icon, MaterialLocalizations;
 
 import 'support/test_goal_repository.dart';
 import 'support/test_onboarding_repository.dart';
+import 'support/test_profile_repository.dart';
 
 void main() {
   void reduceMotion(WidgetTester tester) {
@@ -90,6 +96,7 @@ void main() {
     WidgetTester tester, {
     bool returning = false,
     bool fail = false,
+    TestProfileRepository? profiles,
   }) async {
     if (!returning) reduceMotion(tester);
     final repository = TestOnboardingRepository()
@@ -100,6 +107,9 @@ void main() {
         overrides: [
           onboardingRepositoryProvider.overrideWithValue(repository),
           goalRepositoryProvider.overrideWithValue(TestGoalRepository()),
+          profileRepositoryProvider.overrideWithValue(
+            profiles ?? TestProfileRepository(),
+          ),
         ],
         child: const Application(),
       ),
@@ -133,28 +143,62 @@ void main() {
       final container = ProviderScope.containerOf(
         tester.element(find.byType(Application)),
       );
-      expect(container.read(goalControllerProvider).value, isNull);
+      final profile = container.read(savedProfileProvider).requireValue!;
+      expect(profile.ageYears, 32);
+      expect(profile.heightCm, 160);
+      expect(profile.goal.currentWeight, 62.5);
+      expect(profile.goal.targetWeight, 58);
+      expect(profile.goal.type, GoalType.lose);
+      expect(find.byKey(const Key('today-energy-lose')), findsOneWidget);
       expect(tester.takeException(), isNull);
+      expect(
+        find.descendant(
+          of: find.byType(AppBottomBar),
+          matching: find.byType(Text),
+        ),
+        findsNothing,
+      );
       final bar = tester.getRect(find.byKey(const Key('nav-surface')));
       final action = tester.getRect(find.byKey(const Key('nav-log-meal')));
-      final today = tester.getRect(find.byKey(const Key('nav-today')));
-      final menu = tester.getRect(find.byKey(const Key('nav-menu')));
       expect(
         bar,
-        Rect.fromLTWH(16, viewport.height - 80, viewport.width - 32, 64),
+        Rect.fromLTWH(20, viewport.height - 76, viewport.width - 40, 60),
       );
       expect(
         action,
-        Rect.fromLTWH(viewport.width / 2 - 32, bar.top - 16, 64, 64),
+        Rect.fromLTWH(viewport.width / 2 - 28, bar.top - 12, 56, 56),
       );
-      expect(today.left - bar.left, 9);
-      expect(bar.right - menu.right, 9);
-      expect(today.width, closeTo(menu.width, 0.01));
-      if (viewport.width == 320) expect(today.width, 51.5);
+      final slotWidth = bar.width / 5;
+      double? iconY;
+      for (final (index, tab) in [
+        (0, 'today'),
+        (1, 'progress'),
+        (3, 'achievements'),
+        (4, 'menu'),
+      ]) {
+        final target = find.byKey(Key('nav-$tab'));
+        final bounds = tester.getRect(target);
+        expect(
+          bounds.center.dx,
+          closeTo(bar.left + (index + 0.5) * slotWidth, 0.01),
+        );
+        expect(bounds.width, greaterThanOrEqualTo(48));
+        expect(bounds.overlaps(action), isFalse);
+        final icon = find.descendant(of: target, matching: find.byType(Icon));
+        final center = tester.getCenter(icon);
+        expect(center.dx, closeTo(bounds.center.dx, 0.01));
+        iconY ??= center.dy;
+        expect(center.dy, iconY);
+        expect(center.dy, bounds.center.dy);
+      }
       for (final tab in ['today', 'progress', 'achievements', 'menu']) {
         await tester.tap(find.byKey(Key('nav-$tab')));
         await tester.pumpAndSettle();
         expect(find.byKey(Key('$tab-screen')), findsOneWidget);
+        expect(
+          tester.getCenter(find.byKey(const Key('nav-selection'))),
+          tester.getCenter(find.byKey(Key('nav-$tab'))),
+        );
         expect(tester.takeException(), isNull);
       }
     });
@@ -168,14 +212,14 @@ void main() {
       final action = find.byKey(const Key('nav-log-meal'));
       double scaleOf(Finder target) => tester
           .widget<Transform>(
-            find.ancestor(of: target, matching: find.byType(Transform)).first,
+            find.descendant(of: target, matching: find.byType(Transform)).first,
           )
           .transform
           .entry(0, 0);
       await tester.tap(tab);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
-      expect(scaleOf(tab), lessThan(1));
+      expect(scaleOf(tab), greaterThan(1));
       await tester.pumpAndSettle();
       expect(scaleOf(tab), 1);
       expect(find.byKey(const Key('progress-screen')), findsOneWidget);
@@ -184,11 +228,228 @@ void main() {
       await tester.tapAt(Offset(actionBounds.center.dx, actionBounds.top + 8));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
-      expect(scaleOf(action), lessThan(1));
+      expect(scaleOf(action), greaterThan(1));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
     },
   );
+
+  testWidgets('dock selection glides and retargets during a quick tab switch', (
+    tester,
+  ) async {
+    await openApp(tester, returning: true);
+    final selection = find.byKey(const Key('nav-selection'));
+    final menu = find.byKey(const Key('nav-menu'));
+    final progress = find.byKey(const Key('nav-progress'));
+    double selectionX() => tester.getCenter(selection).dx;
+    final start = selectionX();
+    final menuX = tester.getCenter(menu).dx;
+
+    await tester.tap(menu);
+    await tester.pump();
+    expect(find.byKey(const Key('menu-screen')), findsOneWidget);
+    expect(selectionX(), start);
+    await tester.pump(const Duration(milliseconds: 90));
+    final early = selectionX();
+    expect((early - start) / (menuX - start), inInclusiveRange(0.1, 0.3));
+    await tester.pump(const Duration(milliseconds: 130));
+    final beforeRetarget = selectionX();
+    expect(beforeRetarget, lessThan(menuX));
+    expect(beforeRetarget, greaterThan(tester.getCenter(progress).dx));
+
+    await tester.tap(progress);
+    await tester.pump();
+    expect(find.byKey(const Key('progress-screen')), findsOneWidget);
+    expect(selectionX(), closeTo(beforeRetarget, 0.01));
+    await tester.pump(const Duration(milliseconds: 90));
+    expect(selectionX(), lessThan(beforeRetarget));
+    await tester.pumpAndSettle();
+    expect(selectionX(), tester.getCenter(progress).dx);
+  });
+
+  testWidgets('dock lens appears on hold and hover without activating a tab', (
+    tester,
+  ) async {
+    await openApp(tester, returning: true);
+    expect(find.bySemanticsLabel('Tiến trình'), findsOneWidget);
+    final tab = find.byKey(const Key('nav-progress'));
+    final lens = find.descendant(
+      of: tab,
+      matching: find.byKey(const Key('nav-glass-lens')),
+    );
+    expect(lens, findsNothing);
+
+    final hold = await tester.startGesture(tester.getCenter(tab));
+    await tester.pump(const Duration(milliseconds: 150));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(lens, findsOneWidget);
+    expect(tester.getRect(lens).center, tester.getRect(tab).center);
+    final selectedCapsule = find.byKey(const Key('nav-selection'));
+    expect(tester.getSize(lens), tester.getSize(selectedCapsule));
+    expect(find.byKey(const Key('today-screen')), findsOneWidget);
+    await hold.cancel();
+    await tester.pumpAndSettle();
+    expect(lens, findsNothing);
+    expect(find.byKey(const Key('today-screen')), findsOneWidget);
+
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: tester.getCenter(tab));
+    await tester.pumpAndSettle();
+    expect(lens, findsOneWidget);
+    expect(tester.getSize(lens), tester.getSize(selectedCapsule));
+    await mouse.removePointer();
+    await tester.pumpAndSettle();
+    expect(lens, findsNothing);
+  });
+
+  for (final (reducedMotion, accessibleNavigation) in [
+    (false, false),
+    (true, false),
+    (false, true),
+  ]) {
+    testWidgets('Home glass bar follows scroll (reduce motion: $reducedMotion, '
+        'accessible navigation: $accessibleNavigation)', (tester) async {
+      tester.view.physicalSize = const Size(320, 600);
+      tester.view.devicePixelRatio = 1;
+      tester.view.padding = const FakeViewPadding(top: 48, bottom: 34);
+      tester.view.viewPadding = tester.view.padding;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPadding);
+      addTearDown(tester.view.resetViewPadding);
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          FakeAccessibilityFeatures(
+            disableAnimations: reducedMotion,
+            accessibleNavigation: accessibleNavigation,
+          );
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+
+      await openApp(tester, returning: true);
+      final list = find.byType(ListView);
+      final surface = find.byKey(const Key('nav-surface'));
+      final action = find.byKey(const Key('nav-log-meal'));
+      final navSlide = find.ancestor(
+        of: surface,
+        matching: find.byType(TweenAnimationBuilder<double>),
+      );
+      expect(
+        tester.widget<TweenAnimationBuilder<double>>(navSlide).duration,
+        reducedMotion ? Duration.zero : const Duration(milliseconds: 240),
+      );
+      final initialBounds = tester.getRect(list);
+      final shown = tester.getRect(surface);
+      expect(initialBounds.top, 48);
+      expect(initialBounds.bottom, 600);
+      expect(shown.bottom, 550);
+      expect(tester.layers.whereType<BackdropFilterLayer>(), hasLength(1));
+
+      final gesture = await tester.startGesture(initialBounds.center);
+      await gesture.moveBy(const Offset(0, -60));
+      await gesture.moveBy(const Offset(0, -80));
+      await tester.pump();
+      expect(
+        action.hitTestable(),
+        accessibleNavigation ? findsOneWidget : findsNothing,
+      );
+      if (reducedMotion) {
+        expect(surface, findsNothing);
+      }
+      await tester.pumpAndSettle();
+      expect(tester.getRect(list), initialBounds);
+      expect(surface, accessibleNavigation ? findsOneWidget : findsNothing);
+      if (!accessibleNavigation) {
+        expect(tester.layers.whereType<BackdropFilterLayer>(), isEmpty);
+      }
+
+      // Reverse midway through the list, while the same drag is active.
+      await gesture.moveBy(const Offset(0, 40));
+      await tester.pumpAndSettle();
+      expect(tester.getRect(surface), shown);
+      expect(action.hitTestable(), findsOneWidget);
+      expect(
+        tester.state<ScrollableState>(find.byType(Scrollable)).position.pixels,
+        greaterThan(0),
+      );
+      await gesture.up();
+
+      await tester.drag(list, const Offset(0, -400));
+      await tester.pumpAndSettle();
+      final logMeal = find.descendant(
+        of: find.byKey(const Key('today-screen')),
+        matching: find.text('Ghi bữa ăn'),
+      );
+      expect(logMeal.hitTestable(), findsOneWidget);
+      await tester.drag(list, const Offset(0, 480));
+      await tester.pumpAndSettle();
+      expect(tester.getRect(surface), shown);
+      await tester.tap(action);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('dock eases into hiding and reverses from its current position', (
+    tester,
+  ) async {
+    await openApp(tester, returning: true);
+    final list = find.byType(ListView);
+    final surface = find.byKey(const Key('nav-surface'));
+    double top() => tester.getTopLeft(surface).dy;
+    final shown = top();
+
+    final gesture = await tester.startGesture(tester.getCenter(list));
+    await gesture.moveBy(const Offset(0, -60));
+    await gesture.moveBy(const Offset(0, -80));
+    await tester.pump();
+    expect(top(), shown);
+    await tester.pump(const Duration(milliseconds: 90));
+    final early = top();
+    expect(early - shown, inInclusiveRange(4, 30));
+    await tester.pump(const Duration(milliseconds: 70));
+    final turningPoint = top();
+    expect(turningPoint, greaterThan(early));
+    expect(turningPoint, lessThan(tester.getRect(list).bottom));
+
+    await gesture.moveBy(const Offset(0, 40));
+    await tester.pump();
+    expect(top(), closeTo(turningPoint, 0.01));
+    await tester.pump(const Duration(milliseconds: 80));
+    expect(top(), lessThan(turningPoint));
+    await gesture.up();
+    await tester.pumpAndSettle();
+    expect(top(), shown);
+  });
+
+  testWidgets('opening another shell route restores a hidden bar', (
+    tester,
+  ) async {
+    reduceMotion(tester);
+    await openApp(tester, returning: true);
+    final list = find.byType(ListView);
+    final bar = find.byKey(const Key('nav-menu'));
+    await tester.drag(list, const Offset(0, -160));
+    await tester.pumpAndSettle();
+    expect(bar.hitTestable(), findsNothing);
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(Application)),
+    );
+    container.read(appRouterProvider).go('/menu/about');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('about-screen')), findsOneWidget);
+    expect(bar.hitTestable(), findsOneWidget);
+
+    await tester.drag(list, const Offset(0, -160));
+    await tester.pumpAndSettle();
+    expect(bar.hitTestable(), findsNothing);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('menu-screen')), findsOneWidget);
+    expect(bar.hitTestable(), findsOneWidget);
+  });
 
   testWidgets('bottom bar switches tabs with reduced motion', (tester) async {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
@@ -205,7 +466,9 @@ void main() {
     expect(
       tester
           .widget<Transform>(
-            find.ancestor(of: progress, matching: find.byType(Transform)).first,
+            find
+                .descendant(of: progress, matching: find.byType(Transform))
+                .first,
           )
           .transform
           .entry(0, 0),
@@ -238,7 +501,7 @@ void main() {
         await enterProfileValue(tester, 'target-weight', invalid);
         await tapSetupAction(tester);
         expect(find.text(error), findsOneWidget);
-        expect(find.text('Chọn ngày sau hôm nay.'), findsOneWidget);
+        expect(find.text('Chọn ngày sau hôm nay.'), findsNothing);
         await enterProfileValue(tester, 'target-weight', valid);
 
         await pickTargetDate(tester);
@@ -253,9 +516,31 @@ void main() {
         await tapSetupAction(tester);
         await openReview(tester);
         expect(find.text('Cân nặng mong muốn · $valid kg'), findsOneWidget);
+        await tapText(tester, 'Về Hôm nay');
+        final mode = goal == 'Tăng cân' ? 'gain' : 'lose';
+        expect(find.byKey(Key('today-energy-$mode')), findsOneWidget);
       },
     );
   }
+
+  testWidgets('failed profile write prevents completion and can retry', (
+    tester,
+  ) async {
+    final profiles = TestProfileRepository()..failWrite = true;
+    await openApp(tester, profiles: profiles);
+    await reachActivity(tester);
+    await openReview(tester);
+    await tapText(tester, 'Về Hôm nay');
+    expect(find.byKey(const Key('onboarding-save-error')), findsOneWidget);
+    expect(find.byKey(const Key('today-screen')), findsNothing);
+    expect(profiles.profile, isNull);
+    profiles.failWrite = false;
+    await openReview(tester);
+    await tapText(tester, 'Về Hôm nay');
+    expect(profiles.profile?.goal.type, GoalType.maintain);
+    expect(profiles.profile?.goal.targetDate, isNull);
+    expect(find.byKey(const Key('today-energy-maintain')), findsOneWidget);
+  });
 
   testWidgets('failed onboarding stays on Profile Setup and can retry', (
     tester,
@@ -278,6 +563,55 @@ void main() {
     await tapText(tester, 'Về Hôm nay');
     expect(find.byKey(const Key('today-screen')), findsOneWidget);
   });
+  for (final viewport in const [
+    Size(320, 700),
+    Size(360, 800),
+    Size(390, 844),
+    Size(430, 932),
+  ]) {
+    testWidgets('Home opens the meal picker at ${viewport.width.toInt()}dp', (
+      tester,
+    ) async {
+      tester.view.physicalSize = viewport;
+      tester.view.devicePixelRatio = 1;
+      if (viewport.width == 320) {
+        tester.platformDispatcher.textScaleFactorTestValue = 2;
+      }
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await openApp(tester, returning: true);
+
+      final home = find.byKey(const Key('today-screen'));
+      final logMeal = find.descendant(
+        of: home,
+        matching: find.text('Ghi bữa ăn'),
+      );
+      await tester.scrollUntilVisible(logMeal, 120);
+      await tester.pumpAndSettle();
+      await tester.tap(logMeal);
+      await tester.pumpAndSettle();
+
+      final sheet = find.byKey(const Key('meal-method-sheet'));
+      expect(
+        find.descendant(of: sheet, matching: find.text('Ghi bữa ăn')),
+        findsOneWidget,
+      );
+      expect(find.text('Chụp ảnh'), findsOneWidget);
+      final voice = find.text('Ghi bằng giọng nói');
+      await tester.ensureVisible(voice);
+      await tester.pumpAndSettle();
+      expect(voice.hitTestable(), findsOneWidget);
+      expect(find.text('Tìm món ăn'), findsNothing);
+      expect(tester.takeException(), isNull);
+
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+      expect(home, findsOneWidget);
+      expect(find.byKey(const Key('meal-method-sheet')), findsNothing);
+    });
+  }
+
   testWidgets('closing meal sheet preserves each origin tab', (tester) async {
     await openApp(tester, returning: true);
     for (final tab in ['today', 'progress', 'achievements', 'menu']) {
@@ -316,7 +650,11 @@ void main() {
       ..readGate = gate;
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [onboardingRepositoryProvider.overrideWithValue(repository)],
+        overrides: [
+          onboardingRepositoryProvider.overrideWithValue(repository),
+          profileRepositoryProvider.overrideWithValue(TestProfileRepository()),
+          goalRepositoryProvider.overrideWithValue(TestGoalRepository()),
+        ],
         child: const Application(),
       ),
     );
@@ -347,7 +685,11 @@ void main() {
     final repository = TestOnboardingRepository()..failRead = true;
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [onboardingRepositoryProvider.overrideWithValue(repository)],
+        overrides: [
+          onboardingRepositoryProvider.overrideWithValue(repository),
+          profileRepositoryProvider.overrideWithValue(TestProfileRepository()),
+          goalRepositoryProvider.overrideWithValue(TestGoalRepository()),
+        ],
         child: const Application(),
       ),
     );
@@ -364,15 +706,21 @@ void main() {
     final repository = TestOnboardingRepository()..completed = true;
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [onboardingRepositoryProvider.overrideWithValue(repository)],
+        overrides: [
+          onboardingRepositoryProvider.overrideWithValue(repository),
+          profileRepositoryProvider.overrideWithValue(TestProfileRepository()),
+          goalRepositoryProvider.overrideWithValue(TestGoalRepository()),
+        ],
         child: const Application(locale: Locale('en')),
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Your day'), findsOneWidget);
+    expect(find.text('Hello'), findsOneWidget);
     await tester.tap(find.byKey(const Key('nav-log-meal')));
     await tester.pumpAndSettle();
-    expect(find.text('How would you like to log your meal?'), findsOneWidget);
+    expect(find.text('Log a meal'), findsOneWidget);
+    expect(find.text('Choose how to start'), findsOneWidget);
+    expect(find.text('Log by voice'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
   testWidgets('large text on a small phone keeps profile setup usable', (

@@ -22,14 +22,18 @@
   "achievementsEmptyTitle": "Small steps matter",
   "achievementsEmptyBody": "Milestones will celebrate self-care habits without judging how little or how much you eat.",
   "baseNotice": "This is the foundation build. Meal logging and health tracking are not implemented yet.",
-  "chooseMealMethod": "How would you like to log your meal?",
+  "chooseMealMethod": "Log a meal",
+  "mealMethodSubtitle": "Choose how to start",
+  "mealPhotoDescription": "Lành estimates the food in your photo",
+  "mealVoice": "Log by voice",
+  "mealVoiceDescription": "Say what you ate and how much",
   "close": "Close",
   "camera": "Take a photo",
   "gallery": "Choose a photo",
   "search": "Search foods",
   "manual": "Enter manually",
   "templates": "Saved meals",
-  "mealMethodsNotice": "Meal logging methods will arrive in a later version. This build does not request camera access or upload photos.",
+  "mealMethodsNotice": "Photo and voice logging · Coming soon",
   "about": "About Lành",
   "aboutBody": "Lành supports mindful eating and self-care. Your intention may be to lose, gain or maintain weight, or simply understand your meals.",
   "privacyBase": "This foundation build stores your goal choice and introduction status on this device. Meal photos and health data are not synced yet.",
@@ -77,7 +81,7 @@
   "profileHigherTarget": "Target weight must be above current weight.",
   "profileFutureDate": "Choose a date after today.",
   "profileReview": "Review your information",
-  "profileReviewNotice": "This information is only shown during this setup session.",
+  "profileReviewNotice": "This information will be saved on your device.",
   "@profileStepStatus": {
     "placeholders": {
       "step": {
@@ -91,5 +95,23 @@
         "type": "String"
       }
     }
-  }
+  },
+  "profileSaveError": "Could not finish saving your profile. Try again.",
+  "todayGreeting": "Hello",
+  "todayGainGoal": "Weight gain goal",
+  "todayLosePlan": "Today’s plan",
+  "todayMaintainRange": "Maintenance range",
+  "todayEnergy": "Today’s energy",
+  "todayTargetUnavailable": "No calorie target yet.",
+  "todayRangeUnavailable": "No maintenance range yet.",
+  "todayLoadingProfile": "Loading profile…",
+  "todayProfileReadError": "Could not load your profile.",
+  "todayNoEnergy": "—",
+  "todayLoggedKcal": "kcal logged",
+  "todayNoWater": "Nothing logged",
+  "todayWater": "Water",
+  "todayNoMeals": "No food logged today.",
+  "todayJournal": "Food journal",
+  "todayDetails": "Details",
+  "todayEstimated": "Estimated"
 }

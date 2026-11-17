@@ -13,6 +13,8 @@ The HTML export in `C:/Users/Kirito/Desktop/export-html` is the visual source of
 - Use `AppRadii` for corners. Goal and meal option cards share the export’s `rounded-2xl` squircle, and pill actions use `StadiumBorder`.
 - Primary actions have a 56 logical pixel minimum height and 20 logical pixels of horizontal padding. Long labels can wrap and increase the height.
 
+- The Today HTML exports use chart blue at 20% opacity for filled water indicators. Use `AppColors.waterTint` for that surface and `AppSizes.waterIndicator` and `AppSizes.energyMarkerHeight` for the dashboard indicators.
+
 ## Typography
 
 The web export uses Be Vietnam Pro for body text, Nunito for headings, Playfair Display for editorial serif text, and JetBrains Mono for numeric or technical text. The same font files are bundled in `assets/fonts` and declared once in the root `pubspec.yaml`. `AppFonts` maps the family names and `AppTypography` maps semantic text roles. Keep semantic text roles instead of setting ad hoc sizes in feature screens.

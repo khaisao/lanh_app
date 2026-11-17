@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lanh_app/features/goal/goal.dart';
+import 'package:lanh_app/features/profile_setup/profile_setup.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -11,41 +12,28 @@ class ProgressScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
-    final goal = ref.watch(goalControllerProvider).value;
+    final goal = ref.watch(profileGoalProvider).value;
     return Scaffold(
       key: const Key('progress-screen'),
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.pageHorizontal,
-                AppSpacing.pageTop,
-                AppSpacing.pageHorizontal,
-                AppSpacing.contentBottom,
-              ),
-              children: [
-                Text(strings.progress, style: AppTypography.screenTitle),
-                const SizedBox(height: AppSpacing.md),
-                const _PeriodToggle(),
-                const SizedBox(height: AppSpacing.lg),
-                const _GrowthCard(),
-                const SizedBox(height: AppSpacing.md),
-                const _ConsistencyCard(),
-                const SizedBox(height: AppSpacing.md),
-                const _WaterProgressCard(),
-                const SizedBox(height: AppSpacing.md),
-                _GoalProgressCard(goal: goal),
-                const SizedBox(height: AppSpacing.md),
-                const _BalanceCard(),
-                const SizedBox(height: AppSpacing.md),
-                const _WeightEmptyCard(),
-              ],
-            ),
-          ),
-        ),
+      body: AppPageList(
+        children: [
+          Text(strings.progress, style: AppTypography.screenTitle),
+          const SizedBox(height: AppSpacing.md),
+          const _PeriodToggle(),
+          const SizedBox(height: AppSpacing.lg),
+          const _GrowthCard(),
+          const SizedBox(height: AppSpacing.md),
+          const _ConsistencyCard(),
+          const SizedBox(height: AppSpacing.md),
+          const _WaterProgressCard(),
+          const SizedBox(height: AppSpacing.md),
+          _GoalProgressCard(goal: goal),
+          const SizedBox(height: AppSpacing.md),
+          const _BalanceCard(),
+          const SizedBox(height: AppSpacing.md),
+          const _WeightEmptyCard(),
+        ],
       ),
     );
   }

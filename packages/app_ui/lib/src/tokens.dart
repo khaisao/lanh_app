@@ -17,11 +17,15 @@ abstract final class AppColors {
   static const input = Color(0xFFFFFCF5);
   static const border = Color(0xFFE7DDCB);
   static const chartBlue = Color(0xFF7FA8B5);
+  static const waterTint = Color(0x337FA8B5);
   static const chartGold = Color(0xFFE0B54A);
   static const chartPeach = Color(0xFFEFB99A);
   static const chartStone = Color(0xFFB8A890);
   static const surface = card;
   static const outline = border;
+  static const navSelection = Color(0xB8D9E8D5);
+  static const navActionHighlight = Color(0xFF578561);
+  static const navActionRim = Color(0xBB9CC09A);
   static const modalBarrier = Color(0x403B2F25);
 }
 
@@ -41,11 +45,10 @@ abstract final class AppSpacing {
   static const onboardingTop = 56.0;
   static const onboardingBottom = 40.0;
   static const card = 20.0;
-  static const navInset = 16.0;
+  static const navInset = 20.0;
   static const navBottom = 16.0;
-  static const navInner = 8.0;
-  static const navFabRise = md;
-  static const contentBottom = 96.0;
+  static const navFabRise = sm;
+  static const contentBottom = 88.0;
   static const fieldGap = 6.0;
   static const navLabelGap = 2.0;
   static const small = xs;
@@ -80,8 +83,11 @@ abstract final class AppSizes {
   static const choiceIcon = 48.0;
   static const compactAction = 48.0;
   static const action = 56.0;
-  static const nav = 64.0;
-  static const navFab = 64.0;
+  static const nav = 60.0;
+  static const navFab = 56.0;
+  static const navSelection = 42.0;
+  static const energyMarkerHeight = 24.0;
+  static const waterIndicator = 32.0;
   static const chart = 128.0;
   static const contentMax = 448.0;
   static const readableWidth = 320.0;
@@ -101,7 +107,6 @@ abstract final class AppBorders {
 abstract final class AppScales {
   static const pressed = 0.97;
   static const pressedCard = 0.98;
-  static const pressedNavFab = 0.95;
 }
 
 abstract final class AppFractions {
@@ -115,10 +120,10 @@ abstract final class AppChartFactors {
 abstract final class AppShadows {
   static const nav = [
     BoxShadow(
-      color: Color(0x593B2F25),
-      blurRadius: 36,
-      spreadRadius: -12,
-      offset: Offset(0, 16),
+      color: Color(0x403B2F25),
+      blurRadius: 28,
+      spreadRadius: -10,
+      offset: Offset(0, 12),
     ),
   ];
   static const navFab = [
@@ -315,14 +320,6 @@ abstract final class AppTypography {
     color: AppColors.mutedForeground,
     fontSize: 12,
     letterSpacing: 0,
-    height: 16 / 12,
-  );
-  static const navLabelSelected = TextStyle(
-    fontFamily: AppFonts.body,
-    color: AppColors.primary,
-    fontSize: 12,
-    letterSpacing: 0,
-    fontWeight: FontWeight.w600,
     height: 16 / 12,
   );
 }

@@ -3,12 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:lanh_app/app/app.dart';
 import 'package:lanh_app/main.dart' as app;
+import 'package:lanh_app/features/profile_setup/profile_setup.dart';
 import 'package:material_ui/material_ui.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('native preferences retain introduction across a new app scope', (
+  testWidgets('native SQLite retains profile across a new app scope', (
     tester,
   ) async {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
@@ -54,6 +55,13 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('today-screen')), findsOneWidget);
+    expect(find.byKey(const Key('today-energy-maintain')), findsOneWidget);
+    final profile = ProviderScope.containerOf(
+      tester.element(find.byType(Application)),
+    ).read(savedProfileProvider).requireValue!;
+    expect(profile.ageYears, 32);
+    expect(profile.heightCm, 160);
+    expect(profile.goal.currentWeight, 62);
     await tester.tap(find.byKey(const Key('nav-log-meal')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('close-meal-sheet')));

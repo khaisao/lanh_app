@@ -49,40 +49,27 @@ class AchievementsScreen extends StatelessWidget {
     return Scaffold(
       key: const Key('achievements-screen'),
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.pageHorizontal,
-                AppSpacing.pageTop,
-                AppSpacing.pageHorizontal,
-                AppSpacing.contentBottom,
-              ),
-              children: [
-                Text(strings.achievements, style: AppTypography.screenTitle),
-                const SizedBox(height: AppSpacing.xs),
-                const Text(
-                  'Những thói quen nhỏ bạn đã xây dựng. Không điểm trừ, không bảng xếp hạng.',
-                  style: AppTypography.bodySmall,
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                const _AchievementSummary(),
-                const SizedBox(height: AppSpacing.lg),
-                for (final achievement in achievements) ...[
-                  _AchievementTile(
-                    title: achievement.$1,
-                    description: achievement.$2,
-                    icon: achievement.$3,
-                    opened: achievement.$4,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                ],
-              ],
-            ),
+      body: AppPageList(
+        children: [
+          Text(strings.achievements, style: AppTypography.screenTitle),
+          const SizedBox(height: AppSpacing.xs),
+          const Text(
+            'Những thói quen nhỏ bạn đã xây dựng. Không điểm trừ, không bảng xếp hạng.',
+            style: AppTypography.bodySmall,
           ),
-        ),
+          const SizedBox(height: AppSpacing.lg),
+          const _AchievementSummary(),
+          const SizedBox(height: AppSpacing.lg),
+          for (final achievement in achievements) ...[
+            _AchievementTile(
+              title: achievement.$1,
+              description: achievement.$2,
+              icon: achievement.$3,
+              opened: achievement.$4,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+        ],
       ),
     );
   }

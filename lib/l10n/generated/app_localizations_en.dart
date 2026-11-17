@@ -83,7 +83,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'This is the foundation build. Meal logging and health tracking are not implemented yet.';
 
   @override
-  String get chooseMealMethod => 'How would you like to log your meal?';
+  String get chooseMealMethod => 'Log a meal';
+
+  @override
+  String get mealMethodSubtitle => 'Choose how to start';
+
+  @override
+  String get mealPhotoDescription => 'Lành estimates the food in your photo';
+
+  @override
+  String get mealVoice => 'Log by voice';
+
+  @override
+  String get mealVoiceDescription => 'Say what you ate and how much';
 
   @override
   String get close => 'Close';
@@ -104,8 +116,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get templates => 'Saved meals';
 
   @override
-  String get mealMethodsNotice =>
-      'Meal logging methods will arrive in a later version. This build does not request camera access or upload photos.';
+  String get mealMethodsNotice => 'Photo and voice logging · Coming soon';
 
   @override
   String get about => 'About Lành';
@@ -258,5 +269,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileReviewNotice =>
-      'This information is only shown during this setup session.';
+      'This information will be saved on your device.';
+
+  @override
+  String get profileSaveError =>
+      'Could not finish saving your profile. Try again.';
+
+  @override
+  String get todayGreeting => 'Hello';
+
+  @override
+  String get todayGainGoal => 'Weight gain goal';
+
+  @override
+  String get todayLosePlan => 'Today’s plan';
+
+  @override
+  String get todayMaintainRange => 'Maintenance range';
+
+  @override
+  String get todayEnergy => 'Today’s energy';
+
+  @override
+  String get todayTargetUnavailable => 'No calorie target yet.';
+
+  @override
+  String get todayRangeUnavailable => 'No maintenance range yet.';
+
+  @override
+  String get todayLoadingProfile => 'Loading profile…';
+
+  @override
+  String get todayProfileReadError => 'Could not load your profile.';
+
+  @override
+  String get todayNoEnergy => '—';
+
+  @override
+  String get todayLoggedKcal => 'kcal logged';
+
+  @override
+  String get todayNoWater => 'Nothing logged';
+
+  @override
+  String get todayWater => 'Water';
+
+  @override
+  String get todayNoMeals => 'No food logged today.';
+
+  @override
+  String get todayJournal => 'Food journal';
+
+  @override
+  String get todayDetails => 'Details';
+
+  @override
+  String get todayEstimated => 'Estimated';
 }

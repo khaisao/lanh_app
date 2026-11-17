@@ -55,7 +55,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ProfileSetupScreen(),
       ),
       StatefulShellRoute.indexedStack(
-        builder: (context, state, shell) => AppShell(navigationShell: shell),
+        builder: (context, state, shell) =>
+            AppShell(navigationShell: shell, location: state.uri.path),
         branches: [
           StatefulShellBranch(
             routes: [

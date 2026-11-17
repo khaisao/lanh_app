@@ -86,6 +86,18 @@ class AppLocalizationsVi extends AppLocalizations {
   String get chooseMealMethod => 'Ghi bữa ăn';
 
   @override
+  String get mealMethodSubtitle => 'Chọn cách bắt đầu';
+
+  @override
+  String get mealPhotoDescription => 'Lành ước lượng món trong ảnh';
+
+  @override
+  String get mealVoice => 'Ghi bằng giọng nói';
+
+  @override
+  String get mealVoiceDescription => 'Nói tên món và lượng ăn';
+
+  @override
   String get close => 'Đóng';
 
   @override
@@ -104,8 +116,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get templates => 'Bữa quen';
 
   @override
-  String get mealMethodsNotice =>
-      'Các cách ghi bữa sẽ được phát triển ở phiên bản tiếp theo. Hiện ứng dụng chưa xin quyền camera hoặc gửi ảnh.';
+  String get mealMethodsNotice => 'Chụp ảnh và ghi bằng giọng nói · Sắp có';
 
   @override
   String get about => 'Về Lành';
@@ -258,6 +269,59 @@ class AppLocalizationsVi extends AppLocalizations {
   String get profileReview => 'Xem lại thông tin';
 
   @override
-  String get profileReviewNotice =>
-      'Thông tin chỉ hiển thị trong phiên thiết lập này.';
+  String get profileReviewNotice => 'Thông tin này sẽ được lưu trên thiết bị.';
+
+  @override
+  String get profileSaveError => 'Chưa lưu xong hồ sơ. Vui lòng thử lại.';
+
+  @override
+  String get todayGreeting => 'Chào bạn';
+
+  @override
+  String get todayGainGoal => 'Mục tiêu tăng cân';
+
+  @override
+  String get todayLosePlan => 'Kế hoạch hôm nay';
+
+  @override
+  String get todayMaintainRange => 'Dải duy trì';
+
+  @override
+  String get todayEnergy => 'Năng lượng hôm nay';
+
+  @override
+  String get todayTargetUnavailable => 'Chưa có mục tiêu kcal.';
+
+  @override
+  String get todayRangeUnavailable => 'Chưa có dải kcal duy trì.';
+
+  @override
+  String get todayLoadingProfile => 'Đang tải hồ sơ…';
+
+  @override
+  String get todayProfileReadError => 'Chưa đọc được hồ sơ.';
+
+  @override
+  String get todayNoEnergy => '—';
+
+  @override
+  String get todayLoggedKcal => 'kcal đã ghi';
+
+  @override
+  String get todayNoWater => 'Chưa ghi';
+
+  @override
+  String get todayWater => 'Nước';
+
+  @override
+  String get todayNoMeals => 'Chưa ghi món nào hôm nay.';
+
+  @override
+  String get todayJournal => 'Nhật ký ăn uống';
+
+  @override
+  String get todayDetails => 'Chi tiết';
+
+  @override
+  String get todayEstimated => 'Ước tính';
 }

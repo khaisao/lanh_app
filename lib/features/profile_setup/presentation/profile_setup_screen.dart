@@ -1,15 +1,17 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lanh_app/features/onboarding/onboarding.dart';
+import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../domain/profile.dart';
+import 'profile_setup_controller.dart';
 import 'profile_setup_widgets.dart';
 
 enum _Step { goal, body, target, activity }
 
-enum _WeightGoal { gain, lose, maintain }
+const _weightGoals = [GoalType.gain, GoalType.lose, GoalType.maintain];
 
 class ProfileSetupScreen extends ConsumerStatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -26,13 +28,14 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   final _target = TextEditingController();
 
   _Step _step = _Step.goal;
-  _WeightGoal? _goal;
+  GoalType? _goal;
   int? _sex;
   int? _activity;
   DateTime? _targetDate;
   bool _reviewing = false;
+  bool _saveFailed = false;
 
-  bool get _maintaining => _goal == _WeightGoal.maintain;
+  bool get _maintaining => _goal == GoalType.maintain;
   AppLocalizations get _strings => AppLocalizations.of(context);
 
   @override
@@ -52,12 +55,10 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       _Step.activity => _activity != null && !_reviewing,
       _ => true,
     };
-    final failed =
-        ref.watch(onboardingControllerProvider).value?.saveFailed ?? false;
     return PopScope(
       canPop: _step == _Step.goal,
       onPopInvokedWithResult: (popped, _) {
-        if (!popped && _step != _Step.goal) _back();
+        if (!popped && !_reviewing && _step != _Step.goal) _back();
       },
       child: Scaffold(
         key: ValueKey('profile-setup-${_step.name}'),
@@ -89,12 +90,18 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                           : strings.profileTarget,
                       strings.profileActivity,
                     ],
-                    onBack: _back,
-                    onStep: (index) => _show(
-                      _maintaining && index == _Step.target.index
-                          ? _Step.body
-                          : _Step.values[index],
-                    ),
+                    onBack: () {
+                      if (!_reviewing) _back();
+                    },
+                    onStep: (index) {
+                      if (!_reviewing && index < _step.index) {
+                        _show(
+                          _maintaining && index == _Step.target.index
+                              ? _Step.body
+                              : _Step.values[index],
+                        );
+                      }
+                    },
                   ),
                   SizedBox(
                     height: _step == _Step.goal
@@ -133,9 +140,9 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (failed) ...[
+                    if (_saveFailed) ...[
                       ProfileFieldError(
-                        strings.saveIntroductionError,
+                        strings.profileSaveError,
                         key: const Key('onboarding-save-error'),
                       ),
                       const SizedBox(height: AppSpacing.xs),
@@ -198,7 +205,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       child: Column(
         spacing: AppSpacing.sm,
         children: [
-          for (final goal in _WeightGoal.values)
+          for (final goal in _weightGoals)
             AppSelectionTile(
               icon: _goalIcon(goal),
               label: _goalLabel(goal),
@@ -415,7 +422,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     return FormField<DateTime>(
       initialValue: _targetDate,
       validator: (value) =>
-          value == null || !value.isAfter(DateUtils.dateOnly(DateTime.now()))
+          value != null && !value.isAfter(DateUtils.dateOnly(DateTime.now()))
           ? strings.profileFutureDate
           : null,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -562,16 +569,18 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     ),
   ];
 
-  String _goalLabel(_WeightGoal goal) => switch (goal) {
-    _WeightGoal.gain => _strings.profileGain,
-    _WeightGoal.lose => _strings.profileLose,
-    _WeightGoal.maintain => _strings.profileMaintain,
+  String _goalLabel(GoalType goal) => switch (goal) {
+    GoalType.gain => _strings.profileGain,
+    GoalType.lose => _strings.profileLose,
+    GoalType.maintain => _strings.profileMaintain,
+    GoalType.logOnly => _strings.logMeal,
   };
 
-  String _goalIcon(_WeightGoal goal) => switch (goal) {
-    _WeightGoal.gain => 'ph-plant',
-    _WeightGoal.lose => 'ph-leaf',
-    _WeightGoal.maintain => 'ph-scales',
+  String _goalIcon(GoalType goal) => switch (goal) {
+    GoalType.gain => 'ph-plant',
+    GoalType.lose => 'ph-leaf',
+    GoalType.maintain => 'ph-scales',
+    GoalType.logOnly => 'ph-bowl-food',
   };
 
   String _formatDate(DateTime date) =>
@@ -589,10 +598,10 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     final target = _positiveNumber(value);
     final current = _positiveNumber(_weight.text)!;
     if (target == null) return _strings.profileInvalidNumber;
-    if (_goal == _WeightGoal.lose && target >= current) {
+    if (_goal == GoalType.lose && target >= current) {
       return _strings.profileLowerTarget;
     }
-    if (_goal == _WeightGoal.gain && target <= current) {
+    if (_goal == GoalType.gain && target <= current) {
       return _strings.profileHigherTarget;
     }
     return null;
@@ -626,7 +635,10 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
 
   Future<void> _review() async {
     final strings = _strings;
-    setState(() => _reviewing = true);
+    setState(() {
+      _reviewing = true;
+      _saveFailed = false;
+    });
     try {
       final proceed = await showDialog<bool>(
         context: context,
@@ -653,9 +665,10 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 Text(
                   '${strings.profileTargetWeight} · ${_target.text.trim()} kg',
                 ),
-                Text(
-                  '${strings.profileTargetDate} · ${_formatDate(_targetDate!)}',
-                ),
+                if (_targetDate != null)
+                  Text(
+                    '${strings.profileTargetDate} · ${_formatDate(_targetDate!)}',
+                  ),
               ],
               Text(_activityOptions[_activity!].$2),
               Text(strings.profileReviewNotice, style: AppTypography.caption),
@@ -674,10 +687,29 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
         ),
       );
       if (!mounted || proceed != true) return;
-      await ref.read(onboardingControllerProvider.notifier).complete();
-      if (mounted &&
-          ref.read(onboardingControllerProvider).value?.completed == true) {
+      final now = DateTime.now();
+      final profile = Profile(
+        ageYears: int.parse(_age.text.trim()),
+        heightCm: _positiveNumber(_height.text)!,
+        sex: ProfileSex.values[_sex!],
+        activityLevel: ActivityLevel.values[_activity!],
+        goal: Goal(
+          type: _goal!,
+          currentWeight: _positiveNumber(_weight.text),
+          targetWeight: _maintaining ? null : _positiveNumber(_target.text),
+          targetDate: _maintaining ? null : _targetDate,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      final saved = await ref
+          .read(profileSetupControllerProvider)
+          .save(profile);
+      if (!mounted) return;
+      if (saved) {
         context.go('/today');
+      } else {
+        setState(() => _saveFailed = true);
       }
     } finally {
       if (mounted) setState(() => _reviewing = false);

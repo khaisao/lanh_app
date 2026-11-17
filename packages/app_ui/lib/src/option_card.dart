@@ -9,6 +9,7 @@ class AppOptionCard extends StatefulWidget {
     required this.description,
     this.onPressed,
     this.selected = false,
+    this.primary = false,
     this.caretSize = AppSizes.iconSm,
   });
 
@@ -17,6 +18,7 @@ class AppOptionCard extends StatefulWidget {
   final String description;
   final VoidCallback? onPressed;
   final bool selected;
+  final bool primary;
   final double caretSize;
 
   @override
@@ -29,9 +31,17 @@ class _AppOptionCardState extends State<AppOptionCard> {
   @override
   Widget build(BuildContext context) {
     const radius = BorderRadius.all(Radius.circular(AppRadii.cardSquircle));
+    final foreground = widget.primary
+        ? AppColors.primaryForeground
+        : AppColors.foreground;
+    final mutedForeground = widget.primary
+        ? AppColors.primaryForeground.withValues(alpha: 0.8)
+        : AppColors.mutedForeground;
     final shape = RoundedSuperellipseBorder(
       borderRadius: radius,
-      side: widget.selected
+      side: widget.primary
+          ? BorderSide.none
+          : widget.selected
           ? const BorderSide(
               color: AppColors.primary,
               width: AppBorders.selected,
@@ -46,7 +56,11 @@ class _AppOptionCardState extends State<AppOptionCard> {
         scale: _pressed ? AppScales.pressedCard : 1,
         duration: AppMotion.duration(context),
         child: Material(
-          color: widget.selected ? AppColors.secondary : AppColors.card,
+          color: widget.primary
+              ? AppColors.primary
+              : widget.selected
+              ? AppColors.secondary
+              : AppColors.card,
           shape: shape,
           clipBehavior: Clip.antiAlias,
           child: InkWell(
@@ -62,7 +76,11 @@ class _AppOptionCardState extends State<AppOptionCard> {
                     dimension: AppSizes.choiceIcon,
                     child: DecoratedBox(
                       decoration: ShapeDecoration(
-                        color: widget.selected
+                        color: widget.primary
+                            ? AppColors.primaryForeground.withValues(
+                                alpha: 0.15,
+                              )
+                            : widget.selected
                             ? AppColors.card
                             : AppColors.secondary,
                         shape: const RoundedSuperellipseBorder(
@@ -74,7 +92,9 @@ class _AppOptionCardState extends State<AppOptionCard> {
                       child: Center(
                         child: AppIcon.asset(
                           widget.icon,
-                          color: AppColors.primary,
+                          color: widget.primary
+                              ? foreground
+                              : AppColors.primary,
                         ),
                       ),
                     ),
@@ -84,10 +104,17 @@ class _AppOptionCardState extends State<AppOptionCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.title, style: AppTypography.cardTitle),
+                        Text(
+                          widget.title,
+                          style: AppTypography.cardTitle.copyWith(
+                            color: foreground,
+                          ),
+                        ),
                         Text(
                           widget.description,
-                          style: AppTypography.optionDescription,
+                          style: AppTypography.optionDescription.copyWith(
+                            color: mutedForeground,
+                          ),
                         ),
                       ],
                     ),
@@ -96,7 +123,7 @@ class _AppOptionCardState extends State<AppOptionCard> {
                   AppIcon.asset(
                     'ph-caret-right',
                     size: widget.caretSize,
-                    color: AppColors.mutedForeground,
+                    color: mutedForeground,
                   ),
                 ],
               ),
