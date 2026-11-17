@@ -6,5 +6,8 @@ part 'src/bottom_bar.dart';
 part 'src/empty_state.dart';
 part 'src/icon.dart';
 part 'src/option_card.dart';
+part 'src/selection_tile.dart';
+part 'src/squircle_border.dart';
+part 'src/mascot.dart';
 part 'src/theme.dart';
 part 'src/tokens.dart';

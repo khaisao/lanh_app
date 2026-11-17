@@ -10,6 +10,7 @@ abstract final class AppColors {
   static const muted = Color(0xFFEFE8D9);
   static const mutedForeground = Color(0xFF6B5D4F);
   static const accent = Color(0xFFF2C4A8);
+  static const welcomeHalo = Color(0x66F2C4A8);
   static const accentForeground = Color(0xFF4A2E1F);
   static const destructive = Color(0xFF8A4B2E);
   static const card = Color(0xFFFFFDF7);
@@ -32,9 +33,12 @@ abstract final class AppSpacing {
   static const lg = 24.0;
   static const xl = 32.0;
   static const xxl = 48.0;
+  static const stepGap = 6.0;
+  static const denseGap = 10.0;
+  static const denseVertical = 14.0;
   static const pageHorizontal = 24.0;
   static const pageTop = 40.0;
-  static const onboardingTop = 48.0;
+  static const onboardingTop = 56.0;
   static const onboardingBottom = 40.0;
   static const card = 20.0;
   static const navInset = 16.0;
@@ -56,15 +60,21 @@ abstract final class AppRadii {
   static const xl = 32.0;
   static const pill = 999.0;
   static const cardSquircle = lg;
+  // The export multiplies rounded-xl (20) and rounded-2xl (24) by 2.5.
+  static const exportCompactSquircle = 50.0;
+  static const exportCardSquircle = 60.0;
 }
 
 abstract final class AppSizes {
+  static const iconInfo = 14.0;
   static const iconXs = 16.0;
   static const iconSm = 18.0;
   static const iconMd = 20.0;
   static const iconLg = 24.0;
   static const iconXl = 28.0;
   static const hero = 224.0;
+  static const welcomeOuterHalo = 288.0;
+  static const welcomeInnerHalo = 208.0;
   static const avatar = 40.0;
   static const avatarLarge = 56.0;
   static const choiceIcon = 48.0;
@@ -78,6 +88,9 @@ abstract final class AppSizes {
   static const backAction = 44.0;
   static const weekInput = 44.0;
   static const summaryImage = 80.0;
+  static const setupMascot = 128.0;
+  static const setupMascotHalo = 144.0;
+  static const setupBadgeMax = 112.0;
 }
 
 abstract final class AppBorders {
@@ -140,6 +153,15 @@ abstract final class AppTypography {
     fontWeight: FontWeight.w700,
     height: 1.2,
   );
+  static final welcomeHeadline = display.copyWith(
+    height: 1.25,
+    leadingDistribution: TextLeadingDistribution.even,
+  );
+  static final welcomeWordmark = display.copyWith(
+    fontSize: 16,
+    height: 1.5,
+    leadingDistribution: TextLeadingDistribution.even,
+  );
   static const title = TextStyle(
     fontFamily: AppFonts.heading,
     color: AppColors.foreground,
@@ -186,6 +208,9 @@ abstract final class AppTypography {
     fontSize: 14,
     letterSpacing: 0,
     height: 1.625,
+  );
+  static final welcomeBody = bodySmall.copyWith(
+    leadingDistribution: TextLeadingDistribution.even,
   );
   static const label = TextStyle(
     fontFamily: AppFonts.body,
@@ -240,7 +265,22 @@ abstract final class AppTypography {
     fontWeight: FontWeight.w600,
     height: 1.5,
   );
+  static const welcomeAction = TextStyle(
+    leadingDistribution: TextLeadingDistribution.even,
+  );
   static const cardSubtitle = caption;
+  static final setupHeading = screenTitle.copyWith(height: 1.25);
+  static final setupCaption = bodySmall.copyWith(height: 20 / 14);
+  static final setupFieldLabel = caption.copyWith(
+    fontWeight: FontWeight.w500,
+    height: 2,
+  );
+  static final setupNumber = title.copyWith(
+    fontFeatures: const [FontFeature.tabularFigures()],
+  );
+  static final setupTargetNumber = screenTitle.copyWith(
+    fontFeatures: const [FontFeature.tabularFigures()],
+  );
   static const optionDescription = TextStyle(
     fontFamily: AppFonts.body,
     color: AppColors.mutedForeground,
