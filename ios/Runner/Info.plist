@@ -31,6 +31,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Lành dùng camera để bạn chụp ảnh bữa ăn.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Lành mở thư viện để bạn chọn ảnh bữa ăn.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

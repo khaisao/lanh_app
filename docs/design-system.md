@@ -23,6 +23,8 @@ Use `AppFonts.body` for interface copy, `AppFonts.heading` for headings, `AppFon
 
 ## Components
 
+`AppBackground` displays the cream base, gradient, and three blurred color accents from the `TodayGradientMầmXanh` HTML design as [one bundled JPEG](../packages/app_ui/assets/backgrounds/lanh-gradient.jpg). The app preloads the image before showing its first Flutter frame. Each page route owns an `AppBackground`, so its surface covers earlier pages throughout native transitions. The decoded image is reused through Flutter's image cache. Page scaffolds can stay transparent inside that route surface. Cards, dialogs, and bottom sheets use their own surface tokens.
+
 Use `AppButton` for primary and secondary actions, `AppOptionCard` for the icon, label, description, and caret pattern from `goal-onboarding.html` and `meal-logging-method-picker.html`, `AppEmptyState` for empty screens, and `AppTheme.light()` for the app theme. New shared primitives belong in `packages/app_ui/lib/src` and must be exported through the package barrel.
 
 Feature screens consume semantic roles from `AppTypography` and aliases from `AppFonts`. Define additional export treatments in `AppTypography`. Keep component state, loading, error, disabled, and pressed styling in the shared component when the pattern repeats.
@@ -33,7 +35,13 @@ The package is presentation-only. Feature modules keep their own domain contract
 
 ## Assets
 
+`AppButton.surface` follows the translucent card action in `photo-meal-flow.html`. It supplies the card fill, border, foreground text and standard action height for the camera introduction.
+
+`AppMediaOverlay` applies the foreground scrim from `camera-preview.html` and `photo-preview.html` above a live feed or photo. `AppMediaGlass` supplies the blur and border for controls on those surfaces. The camera badge and shutter sizes use tokens from `photo-meal-flow.html` and `camera-preview.html`. Media control buttons keep at least a 56 dp touch target. The caret and gallery icons use the Phosphor icons named in the HTML.
+
 All exported icons and images are copied into `assets/design/icons` and `assets/design/images`. Use the original file names and explicit dimensions. Do not replace an exported icon with a platform icon when an exported asset exists.
+
+The camera switch uses `ph-camera-rotate.svg`, the regular Phosphor `ph:camera-rotate` named by the supplied CameraPreview HTML, obtained from the [Phosphor source](https://github.com/phosphor-icons/core/blob/main/assets/regular/camera-rotate.svg). It uses the existing media glass control and icon size tokens.
 
 ## Accessibility and behavior
 

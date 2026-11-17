@@ -48,7 +48,6 @@ class AchievementsScreen extends StatelessWidget {
     ];
     return Scaffold(
       key: const Key('achievements-screen'),
-      backgroundColor: AppColors.background,
       body: AppPageList(
         children: [
           Text(strings.achievements, style: AppTypography.screenTitle),

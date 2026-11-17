@@ -1,30 +1,45 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-Future<void> showMealMethodSheet(BuildContext context) =>
-    showModalBottomSheet<void>(
-      context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: AppColors.card,
-      barrierColor: AppColors.modalBarrier,
-      constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(color: AppColors.border),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.xl)),
+import 'meal_photo_flow.dart';
+
+Future<void> showMealMethodSheet(BuildContext context) async {
+  final shouldOpenCamera = await showModalBottomSheet<bool>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    useSafeArea: true,
+    backgroundColor: AppColors.card,
+    barrierColor: AppColors.modalBarrier,
+    constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
+    shape: const RoundedRectangleBorder(
+      side: BorderSide(color: AppColors.border),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.xl)),
+    ),
+    sheetAnimationStyle: AnimationStyle(
+      duration: AppMotion.duration(context),
+      reverseDuration: AppMotion.duration(context),
+    ),
+    builder: (sheetContext) => SafeArea(
+      top: false,
+      child: MealMethodSheet(
+        onCamera: () =>
+            Navigator.of(sheetContext, rootNavigator: true).pop(true),
       ),
-      sheetAnimationStyle: AnimationStyle(
-        duration: AppMotion.duration(context),
-        reverseDuration: AppMotion.duration(context),
-      ),
-      builder: (context) =>
-          const SafeArea(top: false, child: MealMethodSheet()),
-    );
+    ),
+  );
+  if (shouldOpenCamera == true && context.mounted) {
+    await showMealPhotoFlow(context);
+  }
+}
 
 class MealMethodSheet extends StatelessWidget {
-  const MealMethodSheet({super.key});
+  const MealMethodSheet({super.key, required this.onCamera});
+
+  final VoidCallback onCamera;
 
   @override
   Widget build(BuildContext context) {
@@ -96,11 +111,13 @@ class MealMethodSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             AppOptionCard(
+              key: const Key('meal-method-camera'),
               primary: true,
               caretSize: AppSizes.iconMd,
               icon: 'ph-camera-fill',
               title: strings.camera,
               description: strings.mealPhotoDescription,
+              onPressed: onCamera,
             ),
             const SizedBox(height: AppSpacing.sm),
             AppOptionCard(

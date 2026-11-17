@@ -10,6 +10,16 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get mealPhotoSwitchCamera => 'Switch front or rear camera';
+
+  @override
+  String get mealPhotoSwitching => 'Switching camera…';
+
+  @override
+  String get mealPhotoSwitchError =>
+      'Could not switch cameras. Please try again.';
+
+  @override
   String get appTitle => 'Lành';
 
   @override
@@ -89,7 +99,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mealMethodSubtitle => 'Choose how to start';
 
   @override
-  String get mealPhotoDescription => 'Lành estimates the food in your photo';
+  String get mealPhotoDescription => 'Take or choose a meal photo';
 
   @override
   String get mealVoice => 'Log by voice';
@@ -116,7 +126,83 @@ class AppLocalizationsEn extends AppLocalizations {
   String get templates => 'Saved meals';
 
   @override
-  String get mealMethodsNotice => 'Photo and voice logging · Coming soon';
+  String get mealMethodsNotice => 'Voice logging · Coming soon';
+
+  @override
+  String get mealPhotoBack => 'Back';
+
+  @override
+  String get mealPhotoPermissionTitle => 'Allow Lành to use your camera?';
+
+  @override
+  String get mealPhotoPermissionBody =>
+      'Lành uses the camera to take a meal photo. You can also choose a photo from your library.';
+
+  @override
+  String get mealPhotoPermissionDenied =>
+      'Camera access was declined. You can try again or choose a photo from your library.';
+
+  @override
+  String get mealPhotoPermissionBlocked =>
+      'Camera access is turned off for Lành. You can enable it in Settings or choose a photo from your library.';
+
+  @override
+  String get mealPhotoPermissionRestricted =>
+      'Your device restricts camera access. You can still choose a photo from your library.';
+
+  @override
+  String get mealPhotoCameraUnavailable =>
+      'Lành couldn’t open the camera. Try again or choose a photo from your library.';
+
+  @override
+  String get mealPhotoAllowCamera => 'Allow camera';
+
+  @override
+  String get mealPhotoOpenSettings => 'Open Settings';
+
+  @override
+  String get mealPhotoChoose => 'Choose from photo library';
+
+  @override
+  String get mealPhotoCameraLoading => 'Opening camera';
+
+  @override
+  String get mealPhotoReviewLabel => 'Meal photo preview';
+
+  @override
+  String get mealPhotoEstimate => 'Estimate meal';
+
+  @override
+  String get mealPhotoEstimateUnavailable =>
+      'Meal estimation is not available yet.';
+
+  @override
+  String get mealPhotoRetake => 'Retake photo';
+
+  @override
+  String get mealPhotoReplace => 'Choose another photo';
+
+  @override
+  String get mealPhotoPickError =>
+      'Lành couldn’t open this photo. Choose another photo.';
+
+  @override
+  String get mealPhotoCaptureError =>
+      'Lành couldn’t take the photo. Please try again.';
+
+  @override
+  String get mealPhotoCaptureTimeout =>
+      'The camera did not return a photo. Try again or choose a photo from your library.';
+
+  @override
+  String get mealPhotoCapturing => 'Taking photo…';
+
+  @override
+  String get mealPhotoLoading => 'Opening photo…';
+
+  @override
+  String get mealPhotoSettingsError =>
+      'Lành couldn’t open Settings. You can open Settings on your device.';
 
   @override
   String get about => 'About Lành';

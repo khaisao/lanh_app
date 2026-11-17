@@ -62,7 +62,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       },
       child: Scaffold(
         key: ValueKey('profile-setup-${_step.name}'),
-        backgroundColor: AppColors.background,
         body: SafeArea(
           bottom: false,
           minimum: const EdgeInsets.only(top: AppSpacing.onboardingTop),
@@ -125,7 +124,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
             width: AppSizes.contentMax,
             child: DecoratedBox(
               decoration: const BoxDecoration(
-                color: AppColors.background,
                 border: Border(top: BorderSide(color: AppColors.border)),
               ),
               child: SafeArea(

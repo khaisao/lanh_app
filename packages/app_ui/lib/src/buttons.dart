@@ -1,5 +1,7 @@
 part of '../app_ui.dart';
 
+enum _AppButtonKind { primary, secondary, surface }
+
 class AppButton extends StatefulWidget {
   const AppButton({
     super.key,
@@ -7,17 +9,26 @@ class AppButton extends StatefulWidget {
     required this.child,
     this.roundedRectangle = false,
     this.animatePress = false,
-  }) : _secondary = false;
+  }) : _kind = _AppButtonKind.primary;
   const AppButton.secondary({
     super.key,
     required this.onPressed,
     required this.child,
-  }) : _secondary = true,
+  }) : _kind = _AppButtonKind.secondary,
+       roundedRectangle = false,
+       animatePress = false;
+
+  /// The translucent card action in photo-meal-flow.html.
+  const AppButton.surface({
+    super.key,
+    required this.onPressed,
+    required this.child,
+  }) : _kind = _AppButtonKind.surface,
        roundedRectangle = false,
        animatePress = false;
   final VoidCallback? onPressed;
   final Widget child;
-  final bool _secondary;
+  final _AppButtonKind _kind;
   final bool roundedRectangle;
   final bool animatePress;
 
@@ -37,16 +48,29 @@ class _AppButtonState extends State<AppButton> {
       onPressed: widget.onPressed,
       style: ButtonStyle(
         minimumSize: const WidgetStatePropertyAll(Size(0, AppSizes.action)),
-        backgroundColor: WidgetStateProperty.resolveWith(
-          (states) => widget._secondary || states.contains(WidgetState.disabled)
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (widget._kind == _AppButtonKind.surface) {
+            return AppColors.card.withValues(alpha: 0.6);
+          }
+          return widget._kind == _AppButtonKind.secondary ||
+                  states.contains(WidgetState.disabled)
               ? AppColors.secondary
-              : AppColors.primary,
-        ),
-        foregroundColor: WidgetStateProperty.resolveWith(
-          (states) => widget._secondary || states.contains(WidgetState.disabled)
+              : AppColors.primary;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (widget._kind == _AppButtonKind.surface) {
+            return AppColors.foreground;
+          }
+          return widget._kind == _AppButtonKind.secondary ||
+                  states.contains(WidgetState.disabled)
               ? AppColors.secondaryForeground
-              : AppColors.primaryForeground,
-        ),
+              : AppColors.primaryForeground;
+        }),
+        side: widget._kind == _AppButtonKind.surface
+            ? WidgetStatePropertyAll(
+                BorderSide(color: AppColors.card.withValues(alpha: 0.8)),
+              )
+            : null,
         textStyle: const WidgetStatePropertyAll(AppTypography.cardTitle),
         shape: WidgetStatePropertyAll(
           widget.roundedRectangle

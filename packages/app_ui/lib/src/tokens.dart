@@ -97,6 +97,13 @@ abstract final class AppSizes {
   static const setupMascot = 128.0;
   static const setupMascotHalo = 144.0;
   static const setupBadgeMax = 112.0;
+  static const photoPermissionBadge = 112.0;
+  static const photoPermissionIcon = 44.0;
+  static const photoShutter = 80.0;
+  static const photoShutterStroke = 3.0;
+  // CameraPreview export sizes. The surrounding action target remains 56 dp.
+  static const photoCloseControl = 44.0;
+  static const photoControl = 48.0;
 }
 
 abstract final class AppBorders {
@@ -293,6 +300,7 @@ abstract final class AppTypography {
     letterSpacing: 0,
     height: 20 / 14,
   );
+  static final photoPermissionBody = bodySmall.copyWith(fontSize: 15);
   static const error = TextStyle(
     fontFamily: AppFonts.body,
     color: AppColors.destructive,

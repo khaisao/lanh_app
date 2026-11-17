@@ -98,6 +98,24 @@ abstract class AppLocalizations {
     Locale('vi'),
   ];
 
+  /// No description provided for @mealPhotoSwitchCamera.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi sang camera trước hoặc sau'**
+  String get mealPhotoSwitchCamera;
+
+  /// No description provided for @mealPhotoSwitching.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang đổi camera…'**
+  String get mealPhotoSwitching;
+
+  /// No description provided for @mealPhotoSwitchError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đổi được camera. Vui lòng thử lại.'**
+  String get mealPhotoSwitchError;
+
   /// No description provided for @appTitle.
   ///
   /// In vi, this message translates to:
@@ -245,7 +263,7 @@ abstract class AppLocalizations {
   /// No description provided for @mealPhotoDescription.
   ///
   /// In vi, this message translates to:
-  /// **'Lành ước lượng món trong ảnh'**
+  /// **'Chụp hoặc chọn ảnh bữa ăn'**
   String get mealPhotoDescription;
 
   /// No description provided for @mealVoice.
@@ -299,8 +317,140 @@ abstract class AppLocalizations {
   /// No description provided for @mealMethodsNotice.
   ///
   /// In vi, this message translates to:
-  /// **'Chụp ảnh và ghi bằng giọng nói · Sắp có'**
+  /// **'Ghi bằng giọng nói · Sắp có'**
   String get mealMethodsNotice;
+
+  /// No description provided for @mealPhotoBack.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại'**
+  String get mealPhotoBack;
+
+  /// No description provided for @mealPhotoPermissionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho Lành dùng camera?'**
+  String get mealPhotoPermissionTitle;
+
+  /// No description provided for @mealPhotoPermissionBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành dùng camera để bạn chụp ảnh bữa ăn. Bạn cũng có thể chọn ảnh có sẵn trong thư viện.'**
+  String get mealPhotoPermissionBody;
+
+  /// No description provided for @mealPhotoPermissionDenied.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn chưa cấp quyền camera. Bạn có thể thử lại hoặc chọn ảnh từ thư viện.'**
+  String get mealPhotoPermissionDenied;
+
+  /// No description provided for @mealPhotoPermissionBlocked.
+  ///
+  /// In vi, this message translates to:
+  /// **'Camera đang bị tắt cho Lành. Bạn có thể cấp quyền trong Cài đặt hoặc chọn ảnh từ thư viện.'**
+  String get mealPhotoPermissionBlocked;
+
+  /// No description provided for @mealPhotoPermissionRestricted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiết bị đang hạn chế quyền camera. Bạn vẫn có thể chọn ảnh từ thư viện.'**
+  String get mealPhotoPermissionRestricted;
+
+  /// No description provided for @mealPhotoCameraUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa mở được camera. Bạn có thể thử lại hoặc chọn ảnh từ thư viện.'**
+  String get mealPhotoCameraUnavailable;
+
+  /// No description provided for @mealPhotoAllowCamera.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho phép camera'**
+  String get mealPhotoAllowCamera;
+
+  /// No description provided for @mealPhotoOpenSettings.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Cài đặt'**
+  String get mealPhotoOpenSettings;
+
+  /// No description provided for @mealPhotoChoose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh từ thư viện'**
+  String get mealPhotoChoose;
+
+  /// No description provided for @mealPhotoCameraLoading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang mở camera'**
+  String get mealPhotoCameraLoading;
+
+  /// No description provided for @mealPhotoReviewLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh bữa ăn đang xem lại'**
+  String get mealPhotoReviewLabel;
+
+  /// No description provided for @mealPhotoEstimate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước lượng bữa ăn'**
+  String get mealPhotoEstimate;
+
+  /// No description provided for @mealPhotoEstimateUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính năng ước lượng bữa ăn chưa khả dụng.'**
+  String get mealPhotoEstimateUnavailable;
+
+  /// No description provided for @mealPhotoRetake.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp lại'**
+  String get mealPhotoRetake;
+
+  /// No description provided for @mealPhotoReplace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh khác'**
+  String get mealPhotoReplace;
+
+  /// No description provided for @mealPhotoPickError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa mở được ảnh này. Vui lòng chọn ảnh khác.'**
+  String get mealPhotoPickError;
+
+  /// No description provided for @mealPhotoCaptureError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa chụp được ảnh. Vui lòng thử lại.'**
+  String get mealPhotoCaptureError;
+
+  /// No description provided for @mealPhotoCaptureTimeout.
+  ///
+  /// In vi, this message translates to:
+  /// **'Camera chưa trả ảnh. Bạn có thể thử lại hoặc chọn ảnh từ thư viện.'**
+  String get mealPhotoCaptureTimeout;
+
+  /// No description provided for @mealPhotoCapturing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chụp ảnh…'**
+  String get mealPhotoCapturing;
+
+  /// No description provided for @mealPhotoLoading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang mở ảnh…'**
+  String get mealPhotoLoading;
+
+  /// No description provided for @mealPhotoSettingsError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa mở được Cài đặt. Bạn có thể mở Cài đặt trên thiết bị.'**
+  String get mealPhotoSettingsError;
 
   /// No description provided for @about.
   ///

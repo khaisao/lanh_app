@@ -18,7 +18,6 @@ class TodayDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     key: const Key('today-screen'),
-    backgroundColor: AppColors.background,
     body: AppPageList(
       children: [
         Row(

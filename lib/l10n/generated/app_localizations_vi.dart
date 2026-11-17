@@ -10,6 +10,15 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
+  String get mealPhotoSwitchCamera => 'Đổi sang camera trước hoặc sau';
+
+  @override
+  String get mealPhotoSwitching => 'Đang đổi camera…';
+
+  @override
+  String get mealPhotoSwitchError => 'Chưa đổi được camera. Vui lòng thử lại.';
+
+  @override
   String get appTitle => 'Lành';
 
   @override
@@ -89,7 +98,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mealMethodSubtitle => 'Chọn cách bắt đầu';
 
   @override
-  String get mealPhotoDescription => 'Lành ước lượng món trong ảnh';
+  String get mealPhotoDescription => 'Chụp hoặc chọn ảnh bữa ăn';
 
   @override
   String get mealVoice => 'Ghi bằng giọng nói';
@@ -116,7 +125,83 @@ class AppLocalizationsVi extends AppLocalizations {
   String get templates => 'Bữa quen';
 
   @override
-  String get mealMethodsNotice => 'Chụp ảnh và ghi bằng giọng nói · Sắp có';
+  String get mealMethodsNotice => 'Ghi bằng giọng nói · Sắp có';
+
+  @override
+  String get mealPhotoBack => 'Quay lại';
+
+  @override
+  String get mealPhotoPermissionTitle => 'Cho Lành dùng camera?';
+
+  @override
+  String get mealPhotoPermissionBody =>
+      'Lành dùng camera để bạn chụp ảnh bữa ăn. Bạn cũng có thể chọn ảnh có sẵn trong thư viện.';
+
+  @override
+  String get mealPhotoPermissionDenied =>
+      'Bạn chưa cấp quyền camera. Bạn có thể thử lại hoặc chọn ảnh từ thư viện.';
+
+  @override
+  String get mealPhotoPermissionBlocked =>
+      'Camera đang bị tắt cho Lành. Bạn có thể cấp quyền trong Cài đặt hoặc chọn ảnh từ thư viện.';
+
+  @override
+  String get mealPhotoPermissionRestricted =>
+      'Thiết bị đang hạn chế quyền camera. Bạn vẫn có thể chọn ảnh từ thư viện.';
+
+  @override
+  String get mealPhotoCameraUnavailable =>
+      'Lành chưa mở được camera. Bạn có thể thử lại hoặc chọn ảnh từ thư viện.';
+
+  @override
+  String get mealPhotoAllowCamera => 'Cho phép camera';
+
+  @override
+  String get mealPhotoOpenSettings => 'Mở Cài đặt';
+
+  @override
+  String get mealPhotoChoose => 'Chọn ảnh từ thư viện';
+
+  @override
+  String get mealPhotoCameraLoading => 'Đang mở camera';
+
+  @override
+  String get mealPhotoReviewLabel => 'Ảnh bữa ăn đang xem lại';
+
+  @override
+  String get mealPhotoEstimate => 'Ước lượng bữa ăn';
+
+  @override
+  String get mealPhotoEstimateUnavailable =>
+      'Tính năng ước lượng bữa ăn chưa khả dụng.';
+
+  @override
+  String get mealPhotoRetake => 'Chụp lại';
+
+  @override
+  String get mealPhotoReplace => 'Chọn ảnh khác';
+
+  @override
+  String get mealPhotoPickError =>
+      'Lành chưa mở được ảnh này. Vui lòng chọn ảnh khác.';
+
+  @override
+  String get mealPhotoCaptureError =>
+      'Lành chưa chụp được ảnh. Vui lòng thử lại.';
+
+  @override
+  String get mealPhotoCaptureTimeout =>
+      'Camera chưa trả ảnh. Bạn có thể thử lại hoặc chọn ảnh từ thư viện.';
+
+  @override
+  String get mealPhotoCapturing => 'Đang chụp ảnh…';
+
+  @override
+  String get mealPhotoLoading => 'Đang mở ảnh…';
+
+  @override
+  String get mealPhotoSettingsError =>
+      'Lành chưa mở được Cài đặt. Bạn có thể mở Cài đặt trên thiết bị.';
 
   @override
   String get about => 'Về Lành';

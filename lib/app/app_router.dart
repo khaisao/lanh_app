@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lanh_app/app/app_shell.dart';
@@ -43,16 +44,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/startup',
-        builder: (context, state) => const StartupScreen(),
+        builder: (context, state) =>
+            const AppBackground(child: StartupScreen()),
       ),
       GoRoute(
         path: '/welcome',
-        builder: (context, state) => const WelcomeScreen(),
+        builder: (context, state) =>
+            const AppBackground(child: WelcomeScreen()),
       ),
       GoRoute(path: '/goal', redirect: (_, _) => '/profile-setup'),
       GoRoute(
         path: '/profile-setup',
-        builder: (context, state) => const ProfileSetupScreen(),
+        builder: (context, state) =>
+            const AppBackground(child: ProfileSetupScreen()),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) =>
@@ -62,7 +66,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/today',
-                builder: (context, state) => const TodayScreen(),
+                builder: (context, state) =>
+                    const AppBackground(child: TodayScreen()),
               ),
             ],
           ),
@@ -70,7 +75,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/progress',
-                builder: (context, state) => const ProgressScreen(),
+                builder: (context, state) =>
+                    const AppBackground(child: ProgressScreen()),
               ),
             ],
           ),
@@ -78,7 +84,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/achievements',
-                builder: (context, state) => const AchievementsScreen(),
+                builder: (context, state) =>
+                    const AppBackground(child: AchievementsScreen()),
               ),
             ],
           ),
@@ -86,11 +93,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/menu',
-                builder: (context, state) => const MenuScreen(),
+                builder: (context, state) =>
+                    const AppBackground(child: MenuScreen()),
                 routes: [
                   GoRoute(
                     path: 'about',
-                    builder: (context, state) => const AboutScreen(),
+                    builder: (context, state) =>
+                        const AppBackground(child: AboutScreen()),
                   ),
                 ],
               ),
@@ -101,12 +110,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     ],
     errorBuilder: (context, state) {
       final strings = AppLocalizations.of(context);
-      return Scaffold(
-        appBar: AppBar(title: Text(strings.notFound)),
-        body: Center(
-          child: FilledButton(
-            onPressed: () => context.go('/today'),
-            child: Text(strings.backToToday),
+      return AppBackground(
+        child: Scaffold(
+          appBar: AppBar(
+            forceMaterialTransparency: true,
+            title: Text(strings.notFound),
+          ),
+          body: Center(
+            child: FilledButton(
+              onPressed: () => context.go('/today'),
+              child: Text(strings.backToToday),
+            ),
           ),
         ),
       );

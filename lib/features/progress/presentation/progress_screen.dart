@@ -15,7 +15,6 @@ class ProgressScreen extends ConsumerWidget {
     final goal = ref.watch(profileGoalProvider).value;
     return Scaffold(
       key: const Key('progress-screen'),
-      backgroundColor: AppColors.background,
       body: AppPageList(
         children: [
           Text(strings.progress, style: AppTypography.screenTitle),

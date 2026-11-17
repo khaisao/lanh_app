@@ -16,7 +16,6 @@ class MenuScreen extends ConsumerWidget {
     final goalName = goal == null ? 'Chưa đặt mục tiêu' : _goalName(goal.type);
     return Scaffold(
       key: const Key('menu-screen'),
-      backgroundColor: AppColors.background,
       body: AppPageList(
         children: [
           Row(
@@ -222,7 +221,6 @@ class AboutScreen extends StatelessWidget {
     final strings = AppLocalizations.of(context);
     return Scaffold(
       key: const Key('about-screen'),
-      backgroundColor: AppColors.background,
       body: AppPageList(
         children: [
           Align(

@@ -13,7 +13,6 @@ class WelcomeScreen extends ConsumerWidget {
     final strings = AppLocalizations.of(context);
     final status = ref.watch(onboardingControllerProvider).value;
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(

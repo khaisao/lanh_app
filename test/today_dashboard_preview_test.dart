@@ -68,6 +68,7 @@ void main() {
           MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light(),
+            builder: (context, child) => AppBackground(child: child!),
             locale: const Locale('vi'),
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: const [

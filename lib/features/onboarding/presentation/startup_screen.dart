@@ -11,7 +11,6 @@ class StartupScreen extends ConsumerWidget {
     final strings = AppLocalizations.of(context);
     final failed = ref.watch(onboardingControllerProvider).hasError;
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Center(
           child: Padding(

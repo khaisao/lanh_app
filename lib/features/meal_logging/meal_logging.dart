@@ -2,3 +2,4 @@
 library;
 
 export 'presentation/meal_method_sheet.dart' show showMealMethodSheet;
+export 'presentation/meal_photo_flow.dart' show restoreMealPhotoFlow;

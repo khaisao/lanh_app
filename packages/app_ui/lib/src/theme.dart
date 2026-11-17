@@ -4,7 +4,7 @@ abstract final class AppTheme {
   static ThemeData light() => ThemeData(
     useMaterial3: true,
     fontFamily: AppFonts.body,
-    scaffoldBackgroundColor: AppColors.background,
+    scaffoldBackgroundColor: Colors.transparent,
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       onPrimary: AppColors.primaryForeground,

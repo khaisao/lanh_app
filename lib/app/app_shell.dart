@@ -26,6 +26,33 @@ class _AppShellState extends State<AppShell> {
 
   bool _barVisible = true;
   double _dragDistance = 0;
+  late final AppLifecycleListener _photoRecoveryLifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    _photoRecoveryLifecycle = AppLifecycleListener(
+      onResume: _restorePendingPhoto,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _restorePendingPhoto();
+    });
+  }
+
+  void _restorePendingPhoto() {
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    if (!mounted ||
+        (lifecycle != null && lifecycle != AppLifecycleState.resumed)) {
+      return;
+    }
+    unawaited(restoreMealPhotoFlow(context));
+  }
+
+  @override
+  void dispose() {
+    _photoRecoveryLifecycle.dispose();
+    super.dispose();
+  }
 
   @override
   void didUpdateWidget(AppShell oldWidget) {
