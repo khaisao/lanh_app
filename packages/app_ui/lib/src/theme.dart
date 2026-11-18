@@ -48,6 +48,14 @@ abstract final class AppTheme {
 }
 
 abstract final class AppMotion {
+  static const estimationOrbit = Duration(seconds: 2);
+  static const estimationSpinner = Duration(seconds: 1);
+  // VoiceMealInput listening feedback.
+  static const voiceBlink = Duration(milliseconds: 900);
+  // Waveform ⇄ live-text morph and the waveform's entrance.
+  static const voiceReveal = Duration(milliseconds: 820);
+  static const voiceEnter = Duration(milliseconds: 520);
+  static const voiceGrow = Duration(milliseconds: 220);
   static const feedbackCurve = Curves.easeOutCubic;
   static const feedbackPress = Duration(milliseconds: 75);
   static const feedbackRelease = Duration(milliseconds: 150);

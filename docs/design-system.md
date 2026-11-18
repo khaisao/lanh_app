@@ -35,6 +35,10 @@ The package is presentation-only. Feature modules keep their own domain contract
 
 ## Assets
 
+`AppGlassSurface` and `AppGlassIconButton` follow the frosted MealReview export: card at 60% over a 20 sigma backdrop blur, a white 60% edge (`AppColors.glassEdge`) and the `AppShadows.glass*` shadows. Glass radii are `AppRadii.glassHero`, `glassPanel` and `glassItem`. Wrap a scrolling page with several glass surfaces in `BackdropGroup` so they share one backdrop pass. Icon buttons draw a 44 dp glass circle inside a 56 dp touch target.
+
+The MealReview icons `ph-stack-bold`, `ph-sparkle-fill`, `ph-egg-fill`, `ph-grains-fill`, `ph-drop-half-fill`, `ph-coffee-bold` and `ph-plus-circle` come from the Iconify Phosphor set named in that export.
+
 `AppButton.surface` follows the translucent card action in `photo-meal-flow.html`. It supplies the card fill, border, foreground text and standard action height for the camera introduction.
 
 `AppMediaOverlay` applies the foreground scrim from `camera-preview.html` and `photo-preview.html` above a live feed or photo. `AppMediaGlass` supplies the blur and border for controls on those surfaces. The camera badge and shutter sizes use tokens from `photo-meal-flow.html` and `camera-preview.html`. Media control buttons keep at least a 56 dp touch target. The caret and gallery icons use the Phosphor icons named in the HTML.

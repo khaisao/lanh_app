@@ -7,10 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lanh_app/app/app.dart';
 import 'package:lanh_app/features/goal/goal.dart';
+import 'package:lanh_app/features/meal_logging/domain/meal_analysis.dart';
 import 'package:lanh_app/features/meal_logging/domain/meal_photo_repository.dart';
+import 'package:lanh_app/features/meal_logging/meal_logging_providers.dart';
 import 'package:lanh_app/features/meal_logging/presentation/meal_camera.dart';
 import 'package:lanh_app/features/meal_logging/presentation/meal_photo_flow.dart';
 import 'package:lanh_app/features/meal_logging/presentation/meal_photo_image.dart';
@@ -19,6 +22,7 @@ import 'package:lanh_app/features/profile_setup/profile_setup_providers.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'support/test_goal_repository.dart';
+import 'support/test_meal_analysis_repository.dart';
 import 'support/test_onboarding_repository.dart';
 import 'support/test_profile_repository.dart';
 
@@ -26,6 +30,7 @@ const _cameraOption = Key('meal-method-camera');
 const _library = 'Chọn ảnh từ thư viện';
 const _allow = 'Cho phép camera';
 const _estimate = 'Ước lượng bữa ăn';
+late TestMealAnalysisRepository _analysis;
 final _photo = MealPhoto(
   File('assets/design/images/dzdAuAChai1.jpeg').readAsBytesSync(),
 );
@@ -99,19 +104,49 @@ void main() {
       await _tap(tester, shutter);
       expect(camera.captures, 1);
       expect(camera.closed, 1);
-      expect(find.text('Chụp lại'), findsOneWidget);
+      expect(find.byTooltip('Chụp lại'), findsOneWidget);
       expect(find.bySemanticsLabel('Ảnh bữa ăn đang xem lại'), findsOneWidget);
+      expect(find.byKey(const Key('meal-photo-preview')), findsOneWidget);
+      expect(find.text('Ảnh đã chụp'), findsOneWidget);
+      expect(find.text('Ảnh đã sẵn sàng'), findsOneWidget);
       if (captureDirectory != null && size.width == 390) {
         await _capture(tester, captureDirectory, 'review');
       }
 
-      await _tap(tester, find.text(_estimate));
-      expect(
-        find.text('Tính năng ước lượng bữa ăn chưa khả dụng.'),
-        findsOneWidget,
-      );
-      await _tap(tester, find.text('Đóng').last);
-      await _tap(tester, find.text('Chụp lại'));
+      final estimateButton = find.byKey(const Key('meal-photo-estimate'));
+      expect(tester.widget<AppButton>(estimateButton).onPressed, isNotNull);
+      await tester.ensureVisible(estimateButton);
+      await tester.tap(estimateButton);
+      await tester.pump();
+      expect(find.text('Lành đang ước lượng'), findsOneWidget);
+      expect(find.text('Nhận diện món trong ảnh'), findsOneWidget);
+      if (captureDirectory != null && size.width == 390) {
+        await _capture(tester, captureDirectory, 'estimating');
+      }
+      await _tap(tester, find.text('Hủy phân tích'));
+      await tester.pump(const Duration(seconds: 4));
+      expect(find.text(_estimate), findsOneWidget);
+      expect(find.bySemanticsLabel('Ảnh bữa ăn đang xem lại'), findsOneWidget);
+      await tester.ensureVisible(estimateButton);
+      await tester.tap(estimateButton);
+      await tester.pump();
+      _analysis.fail();
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(find.text('Chưa ước lượng được'), findsOneWidget);
+      if (captureDirectory != null && size.width == 390) {
+        await _capture(tester, captureDirectory, 'estimation-error');
+      }
+      if (captureDirectory != null && size.width == 430) {
+        await _capture(tester, captureDirectory, 'estimation-error-430');
+      }
+      await tester.tap(find.text('Thử lại'));
+      await tester.pump();
+      expect(find.text('Lành đang ước lượng'), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(_estimate), findsOneWidget);
+      await _tap(tester, find.byTooltip('Chụp lại'));
       expect(find.byKey(const Key('live-camera')), findsOneWidget);
       await _tap(tester, find.byTooltip('Đóng').first);
       expect(find.byKey(_cameraOption), findsNothing);
@@ -120,6 +155,110 @@ void main() {
       semantics.dispose();
     });
   }
+
+  for (final size in [
+    const Size(320, 700),
+    const Size(360, 800),
+    const Size(390, 844),
+    const Size(430, 932),
+  ]) {
+    testWidgets('shows the API estimate for review at ${size.width} dp', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = size;
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
+      final repository = _PhotoRepository()..recovered = _photo;
+      await _mount(tester, repository, _Camera());
+      await _startEstimate(tester);
+      expect(find.text('Lành đang ước lượng'), findsOneWidget);
+      _analysis.succeed();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Kiểm tra bữa ăn'), findsOneWidget);
+      expect(find.text('Cơm trắng và Gà và rau xào'), findsOneWidget);
+      expect(find.text('580 kcal', findRichText: true), findsWidgets);
+      expect(find.text('34 g', findRichText: true), findsOneWidget);
+      expect(find.text('180 g · 200 kcal'), findsOneWidget);
+      expect(find.text('Đạm 4 g'), findsOneWidget);
+      expect(find.text('Béo 0,4 g'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Đạm 34 g, tinh bột 56 g, chất béo 22 g'),
+        findsOneWidget,
+      );
+      final segments = find.byWidgetPredicate(
+        (widget) =>
+            widget is ColoredBox &&
+            (widget.color == AppColors.chartGold ||
+                widget.color == AppColors.chartPeach ||
+                widget.color == AppColors.chartBlue),
+      );
+      final segmentSizes = segments
+          .evaluate()
+          .map((element) => (element.renderObject! as RenderBox).size)
+          .toList();
+      expect(segmentSizes, hasLength(3));
+      expect(segmentSizes.every((size) => size.height == 10), isTrue);
+      // 34 g protein, 56 g carbs, 22.4 g fat keep their share of the bar.
+      expect(segmentSizes[1].width, greaterThan(segmentSizes[0].width));
+      expect(segmentSizes[0].width, greaterThan(segmentSizes[2].width));
+      final save = find.byKey(const Key('meal-analysis-save'));
+      expect(tester.widget<AppButton>(save).onPressed, isNull);
+      if (captureDirectory != null && size.width == 390) {
+        await _capture(tester, captureDirectory, 'analysis-result');
+      }
+
+      await _tap(tester, find.byKey(const Key('meal-portion-0.5')));
+      expect(
+        tester
+            .widget<Text>(find.byKey(const Key('meal-analysis-dock-total')))
+            .data,
+        '290 kcal',
+      );
+      expect(find.text('90 g · 100 kcal'), findsOneWidget);
+      expect(find.text('Đạm 2 g'), findsOneWidget);
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      if (captureDirectory != null && size.width == 390) {
+        await tester.drag(
+          find.byKey(const Key('meal-analysis-result')),
+          const Offset(0, -600),
+        );
+        await tester.pumpAndSettle();
+        await _capture(tester, captureDirectory, 'analysis-items');
+      }
+
+      await _tap(tester, find.byKey(const Key('meal-analysis-back')));
+      expect(find.text(_estimate), findsOneWidget);
+      await _startEstimate(tester);
+      expect(_analysis.requests.toSet(), hasLength(1));
+      _analysis.succeed();
+      await tester.pumpAndSettle();
+      await _tap(tester, find.byKey(const Key('meal-analysis-discard')));
+      expect(find.text('Kiểm tra bữa ăn'), findsNothing);
+      expect(find.byKey(const Key('nav-log-meal')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      semantics.dispose();
+    });
+  }
+
+  testWidgets('estimation errors explain the failure', (tester) async {
+    final repository = _PhotoRepository()..recovered = _photo;
+    await _mount(tester, repository, _Camera());
+    await _startEstimate(tester);
+    _analysis.fail(MealAnalysisFailureKind.network);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('chưa kết nối được máy chủ'), findsOneWidget);
+    await tester.ensureVisible(find.text('Thử lại'));
+    await tester.tap(find.text('Thử lại'));
+    await tester.pump();
+    _analysis.fail(MealAnalysisFailureKind.unavailable);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('đang bận'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   for (final platform in [TargetPlatform.android, TargetPlatform.iOS]) {
     testWidgets('large text remains usable on ${platform.name}', (
@@ -138,11 +277,86 @@ void main() {
       await _openFromHome(tester);
       repository.selected = _photo;
       await _tap(tester, find.text(_library));
-      await _tap(tester, find.text(_estimate));
-      await _tap(tester, find.text('Đóng').last);
-      await _tap(tester, find.byTooltip('Quay lại'));
+      await tester.ensureVisible(find.text(_estimate));
+      await tester.ensureVisible(find.byKey(const Key('meal-photo-estimate')));
+      await tester.tap(find.byKey(const Key('meal-photo-estimate')));
+      await tester.pump();
+      await tester.ensureVisible(find.text('Hủy phân tích'));
+      await tester.tap(find.text('Hủy phân tích'));
+      await tester.pumpAndSettle();
+      final estimateButton = find.byKey(const Key('meal-photo-estimate'));
+      await tester.ensureVisible(estimateButton);
+      await tester.tap(estimateButton);
+      await tester.pump();
+      _analysis.fail();
+      await tester.pump();
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Thử lại'));
+      expect(find.text('Thử lại').hitTestable(), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await _tap(tester, find.text('Quay lại'));
       expect(find.text(_allow), findsOneWidget);
       expect(tester.takeException(), isNull);
+    });
+  }
+
+  for (final locale in ['vi', 'en']) {
+    testWidgets('estimation supports $locale and reduced motion', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(320, 700);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
+      final english = locale == 'en';
+      final repository = _PhotoRepository()..recovered = _photo;
+      await _mount(tester, repository, _Camera(), locale: Locale(locale));
+      await _tap(tester, find.text(english ? 'Estimate meal' : _estimate));
+      expect(
+        find.text(english ? 'Lành is estimating' : 'Lành đang ước lượng'),
+        findsOneWidget,
+      );
+      final rotation = tester
+          .widget<RotationTransition>(
+            find.byKey(const Key('meal-estimation-orbit')),
+          )
+          .turns;
+      expect(rotation.value, 0);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(rotation.value, 0);
+      await tester.ensureVisible(
+        find.text(english ? 'Cancel analysis' : 'Hủy phân tích'),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      _analysis.fail();
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          english ? 'Couldn’t estimate this meal' : 'Chưa ước lượng được',
+        ),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.text(english ? 'Try again' : 'Thử lại'));
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      await _tap(tester, find.text(english ? 'Back' : 'Quay lại'));
+      expect(
+        find.bySemanticsLabel(
+          english ? 'Meal photo preview' : 'Ảnh bữa ăn đang xem lại',
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      semantics.dispose();
     });
   }
 
@@ -230,7 +444,7 @@ void main() {
       expect(repository.requests, 1);
       expect(find.text(_estimate), findsOneWidget);
       repository.selected = null;
-      await _tap(tester, find.text('Chọn ảnh khác'));
+      await _tap(tester, find.byTooltip('Chọn ảnh khác'));
       expect(find.text(_estimate), findsOneWidget);
 
       await tester.binding.handlePopRoute();
@@ -271,7 +485,7 @@ void main() {
     repository.selected = _photo;
     await _tap(tester, find.byTooltip(_library));
     expect(find.text(_estimate), findsOneWidget);
-    await _tap(tester, find.byTooltip('Quay lại'));
+    await _tap(tester, find.text('Quay lại'));
     expect(find.byKey(const Key('live-camera')), findsOneWidget);
   });
 
@@ -436,7 +650,7 @@ void main() {
     await _tap(tester, find.byTooltip('Chụp ảnh'));
     expect(front.captures, 1);
     expect(back.captures, 0);
-    expect(find.text('Chụp lại'), findsOneWidget);
+    expect(find.byTooltip('Chụp lại'), findsOneWidget);
   });
 
   testWidgets('single-lens devices keep capture without a switch control', (
@@ -450,7 +664,7 @@ void main() {
     await _openFromHome(tester);
     expect(find.byTooltip('Đổi sang camera trước hoặc sau'), findsNothing);
     await _tap(tester, find.byTooltip('Chụp ảnh'));
-    expect(find.text('Chụp lại'), findsOneWidget);
+    expect(find.byTooltip('Chụp lại'), findsOneWidget);
   });
 }
 
@@ -459,7 +673,9 @@ Future<void> _mount(
   _PhotoRepository repository,
   _Camera camera, {
   MealCameraFactory? factory,
+  Locale locale = const Locale('vi'),
 }) async {
+  _analysis = TestMealAnalysisRepository();
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -472,16 +688,43 @@ Future<void> _mount(
         mealCameraFactoryProvider.overrideWithValue(
           factory ?? (facing) async => camera,
         ),
+        mealAnalysisRepositoryProvider.overrideWithValue(_analysis),
       ],
-      child: const RepaintBoundary(
-        key: Key('photo-flow-capture'),
-        child: Application(),
+      child: RepaintBoundary(
+        key: const Key('photo-flow-capture'),
+        child: Application(locale: locale),
       ),
     ),
   );
-  await tester.runAsync(
-    () => prepareMealPhoto(tester.element(find.byType(Application)), _photo),
-  );
+  await tester.runAsync(() async {
+    final context = tester.element(find.byType(Application));
+    await prepareMealPhoto(context, _photo);
+    if (Platform.environment['LANH_PREVIEW_DIR'] == null) return;
+    await precacheImage(
+      const AssetImage('assets/design/images/welcome-broccoli.png'),
+      context,
+    );
+    for (final icon in [
+      'ph-caret-left-bold',
+      'ph-info-bold',
+      'ph-check-bold',
+      'ph-circle-notch-bold',
+      'ph-eye-slash-bold',
+      'ph-arrow-clockwise-bold',
+      'ph-arrow-left-bold',
+      'ph-x-bold',
+      'ph-stack-bold',
+      'ph-sparkle-fill',
+      'ph-egg-fill',
+      'ph-grains-fill',
+      'ph-drop-half-fill',
+      'ph-bowl-food',
+      'ph-plus-circle',
+      'ph-check-bold',
+    ]) {
+      await SvgAssetLoader('assets/design/icons/$icon.svg').loadBytes(context);
+    }
+  });
   await tester.pumpAndSettle();
 }
 
@@ -490,19 +733,35 @@ Future<void> _capture(
   String directory,
   String stage,
 ) async {
-  await tester.runAsync(() async {
-    final boundary = tester.renderObject<RenderRepaintBoundary>(
-      find.byKey(const Key('photo-flow-capture')),
-    );
-    final image = await boundary.toImage(pixelRatio: 2);
-    try {
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      await File('$directory/meal-photo-$stage.png')
-          .writeAsBytes(bytes!.buffer.asUint8List());
-    } finally {
-      image.dispose();
-    }
-  });
+  final boundary = tester.renderObject<RenderRepaintBoundary>(
+    find.byKey(const Key('photo-flow-capture')),
+  );
+  final shadows = debugDisableShadows;
+  try {
+    debugDisableShadows = false;
+    boundary.markNeedsPaint();
+    await tester.pump();
+    await tester.runAsync(() async {
+      final image = await boundary.toImage(pixelRatio: 2);
+      try {
+        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+        await File('$directory/meal-photo-$stage.png')
+            .writeAsBytes(bytes!.buffer.asUint8List());
+      } finally {
+        image.dispose();
+      }
+    });
+  } finally {
+    debugDisableShadows = shadows;
+  }
+}
+
+Future<void> _startEstimate(WidgetTester tester) async {
+  final button = find.byKey(const Key('meal-photo-estimate'));
+  await tester.ensureVisible(button);
+  await tester.pumpAndSettle();
+  await tester.tap(button);
+  await tester.pump();
 }
 
 Future<void> _openFromHome(WidgetTester tester) async {

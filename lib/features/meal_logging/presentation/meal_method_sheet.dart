@@ -5,9 +5,27 @@ import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'meal_photo_flow.dart';
+import 'meal_voice_flow.dart';
 
+enum _MealMethod { camera, voice }
+
+/// Closes the picker, then opens the chosen task. Closing either task returns
+/// to the tab that opened the picker, without showing the picker again.
 Future<void> showMealMethodSheet(BuildContext context) async {
-  final shouldOpenCamera = await showModalBottomSheet<bool>(
+  final method = await _chooseMealMethod(context);
+  if (!context.mounted) return;
+  switch (method) {
+    case _MealMethod.camera:
+      await showMealPhotoFlow(context);
+    case _MealMethod.voice:
+      await showMealVoiceFlow(context);
+    case null:
+      return;
+  }
+}
+
+Future<_MealMethod?> _chooseMealMethod(BuildContext context) {
+  return showModalBottomSheet<_MealMethod>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -26,20 +44,28 @@ Future<void> showMealMethodSheet(BuildContext context) async {
     builder: (sheetContext) => SafeArea(
       top: false,
       child: MealMethodSheet(
-        onCamera: () =>
-            Navigator.of(sheetContext, rootNavigator: true).pop(true),
+        onCamera: () => Navigator.of(
+          sheetContext,
+          rootNavigator: true,
+        ).pop(_MealMethod.camera),
+        onVoice: () => Navigator.of(
+          sheetContext,
+          rootNavigator: true,
+        ).pop(_MealMethod.voice),
       ),
     ),
   );
-  if (shouldOpenCamera == true && context.mounted) {
-    await showMealPhotoFlow(context);
-  }
 }
 
 class MealMethodSheet extends StatelessWidget {
-  const MealMethodSheet({super.key, required this.onCamera});
+  const MealMethodSheet({
+    super.key,
+    required this.onCamera,
+    required this.onVoice,
+  });
 
   final VoidCallback onCamera;
+  final VoidCallback onVoice;
 
   @override
   Widget build(BuildContext context) {
@@ -121,16 +147,12 @@ class MealMethodSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             AppOptionCard(
+              key: const Key('meal-method-voice'),
               caretSize: AppSizes.iconMd,
               icon: 'ph-microphone',
               title: strings.mealVoice,
               description: strings.mealVoiceDescription,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              strings.mealMethodsNotice,
-              textAlign: TextAlign.center,
-              style: AppTypography.caption,
+              onPressed: onVoice,
             ),
           ],
         ),

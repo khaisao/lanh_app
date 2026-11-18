@@ -36,7 +36,6 @@
   "search": "Tìm món ăn",
   "manual": "Nhập tay",
   "templates": "Bữa quen",
-  "mealMethodsNotice": "Ghi bằng giọng nói · Sắp có",
   "mealPhotoBack": "Quay lại",
   "mealPhotoPermissionTitle": "Cho Lành dùng camera?",
   "mealPhotoPermissionBody": "Lành dùng camera để bạn chụp ảnh bữa ăn. Bạn cũng có thể chọn ảnh có sẵn trong thư viện.",
@@ -49,8 +48,10 @@
   "mealPhotoChoose": "Chọn ảnh từ thư viện",
   "mealPhotoCameraLoading": "Đang mở camera",
   "mealPhotoReviewLabel": "Ảnh bữa ăn đang xem lại",
+  "mealPhotoCaptured": "Ảnh đã chụp",
+  "mealPhotoReadyTitle": "Ảnh đã sẵn sàng",
+  "mealPhotoReadyBody": "Lành sẽ ước lượng calo từ ảnh này. Kết quả là ước tính, bạn kiểm tra lại trước khi lưu.",
   "mealPhotoEstimate": "Ước lượng bữa ăn",
-  "mealPhotoEstimateUnavailable": "Tính năng ước lượng bữa ăn chưa khả dụng.",
   "mealPhotoRetake": "Chụp lại",
   "mealPhotoReplace": "Chọn ảnh khác",
   "mealPhotoPickError": "Lành chưa mở được ảnh này. Vui lòng chọn ảnh khác.",
@@ -138,5 +139,157 @@
   "todayNoMeals": "Chưa ghi món nào hôm nay.",
   "todayJournal": "Nhật ký ăn uống",
   "todayDetails": "Chi tiết",
-  "todayEstimated": "Ước tính"
+  "todayEstimated": "Ước tính",
+  "mealEstimationNotice": "Kết quả là ước tính",
+  "mealEstimatingTitle": "Lành đang ước lượng",
+  "mealEstimatingBody": "Thường mất vài giây. Bạn sẽ kiểm tra lại trước khi lưu.",
+  "mealEstimationErrorTitle": "Chưa ước lượng được",
+  "mealEstimationErrorBody": "Lành chưa nhìn rõ bữa này. Thử chụp gần hơn hoặc dưới ánh sáng tốt hơn. Ảnh vẫn được giữ lại.",
+  "mealEstimationCancel": "Hủy phân tích",
+  "mealEstimationReceived": "Đã nhận ảnh",
+  "mealEstimationRecognizing": "Nhận diện món trong ảnh",
+  "mealEstimationPortion": "Ước lượng khẩu phần",
+  "mealEstimationCalories": "Tính calo ước tính",
+  "mealEstimationDone": "Xong",
+  "mealEstimationWorking": "Đang làm",
+  "mealEstimationWaiting": "Chờ",
+  "mealEstimationNetworkBody": "Lành chưa kết nối được máy chủ phân tích. Kiểm tra mạng rồi thử lại. Ảnh vẫn được giữ lại.",
+  "mealEstimationUnavailableBody": "Máy chủ phân tích đang bận hoặc phản hồi quá lâu. Vui lòng thử lại sau ít phút. Ảnh vẫn được giữ lại.",
+  "mealEstimationInvalidPhotoBody": "Lành chưa đọc được ảnh này. Hãy chụp lại hoặc chọn ảnh khác.",
+  "mealEstimationNotConfiguredBody": "Bản ứng dụng này chưa được cấu hình máy chủ phân tích bữa ăn.",
+  "mealReviewTitle": "Kiểm tra bữa ăn",
+  "mealReviewPhotoLabel": "Ảnh bữa ăn",
+  "mealReviewEstimateBadge": "Ước tính",
+  "mealReviewKcal": "kcal",
+  "mealReviewUnknown": "Chưa rõ",
+  "mealReviewItemCount": "{count, plural, other{{count} món}}",
+  "@mealReviewItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mealReviewPortionGroup": "Chọn khẩu phần cả bữa",
+  "mealReviewPortionHalf": "Nửa phần",
+  "mealReviewPortionOne": "1 phần",
+  "mealReviewPortionOneHalf": "1,5 phần",
+  "mealReviewItemsTitle": "Các món",
+  "mealReviewMissingCalories": "{count, plural, other{{count} món chưa có calo nên chưa được tính vào tổng.}}",
+  "@mealReviewMissingCalories": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mealReviewDisclaimer": "Số liệu là ước tính từ ảnh, có thể lệch so với phần bạn thực ăn.",
+  "mealReviewSaveSoon": "Lưu bữa ăn · Sắp có",
+  "mealReviewDiscard": "Hủy, không lưu",
+  "mealUnitGram": "g",
+  "mealUnitMilliliter": "ml",
+  "mealUnitServing": "phần",
+  "mealUnitPiece": "cái",
+  "mealReviewClose": "Đóng, không lưu",
+  "mealReviewEnergy": "Tổng năng lượng",
+  "mealReviewNutrients": "Chất dinh dưỡng",
+  "mealReviewNutrientsLabel": "Đạm {protein}, tinh bột {carbs}, chất béo {fat}",
+  "@mealReviewNutrientsLabel": {
+    "placeholders": {
+      "protein": {
+        "type": "String"
+      },
+      "carbs": {
+        "type": "String"
+      },
+      "fat": {
+        "type": "String"
+      }
+    }
+  },
+  "mealReviewProtein": "Đạm",
+  "mealReviewCarbs": "Tinh bột",
+  "mealReviewFat": "Chất béo",
+  "mealReviewFatShort": "Béo",
+  "mealReviewNameJoin": "{first} và {last}",
+  "@mealReviewNameJoin": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "mealReviewAddToday": "Thêm vào hôm nay",
+  "mealReviewMacroChip": "{label} {value}",
+  "@mealReviewMacroChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "mealVoiceTitle": "Ghi giọng nói",
+  "mealVoiceTimerLabel": "Đã ghi {seconds} giây",
+  "mealVoiceHeading": "Kể bữa bạn vừa ăn",
+  "mealVoiceExample": "Ví dụ: “Ăn một tô phở bò tái, thêm ly trà đá”",
+  "mealVoiceFinishing": "Đang chuyển thành chữ…",
+  "mealVoiceCancel": "Hủy ghi",
+  "mealVoiceNoSpeech": "Lành chưa nghe thấy lời nào. Chạm micro và kể lại nhé.",
+  "mealVoiceLanguageUnavailable": "Thiết bị chưa hỗ trợ nhận giọng nói tiếng Việt. Bạn có thể nhập bằng chữ.",
+  "mealVoiceRecognitionError": "Lành chưa nhận được giọng nói. Kiểm tra mạng rồi thử lại, hoặc nhập bằng chữ.",
+  "mealVoiceTypeInstead": "Nhập bằng chữ",
+  "mealVoiceUnavailable": "Thiết bị này chưa hỗ trợ ghi giọng nói. Bạn có thể nhập bằng chữ.",
+  "mealVoiceConfirmTitle": "Kiểm tra lời nói",
+  "mealVoiceTypedTitle": "Mô tả bữa ăn",
+  "mealVoiceBackToRecording": "Quay lại ghi âm",
+  "mealVoiceConfirmHeading": "Lành nghe xong rồi",
+  "mealVoiceConfirmBody": "Sửa chữ nếu chưa đúng trước khi gửi.",
+  "mealVoiceTypedBody": "Ghi tên món và lượng ăn để Lành ước lượng.",
+  "mealVoiceTranscriptLabel": "Chữ chuyển từ giọng nói",
+  "mealVoiceTypedLabel": "Mô tả của bạn",
+  "mealVoiceWordCount": "{count, plural, other{{count} từ}}",
+  "@mealVoiceWordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mealVoiceTooLong": "Mô tả tối đa {max} ký tự.",
+  "@mealVoiceTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "mealVoicePrivacy": "Chỉ chữ này được gửi lên Lành để ước lượng món.",
+  "mealVoiceSend": "Gửi phân tích",
+  "mealVoiceRecordAgain": "Ghi lại",
+  "mealEstimationReceivedText": "Đã nhận lời kể",
+  "mealEstimationRecognizingText": "Nhận diện món từ lời kể",
+  "mealEstimationTextErrorBody": "Lành chưa nhận ra món nào trong lời kể. Thử ghi rõ tên món và lượng ăn. Lời kể vẫn được giữ lại.",
+  "mealEstimationTextNetworkBody": "Lành chưa kết nối được máy chủ phân tích. Kiểm tra mạng rồi thử lại. Lời kể vẫn được giữ lại.",
+  "mealEstimationTextUnavailableBody": "Máy chủ phân tích đang bận hoặc phản hồi quá lâu. Vui lòng thử lại sau ít phút. Lời kể vẫn được giữ lại.",
+  "mealReviewTextDisclaimer": "Số liệu là ước tính từ lời kể, có thể lệch so với phần bạn thực ăn.",
+  "mealReviewVoiceLabel": "Bữa ăn từ lời kể",
+  "mealVoicePreparing": "Đang mở micro…",
+  "mealVoiceNoAccess": "Chạm micro để thử lại, bật quyền trong Cài đặt, hoặc nhập bằng chữ.",
+  "mealVoiceSpeakHint": "Kể tên món và lượng ăn",
+  "mealVoiceStartAction": "Bắt đầu nói",
+  "mealVoiceAllowAction": "Cho phép micro",
+  "mealVoiceReadyTitle": "Lành sẵn sàng nghe",
+  "mealVoiceNotHeardTitle": "Lành chưa nghe rõ",
+  "mealVoiceNoAccessTitle": "Lành chưa được dùng micro",
+  "mealVoiceRecording": "Đang ghi âm",
+  "mealVoiceStop": "Dừng ghi âm",
+  "mealVoiceStopCaption": "Chạm để dừng và kiểm tra chữ",
+  "mealVoiceStartCaption": "Chạm để bắt đầu nói",
+  "mealVoiceAllowCaption": "Chạm để cho phép micro"
 }

@@ -1,0 +1,34 @@
+# Ghi bữa bằng giọng nói
+
+Từ **Ghi bữa ăn → Ghi bằng giọng nói**, Lành mở màn **Ghi giọng nói** (VoiceMealInput). Người dùng kể món, dừng ghi, sửa chữ ở màn **Kiểm tra lời nói** (VoiceMealConfirm), rồi gửi chữ đó để ước lượng. Kết quả dùng chung màn Lành đang ước lượng, Chưa ước lượng được và Kiểm tra bữa ăn với luồng ảnh.
+
+## Hành vi
+
+- Nhận dạng giọng nói chạy bằng dịch vụ của hệ điều hành qua [speech_to_text](https://pub.dev/packages/speech_to_text): Speech framework trên iOS, SpeechRecognizer trên Android. Ngôn ngữ theo locale của app (`vi` → `vi-VN`). Âm thanh không đi qua Lành. Chỉ chữ người dùng xác nhận được gửi tới `POST /v1/meal-analysis` (trường `text`). Dịch vụ của hệ điều hành có thể xử lý trên máy chủ của Apple/Google tùy thiết bị.
+- Không có màn xin quyền riêng. Chọn Ghi bằng giọng nói mở thẳng màn ghi âm, nút micro hiện Đang mở micro… và hộp thoại quyền của hệ thống (iOS: Nhận dạng giọng nói rồi micro; Android: micro) hiện ngay trên màn đó. Cho phép thì bắt đầu nghe. Từ chối thì màn giữ nguyên, báo lý do, nút micro hỏi lại, có **Mở Cài đặt** và **Nhập bằng chữ**; quay lại app sau khi bật trong Cài đặt sẽ tự bắt đầu nghe. Thiết bị không có dịch vụ nhận dạng chỉ còn Nhập bằng chữ.
+- Quyền được xin qua chính `speech_to_text` (gọi API hệ thống), không qua `permission_handler`. Trên iOS, `permission_handler_apple` bật từng quyền lúc build Swift package theo Info.plist và có thể dùng cấu hình cũ trong DerivedData; bản build 18/11 đã biên dịch `PERMISSION_MICROPHONE=0`, khiến nút Cho phép micro không mở hộp thoại.
+- Màn ghi âm có hai trạng thái: **sóng âm** (Sleek project `vPI4n6gJaH9`, component `cQLCsQQiBRB`: chấm đỏ + Đang ghi âm, đồng hồ 72 pt, gợi ý, sóng âm 128 dp) và **chữ trực tiếp** theo mẫu VoiceLiveB – ThinWave (hàng trạng thái chấm đỏ + Đang ghi âm 14 pt + giờ 16 pt, dải sóng mảnh 40 dp ngay dưới; chữ Nunito 28 đậm căn trái, nằm giữa phần còn lại của màn, tối đa 3 từ cuối còn thay đổi được làm mờ, con trỏ nhấp nháy, khung chữ tối đa 352 dp giữ dòng mới nhất). Nội dung neo phía trên (cách header 32 dp). Dock chỉ có nút tròn 80 dp, Chạm để dừng và kiểm tra chữ, Hủy ghi.
+- Chuyển trạng thái là một phép biến hình 820 ms trên cùng một bố cục, mỗi phần một đường cong: đồng hồ lớn và gợi ý mờ trong ~290 ms đầu; chuyển động đi lên (gập đồng hồ, khoảng cách và chiều cao sóng) dùng easeInOutSine trải hết 820 ms nên dải sóng lên đều, dưới 6 px mỗi frame; chữ hiện từ 45% thời gian. Hàng trạng thái giữ nguyên vị trí và có thêm giờ; chính sóng âm đó mảnh dần từ 128 xuống 40 dp và trượt lên (giữ nguyên mức ồn và vạch, không dựng lại); chữ hiện ở khoảng trống bên dưới từ lớp mờ nhòe (blur 8 → 0). Ghi lại (từ màn kiểm tra hoặc phiên mới chưa có chữ) quay về trạng thái sóng, đường sóng dãn ra từ giữa trong 520 ms. Chữ mới làm khối chữ cao dần mượt (220 ms). Phần đã gập bị loại khỏi trình đọc màn hình. Giảm chuyển động đổi trạng thái tức thì.
+- Sóng âm: plugin chỉ báo âm lượng ~10 lần/giây và gồm cả tiếng ồn phòng (đo trên iPhone 15 Plus: 0,12–0,19, khoảng −44…−40 dBFS). `VoiceWaveModel` học mức ồn nền (giảm nhanh, tăng chậm ~6 giây), chỉ phần vượt nền ~4 dB mới thành sóng, làm mượt bằng envelope (lên ~60 ms, xuống ~320 ms) và cho từng vạch trượt dần tới chiều cao đích mỗi frame; im lặng là hàng chấm phẳng, khi nói sóng đối xứng cao ở giữa. Animation chỉ repaint canvas.
+- Không nghe được chữ nào: trở về micro với lý do (chưa nghe rõ, thiết bị không hỗ trợ tiếng Việt, lỗi nhận dạng). Có chữ thì vẫn giữ dù hệ thống báo lỗi muộn.
+- Chọn Ghi bằng giọng nói đóng bảng chọn rồi mở màn ghi âm. **X**, **Hủy ghi**, Back hệ thống ở màn ghi âm và đóng màn kết quả đều hủy phiên và quay thẳng về tab đã mở tác vụ, không mở lại bảng chọn (giống luồng ảnh). Back ở màn kiểm tra quay về micro (chưa ghi); **Ghi lại** ghi phiên mới ngay.
+- Màn kiểm tra: ô chữ sửa được, đếm từ thực, tối đa 500 ký tự, nút Gửi phân tích bị vô hiệu khi trống/quá dài. Nhập bằng chữ dùng cùng màn với tiêu đề Mô tả bữa ăn.
+- Ước lượng: cùng nội dung giữ cùng `request_id` khi thử lại; sửa chữ tạo request mới. Quay lại/Back hủy request và bỏ qua kết quả đến muộn. Lỗi giữ nguyên lời kể. Kết quả là bản nháp chưa lưu, giống luồng ảnh.
+- Reduce Motion dừng gợn sóng, sóng âm và chấm nhấp nháy. Không ghi chữ, âm thanh hay kết quả vào log.
+
+## Mã nguồn
+
+`domain/meal_voice_recognizer.dart` (hợp đồng, sự kiện phiên), `data/device_meal_voice_recognizer.dart` (plugin và quyền), `presentation/meal_voice_controller.dart` (trạng thái), `presentation/meal_voice_flow.dart` và các part `meal_voice_*_view.dart`. Màn ước lượng/kết quả nhận ảnh tùy chọn; `MealEstimationScreen` và `MealAnalysisResultScreen` trong `meal_photo_flow.dart` là bản cho mô tả bằng chữ.
+
+## Cấu hình nền tảng
+
+- iOS: `NSMicrophoneUsageDescription`, `NSSpeechRecognitionUsageDescription` trong `ios/Runner/Info.plist`. `permission_handler_apple` bật quyền micro/speech từ các khóa này.
+- Android: `RECORD_AUDIO` và `<queries>` cho `android.speech.RecognitionService`. Camera vẫn chụp không tiếng (`enableAudio: false`). Thiết bị không có dịch vụ nhận dạng sẽ hiện lỗi và gợi ý nhập bằng chữ.
+
+## Kiểm tra trên thiết bị
+
+`integration_test/meal_voice_test.dart` dùng recognizer thật để kiểm tra hộp thoại quyền mở ngay trên màn ghi âm (ghi `realAccess`), gọi meal API thật bằng mô tả nhập tay và dùng recognizer kịch bản (chỉ trong test) để chụp màn đang nghe/kiểm tra. Build và cài theo quy trình Profile trong `docs/flutter/README.md`, với `--target=integration_test/meal_voice_test.dart`, `LANH_DEVICE_RUN_ID` và `LANH_MEAL_API_BASE_URL`. Kết quả nằm trong `tmp/meal-voice` của container app.
+
+Bài test tự động không thay thế việc nói thật vào micro: cần người cấp quyền ở hộp thoại hệ thống, nói một câu tiếng Việt và kiểm tra chữ chuyển đúng, kể cả ở môi trường ồn và khi tắt mạng.
+
+Lần chạy 18/11/2026 trên iPhone 15 Plus (iOS 27.0.1, bản Profile), runId `voice-check-18`: phiên kịch bản (im lặng → nói → chữ → dừng → kiểm tra → ghi lại) pass; 402 frame trong lúc sóng chạy và biến hình, không frame nào vượt 16,7 ms (build p90 0,6 ms, raster p90 4,0 ms). Ảnh `iphone-voice-morph-0…4` chụp phép biến hình ở tốc độ chậm 6× (chỉ trong bài test). Recognizer thật có quyền và nghe ngay trên màn ghi âm. Bài gọi meal API thật nhận 503 `inference_unavailable` vì Ollama trên Mac đang dừng; app hiện đúng màn Chưa ước lượng được và giữ lời kể. Ảnh chụp ở `outputs/meal-voice-device/`, thiết kế Sleek ở `outputs/sleek-voice-input/`. Trên thiết bị, `tester.enterText` bị bàn phím hệ thống ghi đè nên bài test gán chữ qua controller của ô nhập.

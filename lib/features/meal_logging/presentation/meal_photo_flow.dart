@@ -1,26 +1,25 @@
 import 'dart:async';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../data/device_meal_photo_repository.dart';
+import '../meal_logging_providers.dart';
+import '../domain/meal_analysis.dart';
 import '../domain/meal_photo_repository.dart';
 import 'meal_camera.dart';
 import 'meal_photo_controller.dart';
 import 'meal_photo_image.dart';
 
 part 'meal_photo_views.dart';
-
-final mealPhotoRepositoryProvider = Provider<MealPhotoRepository>(
-  (ref) => DeviceMealPhotoRepository(),
-);
-
-final mealCameraFactoryProvider = Provider<MealCameraFactory>(
-  (ref) => openDeviceMealCamera,
-);
+part 'meal_photo_estimation_view.dart';
+part 'meal_analysis_result_view.dart';
+part 'meal_analysis_result_parts.dart';
 
 final _photoFlowCoordinatorProvider = Provider((ref) {
   final coordinator = _PhotoFlowCoordinator();
@@ -146,6 +145,7 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
       ref.read(mealCameraFactoryProvider),
       recoveredPhoto: widget.recoveredPhoto,
       isActive: false,
+      analysis: ref.read(mealAnalysisRepositoryProvider),
       preparePhoto: (photo) => prepareMealPhoto(context, photo),
     )..addListener(_onChange);
     _lifecycle = AppLifecycleListener(
@@ -238,15 +238,24 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
     final strings = AppLocalizations.of(context);
     final stage = _controller.stage;
     final reviewing = stage == MealPhotoStage.review;
-    final media = stage == MealPhotoStage.camera || reviewing;
+    final estimating =
+        stage == MealPhotoStage.estimating ||
+        stage == MealPhotoStage.estimationError ||
+        stage == MealPhotoStage.result;
+    final media = stage == MealPhotoStage.camera;
     final busy = _controller.busy;
     final choose = busy ? null : _controller.choosePhoto;
     void close() => Navigator.of(context).pop();
 
     return PopScope<void>(
-      canPop: !reviewing,
+      canPop: !reviewing && !estimating,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && reviewing) _controller.returnFromReview();
+        if (didPop) return;
+        if (estimating) {
+          _controller.returnToPhoto();
+        } else if (reviewing) {
+          _controller.returnFromReview();
+        }
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: media ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -290,16 +299,90 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
               captured: _controller.captured,
               loadingPhoto: _controller.loadingPhoto,
               onBack: _controller.returnFromReview,
-              onEstimate: () => _notice(strings.mealPhotoEstimateUnavailable),
+              onEstimate: busy ? null : _controller.startEstimation,
               onReplace: busy
                   ? null
                   : _controller.captured
                   ? _controller.returnFromReview
                   : choose,
             ),
+            MealPhotoStage.estimating ||
+            MealPhotoStage.estimationError => _MealPhotoEstimationView(
+              photo: _controller.photo!,
+              failed: stage == MealPhotoStage.estimationError,
+              failure: _controller.estimationFailure,
+              onBack: _controller.returnToPhoto,
+              onRetry: _controller.startEstimation,
+            ),
+            MealPhotoStage.result => _MealAnalysisResultView(
+              photo: _controller.photo!,
+              analysis: _controller.analysis!,
+              portionScale: _controller.portionScale,
+              onPortion: _controller.selectPortion,
+              onBack: _controller.returnToPhoto,
+              onDiscard: close,
+            ),
           },
         ),
       ),
     );
   }
+}
+
+/// Estimating/error screen for a described meal (voice or typed text), shared
+/// with the photo flow so both sources look and behave the same.
+class MealEstimationScreen extends StatelessWidget {
+  const MealEstimationScreen({
+    super.key,
+    required this.failed,
+    required this.failure,
+    required this.onBack,
+    required this.onRetry,
+  });
+
+  final bool failed;
+  final MealAnalysisFailureKind? failure;
+  final VoidCallback onBack;
+  final VoidCallback onRetry;
+
+  // A Scaffold supplies the Material text style, as in the photo flow.
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: AppColors.background,
+    body: _MealPhotoEstimationView(
+      photo: null,
+      failed: failed,
+      failure: failure,
+      onBack: onBack,
+      onRetry: onRetry,
+    ),
+  );
+}
+
+/// Unsaved estimate review for a described meal; see [MealEstimationScreen].
+class MealAnalysisResultScreen extends StatelessWidget {
+  const MealAnalysisResultScreen({
+    super.key,
+    required this.analysis,
+    required this.portionScale,
+    required this.onPortion,
+    required this.onBack,
+    required this.onDiscard,
+  });
+
+  final MealAnalysis analysis;
+  final double portionScale;
+  final ValueChanged<double> onPortion;
+  final VoidCallback onBack;
+  final VoidCallback onDiscard;
+
+  @override
+  Widget build(BuildContext context) => _MealAnalysisResultView(
+    photo: null,
+    analysis: analysis,
+    portionScale: portionScale,
+    onPortion: onPortion,
+    onBack: onBack,
+    onDiscard: onDiscard,
+  );
 }

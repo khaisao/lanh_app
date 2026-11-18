@@ -1,11 +1,25 @@
 import 'dart:async';
 
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 
+import '../domain/meal_analysis.dart';
 import '../domain/meal_photo_repository.dart';
 import 'meal_camera.dart';
 
-enum MealPhotoStage { checking, permission, camera, review }
+enum MealPhotoStage {
+  checking,
+  permission,
+  camera,
+  review,
+  estimating,
+  estimationError,
+  result,
+}
+
+/// Whole-meal portion choices from meal-review.html.
+const mealPortionScales = [0.5, 1.0, 1.5];
 
 enum MealPhotoIssue {
   camera,
@@ -22,6 +36,7 @@ class MealPhotoController extends ChangeNotifier {
     this._openCamera, {
     MealPhoto? recoveredPhoto,
     required this._isActive,
+    required this._analysis,
     this._preparePhoto,
   }) : photo = recoveredPhoto,
        stage = recoveredPhoto == null
@@ -31,6 +46,7 @@ class MealPhotoController extends ChangeNotifier {
   static const captureTimeout = Duration(seconds: 15);
 
   final MealPhotoRepository _repository;
+  final MealAnalysisRepository _analysis;
   final MealCameraFactory _openCamera;
   final Future<void> Function(MealPhoto)? _preparePhoto;
   int _operationVersion = 0;
@@ -42,6 +58,9 @@ class MealPhotoController extends ChangeNotifier {
   var _waitingForSettings = false;
   var _resumedFromSettings = false;
   var _picking = false;
+  int _estimationVersion = 0;
+  Completer<void>? _estimationCancel;
+  String? _requestId;
   bool _isActive;
   var _facing = MealCameraFacing.back;
 
@@ -50,6 +69,9 @@ class MealPhotoController extends ChangeNotifier {
   MealCamera? camera;
   MealPhoto? photo;
   MealPhotoIssue? issue;
+  MealAnalysis? analysis;
+  MealAnalysisFailureKind? estimationFailure;
+  double portionScale = 1;
   bool busy = false;
   bool captured = false;
   bool requested = false;
@@ -139,6 +161,8 @@ class MealPhotoController extends ChangeNotifier {
     if (stage != MealPhotoStage.review) _source = stage;
     this.captured = captured;
     photo = image;
+    _requestId = null;
+    analysis = null;
     stage = MealPhotoStage.review;
   }
 
@@ -151,6 +175,93 @@ class MealPhotoController extends ChangeNotifier {
     } else {
       _refresh();
     }
+  }
+
+  Future<void> startEstimation() async {
+    final image = photo;
+    if (_disposed ||
+        busy ||
+        image == null ||
+        (stage != MealPhotoStage.review &&
+            stage != MealPhotoStage.estimationError)) {
+      return;
+    }
+    final version = ++_estimationVersion;
+    final cancel = _estimationCancel = Completer<void>();
+    // One draft identity per photo, so a retry refers to the same request.
+    final requestId = _requestId ??= _newRequestId();
+    stage = MealPhotoStage.estimating;
+    estimationFailure = null;
+    analysis = null;
+    _refresh();
+    MealAnalysisFailureKind? failure;
+    MealAnalysis? result;
+    try {
+      result = await _analysis.analyzePhoto(
+        image,
+        requestId: requestId,
+        cancel: cancel.future,
+      );
+    } on MealAnalysisFailure catch (error) {
+      failure = error.kind;
+    } catch (_) {
+      failure = MealAnalysisFailureKind.unexpected;
+    }
+    // A cancelled, replaced or disposed estimate must not change the flow.
+    if (_disposed || version != _estimationVersion) return;
+    _estimationCancel = null;
+    if (result != null) {
+      analysis = result;
+      portionScale = 1;
+      stage = MealPhotoStage.result;
+    } else {
+      estimationFailure = failure;
+      stage = MealPhotoStage.estimationError;
+    }
+    _refresh();
+  }
+
+  void selectPortion(double scale) {
+    if (_disposed ||
+        stage != MealPhotoStage.result ||
+        !mealPortionScales.contains(scale) ||
+        scale == portionScale) {
+      return;
+    }
+    portionScale = scale;
+    _refresh();
+  }
+
+  /// Leaves estimation or its unsaved result and returns to the same photo.
+  void returnToPhoto() {
+    if (_disposed ||
+        (stage != MealPhotoStage.estimating &&
+            stage != MealPhotoStage.estimationError &&
+            stage != MealPhotoStage.result)) {
+      return;
+    }
+    _cancelEstimation();
+    analysis = null;
+    estimationFailure = null;
+    stage = MealPhotoStage.review;
+    _refresh();
+  }
+
+  void _cancelEstimation() {
+    _estimationVersion++;
+    final cancel = _estimationCancel;
+    _estimationCancel = null;
+    if (cancel != null && !cancel.isCompleted) cancel.complete();
+  }
+
+  static String _newRequestId() {
+    final random = math.Random.secure();
+    final bytes = List<int>.generate(16, (_) => random.nextInt(256));
+    bytes[6] = (bytes[6] & 0x0F) | 0x40;
+    bytes[8] = (bytes[8] & 0x3F) | 0x80;
+    final hex = bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+    return '${hex.substring(0, 8)}-${hex.substring(8, 12)}-'
+        '${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20)}';
   }
 
   void setActive(bool isActive) {
@@ -275,6 +386,7 @@ class MealPhotoController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _cancelEstimation();
     _disposed = true;
     _cameraEpoch++;
     unawaited(_syncCamera());

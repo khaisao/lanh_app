@@ -300,78 +300,237 @@ class _MealPhotoReviewView extends StatelessWidget {
   final bool captured;
   final bool loadingPhoto;
   final VoidCallback onBack;
-  final VoidCallback onEstimate;
+  final VoidCallback? onEstimate;
   final VoidCallback? onReplace;
 
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
-    return AppMediaOverlay(
-      media: Image(
-        image: mealPhotoImage(photo),
-        fit: BoxFit.cover,
-        semanticLabel: strings.mealPhotoReviewLabel,
-        errorBuilder: (context, error, stackTrace) => Center(
-          child: Text(
-            strings.mealPhotoPickError,
-            textAlign: TextAlign.center,
-            style: AppTypography.body.copyWith(color: AppColors.background),
-          ),
-        ),
-      ),
-      controls: _MediaControls(
-        top: _MediaIconButton(
-          icon: 'ph-caret-left-bold',
-          label: strings.mealPhotoBack,
-          visualSize: AppSizes.photoCloseControl,
-          onPressed: onBack,
-        ),
-        bottom: AppMediaGlass(
-          radius: AppRadii.xl,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.sm),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: AppSpacing.xs,
-              children: [
-                if (loadingPhoto)
-                  Semantics(
-                    liveRegion: true,
-                    child: Text(
-                      strings.mealPhotoLoading,
-                      textAlign: TextAlign.center,
-                      style: AppTypography.body.copyWith(
-                        color: AppColors.background,
+    final imageShape = AppSquircleBorder(
+      radius: AppRadii.exportCardSquircle,
+      side: BorderSide(color: AppColors.card.withValues(alpha: 0.4)),
+    );
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              key: const Key('meal-photo-preview'),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSizes.photoPreviewPageHorizontal,
+                    AppSpacing.xl,
+                    AppSizes.photoPreviewPageHorizontal,
+                    AppSpacing.xl,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: AppSpacing.sm,
+                        runSpacing: AppSpacing.xs,
+                        children: [
+                          AppButton.surface(
+                            onPressed: onBack,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              spacing: AppSpacing.xxs,
+                              children: [
+                                const AppIcon.asset(
+                                  'ph-caret-left-bold',
+                                  size: AppSizes.iconSm,
+                                  color: AppColors.primary,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    strings.mealPhotoBack,
+                                    style: AppTypography.button.copyWith(
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            constraints: const BoxConstraints(
+                              minHeight: AppSizes.photoPreviewBadge,
+                              maxWidth: AppSizes.photoPreviewBadgeMax,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.denseVertical,
+                            ),
+                            decoration: const ShapeDecoration(
+                              color: AppColors.secondary,
+                              shape: StadiumBorder(),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              spacing: AppSpacing.stepGap,
+                              children: [
+                                const AppIcon.asset(
+                                  'ph-image-bold',
+                                  size: AppSizes.iconInfo,
+                                  color: AppColors.secondaryForeground,
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    strings.mealPhotoCaptured,
+                                    style: AppTypography.label.copyWith(
+                                      color: AppColors.secondaryForeground,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                AppButton(
-                  onPressed: onEstimate,
-                  child: Text(
-                    strings.mealPhotoEstimate,
-                    textAlign: TextAlign.center,
+                      const SizedBox(height: AppSpacing.lg),
+                      DecoratedBox(
+                        decoration: ShapeDecoration(
+                          shape: imageShape,
+                          shadows: const [AppShadows.photoPreviewImage],
+                        ),
+                        child: ClipPath(
+                          clipper: ShapeBorderClipper(shape: imageShape),
+                          child: SizedBox(
+                            height: AppSizes.photoPreviewImageHeight,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image(
+                                  image: mealPhotoImage(photo),
+                                  fit: BoxFit.cover,
+                                  semanticLabel: strings.mealPhotoReviewLabel,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Center(
+                                        child: Text(
+                                          strings.mealPhotoPickError,
+                                          textAlign: TextAlign.center,
+                                          style: AppTypography.body,
+                                        ),
+                                      ),
+                                ),
+                                IgnorePointer(
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          AppColors.foreground.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: ShapeDecoration(
+                          color: AppColors.card,
+                          shape: const AppSquircleBorder(
+                            radius: AppRadii.exportCardSquircle,
+                            side: BorderSide(color: AppColors.border),
+                          ),
+                          shadows: const [AppShadows.photoPreviewCard],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Semantics(
+                              header: true,
+                              child: Text(
+                                strings.mealPhotoReadyTitle,
+                                style: AppTypography.photoPreviewHeading,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.xxs),
+                            Text(
+                              loadingPhoto
+                                  ? strings.mealPhotoLoading
+                                  : strings.mealPhotoReadyBody,
+                              style: AppTypography.photoPreviewBody,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Row(
+                        spacing: AppSpacing.sm,
+                        children: [
+                          Semantics(
+                            button: true,
+                            label: captured
+                                ? strings.mealPhotoRetake
+                                : strings.mealPhotoReplace,
+                            child: IconButton(
+                              onPressed: onReplace,
+                              tooltip: captured
+                                  ? strings.mealPhotoRetake
+                                  : strings.mealPhotoReplace,
+                              style: IconButton.styleFrom(
+                                fixedSize: const Size.square(
+                                  AppSizes.photoPreviewRetake,
+                                ),
+                                backgroundColor: AppColors.card,
+                                foregroundColor: AppColors.foreground,
+                                side: const BorderSide(color: AppColors.border),
+                              ),
+                              icon: const AppIcon.asset(
+                                'ph-arrow-counter-clockwise-bold',
+                                size: AppSizes.iconMd,
+                                color: AppColors.foreground,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: AppButton(
+                              key: const Key('meal-photo-estimate'),
+                              onPressed: onEstimate,
+                              animatePress: true,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: AppSpacing.xs,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      strings.mealPhotoEstimate,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  const AppIcon.asset(
+                                    'ph-arrow-right-bold',
+                                    size: AppSizes.iconSm,
+                                    color: AppColors.primaryForeground,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                TextButton(
-                  onPressed: onReplace,
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(0, AppSizes.action),
-                    foregroundColor: AppColors.background,
-                    textStyle: AppTypography.cardTitle,
-                  ),
-                  child: Text(
-                    captured
-                        ? strings.mealPhotoRetake
-                        : strings.mealPhotoReplace,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
-        bottomInset: AppSpacing.lg,
-        horizontalInset: AppSpacing.sm,
       ),
     );
   }
@@ -382,13 +541,11 @@ class _MediaControls extends StatelessWidget {
     required this.top,
     required this.bottom,
     required this.bottomInset,
-    this.horizontalInset = AppSpacing.pageHorizontal,
   });
 
   final Widget top;
   final Widget bottom;
   final double bottomInset;
-  final double horizontalInset;
 
   @override
   Widget build(BuildContext context) => SafeArea(
@@ -417,9 +574,9 @@ class _MediaControls extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(
-                      horizontalInset,
+                      AppSpacing.pageHorizontal,
                       0,
-                      horizontalInset,
+                      AppSpacing.pageHorizontal,
                       bottomInset,
                     ),
                     child: bottom,

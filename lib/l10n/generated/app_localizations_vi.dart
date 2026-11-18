@@ -125,9 +125,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get templates => 'Bữa quen';
 
   @override
-  String get mealMethodsNotice => 'Ghi bằng giọng nói · Sắp có';
-
-  @override
   String get mealPhotoBack => 'Quay lại';
 
   @override
@@ -169,11 +166,17 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mealPhotoReviewLabel => 'Ảnh bữa ăn đang xem lại';
 
   @override
-  String get mealPhotoEstimate => 'Ước lượng bữa ăn';
+  String get mealPhotoCaptured => 'Ảnh đã chụp';
 
   @override
-  String get mealPhotoEstimateUnavailable =>
-      'Tính năng ước lượng bữa ăn chưa khả dụng.';
+  String get mealPhotoReadyTitle => 'Ảnh đã sẵn sàng';
+
+  @override
+  String get mealPhotoReadyBody =>
+      'Lành sẽ ước lượng calo từ ảnh này. Kết quả là ước tính, bạn kiểm tra lại trước khi lưu.';
+
+  @override
+  String get mealPhotoEstimate => 'Ước lượng bữa ăn';
 
   @override
   String get mealPhotoRetake => 'Chụp lại';
@@ -409,4 +412,326 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get todayEstimated => 'Ước tính';
+
+  @override
+  String get mealEstimationNotice => 'Kết quả là ước tính';
+
+  @override
+  String get mealEstimatingTitle => 'Lành đang ước lượng';
+
+  @override
+  String get mealEstimatingBody =>
+      'Thường mất vài giây. Bạn sẽ kiểm tra lại trước khi lưu.';
+
+  @override
+  String get mealEstimationErrorTitle => 'Chưa ước lượng được';
+
+  @override
+  String get mealEstimationErrorBody =>
+      'Lành chưa nhìn rõ bữa này. Thử chụp gần hơn hoặc dưới ánh sáng tốt hơn. Ảnh vẫn được giữ lại.';
+
+  @override
+  String get mealEstimationCancel => 'Hủy phân tích';
+
+  @override
+  String get mealEstimationReceived => 'Đã nhận ảnh';
+
+  @override
+  String get mealEstimationRecognizing => 'Nhận diện món trong ảnh';
+
+  @override
+  String get mealEstimationPortion => 'Ước lượng khẩu phần';
+
+  @override
+  String get mealEstimationCalories => 'Tính calo ước tính';
+
+  @override
+  String get mealEstimationDone => 'Xong';
+
+  @override
+  String get mealEstimationWorking => 'Đang làm';
+
+  @override
+  String get mealEstimationWaiting => 'Chờ';
+
+  @override
+  String get mealEstimationNetworkBody =>
+      'Lành chưa kết nối được máy chủ phân tích. Kiểm tra mạng rồi thử lại. Ảnh vẫn được giữ lại.';
+
+  @override
+  String get mealEstimationUnavailableBody =>
+      'Máy chủ phân tích đang bận hoặc phản hồi quá lâu. Vui lòng thử lại sau ít phút. Ảnh vẫn được giữ lại.';
+
+  @override
+  String get mealEstimationInvalidPhotoBody =>
+      'Lành chưa đọc được ảnh này. Hãy chụp lại hoặc chọn ảnh khác.';
+
+  @override
+  String get mealEstimationNotConfiguredBody =>
+      'Bản ứng dụng này chưa được cấu hình máy chủ phân tích bữa ăn.';
+
+  @override
+  String get mealReviewTitle => 'Kiểm tra bữa ăn';
+
+  @override
+  String get mealReviewPhotoLabel => 'Ảnh bữa ăn';
+
+  @override
+  String get mealReviewEstimateBadge => 'Ước tính';
+
+  @override
+  String get mealReviewKcal => 'kcal';
+
+  @override
+  String get mealReviewUnknown => 'Chưa rõ';
+
+  @override
+  String mealReviewItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count món',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mealReviewPortionGroup => 'Chọn khẩu phần cả bữa';
+
+  @override
+  String get mealReviewPortionHalf => 'Nửa phần';
+
+  @override
+  String get mealReviewPortionOne => '1 phần';
+
+  @override
+  String get mealReviewPortionOneHalf => '1,5 phần';
+
+  @override
+  String get mealReviewItemsTitle => 'Các món';
+
+  @override
+  String mealReviewMissingCalories(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count món chưa có calo nên chưa được tính vào tổng.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get mealReviewDisclaimer =>
+      'Số liệu là ước tính từ ảnh, có thể lệch so với phần bạn thực ăn.';
+
+  @override
+  String get mealReviewSaveSoon => 'Lưu bữa ăn · Sắp có';
+
+  @override
+  String get mealReviewDiscard => 'Hủy, không lưu';
+
+  @override
+  String get mealUnitGram => 'g';
+
+  @override
+  String get mealUnitMilliliter => 'ml';
+
+  @override
+  String get mealUnitServing => 'phần';
+
+  @override
+  String get mealUnitPiece => 'cái';
+
+  @override
+  String get mealReviewClose => 'Đóng, không lưu';
+
+  @override
+  String get mealReviewEnergy => 'Tổng năng lượng';
+
+  @override
+  String get mealReviewNutrients => 'Chất dinh dưỡng';
+
+  @override
+  String mealReviewNutrientsLabel(String protein, String carbs, String fat) {
+    return 'Đạm $protein, tinh bột $carbs, chất béo $fat';
+  }
+
+  @override
+  String get mealReviewProtein => 'Đạm';
+
+  @override
+  String get mealReviewCarbs => 'Tinh bột';
+
+  @override
+  String get mealReviewFat => 'Chất béo';
+
+  @override
+  String get mealReviewFatShort => 'Béo';
+
+  @override
+  String mealReviewNameJoin(String first, String last) {
+    return '$first và $last';
+  }
+
+  @override
+  String get mealReviewAddToday => 'Thêm vào hôm nay';
+
+  @override
+  String mealReviewMacroChip(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String get mealVoiceTitle => 'Ghi giọng nói';
+
+  @override
+  String mealVoiceTimerLabel(Object seconds) {
+    return 'Đã ghi $seconds giây';
+  }
+
+  @override
+  String get mealVoiceHeading => 'Kể bữa bạn vừa ăn';
+
+  @override
+  String get mealVoiceExample =>
+      'Ví dụ: “Ăn một tô phở bò tái, thêm ly trà đá”';
+
+  @override
+  String get mealVoiceFinishing => 'Đang chuyển thành chữ…';
+
+  @override
+  String get mealVoiceCancel => 'Hủy ghi';
+
+  @override
+  String get mealVoiceNoSpeech =>
+      'Lành chưa nghe thấy lời nào. Chạm micro và kể lại nhé.';
+
+  @override
+  String get mealVoiceLanguageUnavailable =>
+      'Thiết bị chưa hỗ trợ nhận giọng nói tiếng Việt. Bạn có thể nhập bằng chữ.';
+
+  @override
+  String get mealVoiceRecognitionError =>
+      'Lành chưa nhận được giọng nói. Kiểm tra mạng rồi thử lại, hoặc nhập bằng chữ.';
+
+  @override
+  String get mealVoiceTypeInstead => 'Nhập bằng chữ';
+
+  @override
+  String get mealVoiceUnavailable =>
+      'Thiết bị này chưa hỗ trợ ghi giọng nói. Bạn có thể nhập bằng chữ.';
+
+  @override
+  String get mealVoiceConfirmTitle => 'Kiểm tra lời nói';
+
+  @override
+  String get mealVoiceTypedTitle => 'Mô tả bữa ăn';
+
+  @override
+  String get mealVoiceBackToRecording => 'Quay lại ghi âm';
+
+  @override
+  String get mealVoiceConfirmHeading => 'Lành nghe xong rồi';
+
+  @override
+  String get mealVoiceConfirmBody => 'Sửa chữ nếu chưa đúng trước khi gửi.';
+
+  @override
+  String get mealVoiceTypedBody => 'Ghi tên món và lượng ăn để Lành ước lượng.';
+
+  @override
+  String get mealVoiceTranscriptLabel => 'Chữ chuyển từ giọng nói';
+
+  @override
+  String get mealVoiceTypedLabel => 'Mô tả của bạn';
+
+  @override
+  String mealVoiceWordCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count từ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String mealVoiceTooLong(int max) {
+    return 'Mô tả tối đa $max ký tự.';
+  }
+
+  @override
+  String get mealVoicePrivacy =>
+      'Chỉ chữ này được gửi lên Lành để ước lượng món.';
+
+  @override
+  String get mealVoiceSend => 'Gửi phân tích';
+
+  @override
+  String get mealVoiceRecordAgain => 'Ghi lại';
+
+  @override
+  String get mealEstimationReceivedText => 'Đã nhận lời kể';
+
+  @override
+  String get mealEstimationRecognizingText => 'Nhận diện món từ lời kể';
+
+  @override
+  String get mealEstimationTextErrorBody =>
+      'Lành chưa nhận ra món nào trong lời kể. Thử ghi rõ tên món và lượng ăn. Lời kể vẫn được giữ lại.';
+
+  @override
+  String get mealEstimationTextNetworkBody =>
+      'Lành chưa kết nối được máy chủ phân tích. Kiểm tra mạng rồi thử lại. Lời kể vẫn được giữ lại.';
+
+  @override
+  String get mealEstimationTextUnavailableBody =>
+      'Máy chủ phân tích đang bận hoặc phản hồi quá lâu. Vui lòng thử lại sau ít phút. Lời kể vẫn được giữ lại.';
+
+  @override
+  String get mealReviewTextDisclaimer =>
+      'Số liệu là ước tính từ lời kể, có thể lệch so với phần bạn thực ăn.';
+
+  @override
+  String get mealReviewVoiceLabel => 'Bữa ăn từ lời kể';
+
+  @override
+  String get mealVoicePreparing => 'Đang mở micro…';
+
+  @override
+  String get mealVoiceNoAccess =>
+      'Chạm micro để thử lại, bật quyền trong Cài đặt, hoặc nhập bằng chữ.';
+
+  @override
+  String get mealVoiceSpeakHint => 'Kể tên món và lượng ăn';
+
+  @override
+  String get mealVoiceStartAction => 'Bắt đầu nói';
+
+  @override
+  String get mealVoiceAllowAction => 'Cho phép micro';
+
+  @override
+  String get mealVoiceReadyTitle => 'Lành sẵn sàng nghe';
+
+  @override
+  String get mealVoiceNotHeardTitle => 'Lành chưa nghe rõ';
+
+  @override
+  String get mealVoiceNoAccessTitle => 'Lành chưa được dùng micro';
+
+  @override
+  String get mealVoiceRecording => 'Đang ghi âm';
+
+  @override
+  String get mealVoiceStop => 'Dừng ghi âm';
+
+  @override
+  String get mealVoiceStopCaption => 'Chạm để dừng và kiểm tra chữ';
+
+  @override
+  String get mealVoiceStartCaption => 'Chạm để bắt đầu nói';
+
+  @override
+  String get mealVoiceAllowCaption => 'Chạm để cho phép micro';
 }

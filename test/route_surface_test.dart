@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lanh_app/features/meal_logging/domain/meal_photo_repository.dart';
+import 'package:lanh_app/features/meal_logging/meal_logging_providers.dart';
 import 'package:lanh_app/features/meal_logging/presentation/meal_method_sheet.dart';
 import 'package:lanh_app/features/meal_logging/presentation/meal_photo_flow.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';

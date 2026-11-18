@@ -9,6 +9,7 @@ part 'src/background.dart';
 part 'src/buttons.dart';
 part 'src/bottom_bar.dart';
 part 'src/empty_state.dart';
+part 'src/glass_surface.dart';
 part 'src/icon.dart';
 part 'src/media_overlay.dart';
 part 'src/option_card.dart';

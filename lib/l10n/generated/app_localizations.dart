@@ -314,12 +314,6 @@ abstract class AppLocalizations {
   /// **'Bữa quen'**
   String get templates;
 
-  /// No description provided for @mealMethodsNotice.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ghi bằng giọng nói · Sắp có'**
-  String get mealMethodsNotice;
-
   /// No description provided for @mealPhotoBack.
   ///
   /// In vi, this message translates to:
@@ -392,17 +386,29 @@ abstract class AppLocalizations {
   /// **'Ảnh bữa ăn đang xem lại'**
   String get mealPhotoReviewLabel;
 
+  /// No description provided for @mealPhotoCaptured.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh đã chụp'**
+  String get mealPhotoCaptured;
+
+  /// No description provided for @mealPhotoReadyTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh đã sẵn sàng'**
+  String get mealPhotoReadyTitle;
+
+  /// No description provided for @mealPhotoReadyBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành sẽ ước lượng calo từ ảnh này. Kết quả là ước tính, bạn kiểm tra lại trước khi lưu.'**
+  String get mealPhotoReadyBody;
+
   /// No description provided for @mealPhotoEstimate.
   ///
   /// In vi, this message translates to:
   /// **'Ước lượng bữa ăn'**
   String get mealPhotoEstimate;
-
-  /// No description provided for @mealPhotoEstimateUnavailable.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tính năng ước lượng bữa ăn chưa khả dụng.'**
-  String get mealPhotoEstimateUnavailable;
 
   /// No description provided for @mealPhotoRetake.
   ///
@@ -847,6 +853,552 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Ước tính'**
   String get todayEstimated;
+
+  /// No description provided for @mealEstimationNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết quả là ước tính'**
+  String get mealEstimationNotice;
+
+  /// No description provided for @mealEstimatingTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành đang ước lượng'**
+  String get mealEstimatingTitle;
+
+  /// No description provided for @mealEstimatingBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thường mất vài giây. Bạn sẽ kiểm tra lại trước khi lưu.'**
+  String get mealEstimatingBody;
+
+  /// No description provided for @mealEstimationErrorTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ước lượng được'**
+  String get mealEstimationErrorTitle;
+
+  /// No description provided for @mealEstimationErrorBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa nhìn rõ bữa này. Thử chụp gần hơn hoặc dưới ánh sáng tốt hơn. Ảnh vẫn được giữ lại.'**
+  String get mealEstimationErrorBody;
+
+  /// No description provided for @mealEstimationCancel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy phân tích'**
+  String get mealEstimationCancel;
+
+  /// No description provided for @mealEstimationReceived.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhận ảnh'**
+  String get mealEstimationReceived;
+
+  /// No description provided for @mealEstimationRecognizing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận diện món trong ảnh'**
+  String get mealEstimationRecognizing;
+
+  /// No description provided for @mealEstimationPortion.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước lượng khẩu phần'**
+  String get mealEstimationPortion;
+
+  /// No description provided for @mealEstimationCalories.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính calo ước tính'**
+  String get mealEstimationCalories;
+
+  /// No description provided for @mealEstimationDone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get mealEstimationDone;
+
+  /// No description provided for @mealEstimationWorking.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang làm'**
+  String get mealEstimationWorking;
+
+  /// No description provided for @mealEstimationWaiting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ'**
+  String get mealEstimationWaiting;
+
+  /// No description provided for @mealEstimationNetworkBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa kết nối được máy chủ phân tích. Kiểm tra mạng rồi thử lại. Ảnh vẫn được giữ lại.'**
+  String get mealEstimationNetworkBody;
+
+  /// No description provided for @mealEstimationUnavailableBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy chủ phân tích đang bận hoặc phản hồi quá lâu. Vui lòng thử lại sau ít phút. Ảnh vẫn được giữ lại.'**
+  String get mealEstimationUnavailableBody;
+
+  /// No description provided for @mealEstimationInvalidPhotoBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa đọc được ảnh này. Hãy chụp lại hoặc chọn ảnh khác.'**
+  String get mealEstimationInvalidPhotoBody;
+
+  /// No description provided for @mealEstimationNotConfiguredBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản ứng dụng này chưa được cấu hình máy chủ phân tích bữa ăn.'**
+  String get mealEstimationNotConfiguredBody;
+
+  /// No description provided for @mealReviewTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra bữa ăn'**
+  String get mealReviewTitle;
+
+  /// No description provided for @mealReviewPhotoLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh bữa ăn'**
+  String get mealReviewPhotoLabel;
+
+  /// No description provided for @mealReviewEstimateBadge.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước tính'**
+  String get mealReviewEstimateBadge;
+
+  /// No description provided for @mealReviewKcal.
+  ///
+  /// In vi, this message translates to:
+  /// **'kcal'**
+  String get mealReviewKcal;
+
+  /// No description provided for @mealReviewUnknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa rõ'**
+  String get mealReviewUnknown;
+
+  /// No description provided for @mealReviewItemCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} món}}'**
+  String mealReviewItemCount(int count);
+
+  /// No description provided for @mealReviewPortionGroup.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn khẩu phần cả bữa'**
+  String get mealReviewPortionGroup;
+
+  /// No description provided for @mealReviewPortionHalf.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nửa phần'**
+  String get mealReviewPortionHalf;
+
+  /// No description provided for @mealReviewPortionOne.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 phần'**
+  String get mealReviewPortionOne;
+
+  /// No description provided for @mealReviewPortionOneHalf.
+  ///
+  /// In vi, this message translates to:
+  /// **'1,5 phần'**
+  String get mealReviewPortionOneHalf;
+
+  /// No description provided for @mealReviewItemsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các món'**
+  String get mealReviewItemsTitle;
+
+  /// No description provided for @mealReviewMissingCalories.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} món chưa có calo nên chưa được tính vào tổng.}}'**
+  String mealReviewMissingCalories(int count);
+
+  /// No description provided for @mealReviewDisclaimer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số liệu là ước tính từ ảnh, có thể lệch so với phần bạn thực ăn.'**
+  String get mealReviewDisclaimer;
+
+  /// No description provided for @mealReviewSaveSoon.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu bữa ăn · Sắp có'**
+  String get mealReviewSaveSoon;
+
+  /// No description provided for @mealReviewDiscard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy, không lưu'**
+  String get mealReviewDiscard;
+
+  /// No description provided for @mealUnitGram.
+  ///
+  /// In vi, this message translates to:
+  /// **'g'**
+  String get mealUnitGram;
+
+  /// No description provided for @mealUnitMilliliter.
+  ///
+  /// In vi, this message translates to:
+  /// **'ml'**
+  String get mealUnitMilliliter;
+
+  /// No description provided for @mealUnitServing.
+  ///
+  /// In vi, this message translates to:
+  /// **'phần'**
+  String get mealUnitServing;
+
+  /// No description provided for @mealUnitPiece.
+  ///
+  /// In vi, this message translates to:
+  /// **'cái'**
+  String get mealUnitPiece;
+
+  /// No description provided for @mealReviewClose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng, không lưu'**
+  String get mealReviewClose;
+
+  /// No description provided for @mealReviewEnergy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng năng lượng'**
+  String get mealReviewEnergy;
+
+  /// No description provided for @mealReviewNutrients.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chất dinh dưỡng'**
+  String get mealReviewNutrients;
+
+  /// No description provided for @mealReviewNutrientsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đạm {protein}, tinh bột {carbs}, chất béo {fat}'**
+  String mealReviewNutrientsLabel(String protein, String carbs, String fat);
+
+  /// No description provided for @mealReviewProtein.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đạm'**
+  String get mealReviewProtein;
+
+  /// No description provided for @mealReviewCarbs.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tinh bột'**
+  String get mealReviewCarbs;
+
+  /// No description provided for @mealReviewFat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chất béo'**
+  String get mealReviewFat;
+
+  /// No description provided for @mealReviewFatShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Béo'**
+  String get mealReviewFatShort;
+
+  /// No description provided for @mealReviewNameJoin.
+  ///
+  /// In vi, this message translates to:
+  /// **'{first} và {last}'**
+  String mealReviewNameJoin(String first, String last);
+
+  /// No description provided for @mealReviewAddToday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vào hôm nay'**
+  String get mealReviewAddToday;
+
+  /// No description provided for @mealReviewMacroChip.
+  ///
+  /// In vi, this message translates to:
+  /// **'{label} {value}'**
+  String mealReviewMacroChip(String label, String value);
+
+  /// No description provided for @mealVoiceTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi giọng nói'**
+  String get mealVoiceTitle;
+
+  /// No description provided for @mealVoiceTimerLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi {seconds} giây'**
+  String mealVoiceTimerLabel(Object seconds);
+
+  /// No description provided for @mealVoiceHeading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kể bữa bạn vừa ăn'**
+  String get mealVoiceHeading;
+
+  /// No description provided for @mealVoiceExample.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: “Ăn một tô phở bò tái, thêm ly trà đá”'**
+  String get mealVoiceExample;
+
+  /// No description provided for @mealVoiceFinishing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuyển thành chữ…'**
+  String get mealVoiceFinishing;
+
+  /// No description provided for @mealVoiceCancel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy ghi'**
+  String get mealVoiceCancel;
+
+  /// No description provided for @mealVoiceNoSpeech.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa nghe thấy lời nào. Chạm micro và kể lại nhé.'**
+  String get mealVoiceNoSpeech;
+
+  /// No description provided for @mealVoiceLanguageUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiết bị chưa hỗ trợ nhận giọng nói tiếng Việt. Bạn có thể nhập bằng chữ.'**
+  String get mealVoiceLanguageUnavailable;
+
+  /// No description provided for @mealVoiceRecognitionError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa nhận được giọng nói. Kiểm tra mạng rồi thử lại, hoặc nhập bằng chữ.'**
+  String get mealVoiceRecognitionError;
+
+  /// No description provided for @mealVoiceTypeInstead.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập bằng chữ'**
+  String get mealVoiceTypeInstead;
+
+  /// No description provided for @mealVoiceUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiết bị này chưa hỗ trợ ghi giọng nói. Bạn có thể nhập bằng chữ.'**
+  String get mealVoiceUnavailable;
+
+  /// No description provided for @mealVoiceConfirmTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra lời nói'**
+  String get mealVoiceConfirmTitle;
+
+  /// No description provided for @mealVoiceTypedTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả bữa ăn'**
+  String get mealVoiceTypedTitle;
+
+  /// No description provided for @mealVoiceBackToRecording.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại ghi âm'**
+  String get mealVoiceBackToRecording;
+
+  /// No description provided for @mealVoiceConfirmHeading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành nghe xong rồi'**
+  String get mealVoiceConfirmHeading;
+
+  /// No description provided for @mealVoiceConfirmBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa chữ nếu chưa đúng trước khi gửi.'**
+  String get mealVoiceConfirmBody;
+
+  /// No description provided for @mealVoiceTypedBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi tên món và lượng ăn để Lành ước lượng.'**
+  String get mealVoiceTypedBody;
+
+  /// No description provided for @mealVoiceTranscriptLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chữ chuyển từ giọng nói'**
+  String get mealVoiceTranscriptLabel;
+
+  /// No description provided for @mealVoiceTypedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả của bạn'**
+  String get mealVoiceTypedLabel;
+
+  /// No description provided for @mealVoiceWordCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} từ}}'**
+  String mealVoiceWordCount(int count);
+
+  /// No description provided for @mealVoiceTooLong.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả tối đa {max} ký tự.'**
+  String mealVoiceTooLong(int max);
+
+  /// No description provided for @mealVoicePrivacy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ chữ này được gửi lên Lành để ước lượng món.'**
+  String get mealVoicePrivacy;
+
+  /// No description provided for @mealVoiceSend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi phân tích'**
+  String get mealVoiceSend;
+
+  /// No description provided for @mealVoiceRecordAgain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi lại'**
+  String get mealVoiceRecordAgain;
+
+  /// No description provided for @mealEstimationReceivedText.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã nhận lời kể'**
+  String get mealEstimationReceivedText;
+
+  /// No description provided for @mealEstimationRecognizingText.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận diện món từ lời kể'**
+  String get mealEstimationRecognizingText;
+
+  /// No description provided for @mealEstimationTextErrorBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa nhận ra món nào trong lời kể. Thử ghi rõ tên món và lượng ăn. Lời kể vẫn được giữ lại.'**
+  String get mealEstimationTextErrorBody;
+
+  /// No description provided for @mealEstimationTextNetworkBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa kết nối được máy chủ phân tích. Kiểm tra mạng rồi thử lại. Lời kể vẫn được giữ lại.'**
+  String get mealEstimationTextNetworkBody;
+
+  /// No description provided for @mealEstimationTextUnavailableBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Máy chủ phân tích đang bận hoặc phản hồi quá lâu. Vui lòng thử lại sau ít phút. Lời kể vẫn được giữ lại.'**
+  String get mealEstimationTextUnavailableBody;
+
+  /// No description provided for @mealReviewTextDisclaimer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số liệu là ước tính từ lời kể, có thể lệch so với phần bạn thực ăn.'**
+  String get mealReviewTextDisclaimer;
+
+  /// No description provided for @mealReviewVoiceLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bữa ăn từ lời kể'**
+  String get mealReviewVoiceLabel;
+
+  /// No description provided for @mealVoicePreparing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang mở micro…'**
+  String get mealVoicePreparing;
+
+  /// No description provided for @mealVoiceNoAccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm micro để thử lại, bật quyền trong Cài đặt, hoặc nhập bằng chữ.'**
+  String get mealVoiceNoAccess;
+
+  /// No description provided for @mealVoiceSpeakHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kể tên món và lượng ăn'**
+  String get mealVoiceSpeakHint;
+
+  /// No description provided for @mealVoiceStartAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu nói'**
+  String get mealVoiceStartAction;
+
+  /// No description provided for @mealVoiceAllowAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cho phép micro'**
+  String get mealVoiceAllowAction;
+
+  /// No description provided for @mealVoiceReadyTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành sẵn sàng nghe'**
+  String get mealVoiceReadyTitle;
+
+  /// No description provided for @mealVoiceNotHeardTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa nghe rõ'**
+  String get mealVoiceNotHeardTitle;
+
+  /// No description provided for @mealVoiceNoAccessTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa được dùng micro'**
+  String get mealVoiceNoAccessTitle;
+
+  /// No description provided for @mealVoiceRecording.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang ghi âm'**
+  String get mealVoiceRecording;
+
+  /// No description provided for @mealVoiceStop.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dừng ghi âm'**
+  String get mealVoiceStop;
+
+  /// No description provided for @mealVoiceStopCaption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để dừng và kiểm tra chữ'**
+  String get mealVoiceStopCaption;
+
+  /// No description provided for @mealVoiceStartCaption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để bắt đầu nói'**
+  String get mealVoiceStartCaption;
+
+  /// No description provided for @mealVoiceAllowCaption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để cho phép micro'**
+  String get mealVoiceAllowCaption;
 }
 
 class _AppLocalizationsDelegate

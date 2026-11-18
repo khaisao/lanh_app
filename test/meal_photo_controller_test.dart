@@ -2,13 +2,119 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lanh_app/features/meal_logging/domain/meal_analysis.dart';
 import 'package:lanh_app/features/meal_logging/domain/meal_photo_repository.dart';
 import 'package:lanh_app/features/meal_logging/presentation/meal_camera.dart';
 import 'package:lanh_app/features/meal_logging/presentation/meal_photo_controller.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'support/test_meal_analysis_repository.dart';
+
 void main() {
   final photo = MealPhoto(Uint8List.fromList([1]));
+
+  testWidgets('estimation requires a photo in review', (tester) async {
+    final analysis = TestMealAnalysisRepository();
+    final controller = MealPhotoController(
+      _Repository(),
+      (_) async => _Camera(),
+      isActive: false,
+      analysis: analysis,
+    );
+    unawaited(controller.startEstimation());
+    await tester.pump();
+    expect(controller.stage, MealPhotoStage.checking);
+    expect(analysis.requests, isEmpty);
+    controller.dispose();
+  });
+
+  testWidgets('estimation failure, retry and result keep the same draft', (
+    tester,
+  ) async {
+    final analysis = TestMealAnalysisRepository();
+    final controller = MealPhotoController(
+      _Repository(),
+      (_) async => _Camera(),
+      recoveredPhoto: photo,
+      isActive: false,
+      analysis: analysis,
+    );
+    unawaited(controller.startEstimation());
+    expect(controller.stage, MealPhotoStage.estimating);
+    unawaited(controller.startEstimation());
+    expect(analysis.requests, hasLength(1));
+    analysis.fail(MealAnalysisFailureKind.network);
+    await tester.pump();
+    expect(controller.stage, MealPhotoStage.estimationError);
+    expect(controller.estimationFailure, MealAnalysisFailureKind.network);
+    expect(controller.photo, same(photo));
+
+    unawaited(controller.startEstimation());
+    expect(controller.estimationFailure, isNull);
+    analysis.succeed();
+    await tester.pump();
+    expect(controller.stage, MealPhotoStage.result);
+    expect(analysis.requests, hasLength(2));
+    expect(analysis.requests.toSet(), hasLength(1));
+    expect(controller.analysis!.totalCalories(), 580);
+
+    controller.selectPortion(0.5);
+    expect(controller.portionScale, 0.5);
+    expect(controller.analysis!.totalCalories(controller.portionScale), 290);
+    controller.selectPortion(0.7);
+    expect(controller.portionScale, 0.5);
+
+    controller.returnToPhoto();
+    expect(controller.stage, MealPhotoStage.review);
+    expect(controller.analysis, isNull);
+    expect(controller.photo, same(photo));
+    controller.dispose();
+  });
+
+  testWidgets('cancelling ignores a late estimate and aborts the request', (
+    tester,
+  ) async {
+    final analysis = TestMealAnalysisRepository();
+    final controller = MealPhotoController(
+      _Repository(),
+      (_) async => _Camera(),
+      recoveredPhoto: photo,
+      isActive: false,
+      analysis: analysis,
+    );
+    unawaited(controller.startEstimation());
+    controller.returnToPhoto();
+    await tester.pump();
+    expect(analysis.cancelled, hasLength(1));
+    analysis.succeed();
+    await tester.pump();
+    expect(controller.stage, MealPhotoStage.review);
+    expect(controller.analysis, isNull);
+    controller.dispose();
+  });
+
+  testWidgets('disposing estimation cancels its pending notification', (
+    tester,
+  ) async {
+    final analysis = TestMealAnalysisRepository();
+    final controller = MealPhotoController(
+      _Repository(),
+      (_) async => _Camera(),
+      recoveredPhoto: photo,
+      isActive: false,
+      analysis: analysis,
+    );
+    var notifications = 0;
+    controller.addListener(() => notifications++);
+    unawaited(controller.startEstimation());
+    final beforeDispose = notifications;
+    controller.dispose();
+    analysis.succeed();
+    await tester.pump();
+    expect(notifications, beforeDispose);
+    expect(analysis.cancelled, hasLength(1));
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('switching releases the old camera and serializes user actions', (
     tester,
@@ -18,14 +124,19 @@ void main() {
     final opening = Completer<MealCamera>();
     final facings = <MealCameraFacing>[];
     int? closesBeforeOpening;
-    final controller = MealPhotoController(_Repository(), (facing) {
-      facings.add(facing);
-      if (facing == MealCameraFacing.front) {
-        closesBeforeOpening = back.closes;
-        return opening.future;
-      }
-      return Future.value(back);
-    }, isActive: true);
+    final controller = MealPhotoController(
+      _Repository(),
+      (facing) {
+        facings.add(facing);
+        if (facing == MealCameraFacing.front) {
+          closesBeforeOpening = back.closes;
+          return opening.future;
+        }
+        return Future.value(back);
+      },
+      isActive: true,
+      analysis: TestMealAnalysisRepository(),
+    );
     await controller.checkAccess();
     await tester.pump();
     unawaited(controller.switchCamera());
@@ -66,13 +177,18 @@ void main() {
     (tester) async {
       final facings = <MealCameraFacing>[];
       final camera = _Camera()..captureResult = Future.value(photo);
-      final controller = MealPhotoController(_Repository(), (facing) async {
-        facings.add(facing);
-        if (facing == MealCameraFacing.front) {
-          throw StateError('Front unavailable');
-        }
-        return camera;
-      }, isActive: true);
+      final controller = MealPhotoController(
+        _Repository(),
+        (facing) async {
+          facings.add(facing);
+          if (facing == MealCameraFacing.front) {
+            throw StateError('Front unavailable');
+          }
+          return camera;
+        },
+        isActive: true,
+        analysis: TestMealAnalysisRepository(),
+      );
       await controller.checkAccess();
       await tester.pump();
       await controller.switchCamera();
@@ -99,10 +215,15 @@ void main() {
       ..canSwitchFacing = false
       ..captureResult = pending.future;
     var opens = 0;
-    final controller = MealPhotoController(_Repository(), (facing) async {
-      opens++;
-      return camera;
-    }, isActive: true);
+    final controller = MealPhotoController(
+      _Repository(),
+      (facing) async {
+        opens++;
+        return camera;
+      },
+      isActive: true,
+      analysis: TestMealAnalysisRepository(),
+    );
     await controller.checkAccess();
     await tester.pump();
     await controller.switchCamera();
@@ -127,14 +248,19 @@ void main() {
       final stale = _Camera()..facing = MealCameraFacing.front;
       final fresh = _Camera()..facing = MealCameraFacing.front;
       var opens = 0;
-      final controller = MealPhotoController(_Repository(), (facing) {
-        opens++;
-        return opens == 1
-            ? Future.value(old)
-            : opens == 2
-            ? pending.future
-            : Future.value(fresh);
-      }, isActive: true);
+      final controller = MealPhotoController(
+        _Repository(),
+        (facing) {
+          opens++;
+          return opens == 1
+              ? Future.value(old)
+              : opens == 2
+              ? pending.future
+              : Future.value(fresh);
+        },
+        isActive: true,
+        analysis: TestMealAnalysisRepository(),
+      );
       await controller.checkAccess();
       await tester.pump();
       unawaited(controller.switchCamera());
@@ -163,6 +289,7 @@ void main() {
       (facing) =>
           facing == MealCameraFacing.back ? Future.value(old) : pending.future,
       isActive: true,
+      analysis: TestMealAnalysisRepository(),
     );
     await controller.checkAccess();
     await tester.pump();
@@ -187,6 +314,7 @@ void main() {
       _Repository(),
       (facing) async => opens++ == 0 ? first : second,
       isActive: true,
+      analysis: TestMealAnalysisRepository(),
     );
     await controller.checkAccess();
     await tester.pump();
@@ -224,6 +352,7 @@ void main() {
       _Repository(),
       (facing) async => opens++ == 0 ? first : second,
       isActive: true,
+      analysis: TestMealAnalysisRepository(),
     );
     await controller.checkAccess();
     await tester.pump();
@@ -253,6 +382,7 @@ void main() {
       _Repository(),
       (facing) => pending.future,
       isActive: true,
+      analysis: TestMealAnalysisRepository(),
     );
     await controller.checkAccess();
     await tester.pump();
@@ -274,6 +404,7 @@ void main() {
       _Repository(),
       (facing) => opens++ == 0 ? pending.future : Future.value(fresh),
       isActive: true,
+      analysis: TestMealAnalysisRepository(),
     );
     await controller.checkAccess();
     await tester.pump();
@@ -296,6 +427,7 @@ void main() {
       _Repository(),
       (facing) => Future.error(StateError('No cameras available')),
       isActive: true,
+      analysis: TestMealAnalysisRepository(),
     );
     await controller.checkAccess();
     await tester.pump();
@@ -314,6 +446,7 @@ void main() {
       _Repository(),
       (facing) async => opens++ == 0 ? first : second,
       isActive: true,
+      analysis: TestMealAnalysisRepository(),
     );
     await controller.checkAccess();
     await tester.pump();
@@ -337,6 +470,7 @@ void main() {
         _Repository(),
         (facing) async => camera,
         isActive: true,
+        analysis: TestMealAnalysisRepository(),
         preparePhoto: (_) => decoded.future,
       );
       await controller.checkAccess();

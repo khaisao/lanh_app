@@ -8,17 +8,17 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Lành</string>
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>vi</string>
-		<string>en</string>
-	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>vi</string>
+		<string>en</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>Lanh</string>
 	<key>CFBundlePackageType</key>
@@ -31,8 +31,14 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Lành chuyển lời bạn kể thành chữ để bạn kiểm tra trước khi ước lượng bữa ăn.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Lành dùng camera để bạn chụp ảnh bữa ăn.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Lành kết nối máy chủ phân tích bữa ăn trong mạng cục bộ khi bạn ước lượng bữa ăn.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Lành dùng micro để bạn kể bữa vừa ăn bằng giọng nói.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Lành mở thư viện để bạn chọn ảnh bữa ăn.</string>
 	<key>UIApplicationSceneManifest</key>

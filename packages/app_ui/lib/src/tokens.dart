@@ -27,6 +27,9 @@ abstract final class AppColors {
   static const navActionHighlight = Color(0xFF578561);
   static const navActionRim = Color(0xBB9CC09A);
   static const modalBarrier = Color(0x403B2F25);
+  // MealReview glass export: `border-white/60` and `border-white/50`.
+  static const glassEdge = Color(0x99FFFFFF);
+  static const glassRim = Color(0x80FFFFFF);
 }
 
 abstract final class AppSpacing {
@@ -66,9 +69,33 @@ abstract final class AppRadii {
   // The export multiplies rounded-xl (20) and rounded-2xl (24) by 2.5.
   static const exportCompactSquircle = 50.0;
   static const exportCardSquircle = 60.0;
+  // PhotoEstimating / PhotoEstimationError export radii, including CSS squircle scaling.
+  static const estimationSteps = 70.0;
+  static const estimationHero = 110.0;
+  // MealReview glass radii (rem x 16 x the 2.5 squircle multiplier).
+  static const glassHero = 90.0;
+  static const glassPanel = 80.0;
+  static const glassItem = 70.0;
 }
 
 abstract final class AppSizes {
+  // VoiceMealInput / VoiceMealConfirm export geometry.
+  static const voiceGradient = 520.0;
+  static const voiceMascot = 96.0;
+  static const voiceConfirmMascot = 64.0;
+  // Recorder waveform: `h-32` with `w-[3px]` bars and 3px gaps.
+  static const voiceWaveform = 128.0;
+  static const voiceWaveBar = 3.0;
+  static const voiceRecordDot = 10.0;
+  static const voiceRecordButton = 80.0;
+  // Live-text state (VoiceLiveB – ThinWave): `h-10` waveform band,
+  // `text-[28px]` words with a 1.1em caret capped at `max-h-[22rem]`, and
+  // the blur the words rise from.
+  static const voiceWaveformBand = 40.0;
+  static const voiceCaret = 30.0;
+  static const voiceLiveTextMax = 352.0;
+  static const voiceRevealBlur = 8.0;
+  static const iconBadge = 11.0;
   static const iconInfo = 14.0;
   static const iconXs = 16.0;
   static const iconSm = 18.0;
@@ -104,6 +131,30 @@ abstract final class AppSizes {
   // CameraPreview export sizes. The surrounding action target remains 56 dp.
   static const photoCloseControl = 44.0;
   static const photoControl = 48.0;
+  // PhotoPreview export geometry.
+  static const photoPreviewImageHeight = 440.0;
+  static const photoPreviewRetake = 56.0;
+  static const photoPreviewBadge = 36.0;
+  static const photoPreviewBadgeMax = 168.0;
+  static const photoPreviewPageHorizontal = 20.0;
+  // PhotoEstimating / PhotoEstimationError export geometry.
+  static const estimationMascot = 112.0;
+  static const estimationErrorMascot = 144.0;
+  static const estimationPhotoInset = 18.0;
+  static const estimationRingInset = 7.0;
+  static const estimationGradient = 480.0;
+  static const estimationStepIcon = 32.0;
+  static const estimationNotice = 36.0;
+  static const estimationErrorIcon = 22.0;
+  static const estimationStatusMax = 96.0;
+  static const estimationBlur = 64.0;
+  static const estimationGlassBlur = 24.0;
+  // MealReview export geometry.
+  static const mealReviewHero = 224.0;
+  static const mealReviewMacroBar = 10.0;
+  static const mealReviewMascot = 40.0;
+  static const glassControl = 44.0;
+  static const glassBlur = 20.0;
 }
 
 abstract final class AppBorders {
@@ -125,6 +176,101 @@ abstract final class AppChartFactors {
 }
 
 abstract final class AppShadows {
+  // VoiceMealInput stop button: `0 16px 32px -12px rgba(47,93,58,.85)`.
+  static const voiceRecord = [
+    BoxShadow(
+      color: Color(0xD92F5D3A),
+      blurRadius: 32,
+      spreadRadius: -12,
+      offset: Offset(0, 16),
+    ),
+  ];
+  static const photoPreviewImage = BoxShadow(
+    color: Color(0x803B2F25),
+    blurRadius: 60,
+    spreadRadius: -26,
+    offset: Offset(0, 32),
+  );
+  static const photoPreviewCard = BoxShadow(
+    color: Color(0x4D3B2F25),
+    blurRadius: 36,
+    spreadRadius: -20,
+    offset: Offset(0, 16),
+  );
+  // PhotoEstimating and PhotoEstimationError export shadows.
+  static const estimationSteps = [
+    BoxShadow(
+      color: Color(0x4D3B2F25),
+      blurRadius: 36,
+      spreadRadius: -18,
+      offset: Offset(0, 16),
+    ),
+  ];
+  static const estimationHero = [
+    BoxShadow(
+      color: Color(0x4D3B2F25),
+      blurRadius: 48,
+      spreadRadius: -20,
+      offset: Offset(0, 24),
+    ),
+  ];
+  static const estimationAction = [
+    BoxShadow(
+      color: Color(0xB32F5D3A),
+      blurRadius: 28,
+      spreadRadius: -10,
+      offset: Offset(0, 12),
+    ),
+  ];
+  // MealReview glass shadows.
+  static const glassPanel = [
+    BoxShadow(
+      color: Color(0x593B2F25),
+      blurRadius: 48,
+      spreadRadius: -24,
+      offset: Offset(0, 24),
+    ),
+  ];
+  static const glassItem = [
+    BoxShadow(
+      color: Color(0x593B2F25),
+      blurRadius: 36,
+      spreadRadius: -22,
+      offset: Offset(0, 18),
+    ),
+  ];
+  static const glassControl = [
+    BoxShadow(
+      color: Color(0x663B2F25),
+      blurRadius: 28,
+      spreadRadius: -12,
+      offset: Offset(0, 10),
+    ),
+  ];
+  static const glassDock = [
+    BoxShadow(
+      color: Color(0x733B2F25),
+      blurRadius: 60,
+      spreadRadius: -20,
+      offset: Offset(0, 30),
+    ),
+  ];
+  static const mealReviewHero = [
+    BoxShadow(
+      color: Color(0x8C3B2F25),
+      blurRadius: 60,
+      spreadRadius: -28,
+      offset: Offset(0, 32),
+    ),
+  ];
+  static const primaryGlow = [
+    BoxShadow(
+      color: Color(0xCC2F5D3A),
+      blurRadius: 30,
+      spreadRadius: -12,
+      offset: Offset(0, 14),
+    ),
+  ];
   static const nav = [
     BoxShadow(
       color: Color(0x403B2F25),
@@ -254,6 +400,15 @@ abstract final class AppTypography {
     fontWeight: FontWeight.w700,
     height: 1.1,
   );
+  static const numericDisplay = TextStyle(
+    fontFamily: AppFonts.heading,
+    color: AppColors.foreground,
+    fontSize: 60,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w700,
+    height: 1,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
   static const numericLarge = TextStyle(
     fontFamily: AppFonts.heading,
     color: AppColors.foreground,
@@ -301,6 +456,44 @@ abstract final class AppTypography {
     height: 20 / 14,
   );
   static final photoPermissionBody = bodySmall.copyWith(fontSize: 15);
+  static final estimationBody = photoPermissionBody.copyWith(height: 1.625);
+  static final photoPreviewHeading = title.copyWith(fontSize: 20, height: 1.25);
+  static final photoPreviewBody = bodySmall.copyWith(fontSize: 14, height: 1.5);
+  static final estimationStep = estimationBody.copyWith(
+    color: AppColors.foreground,
+    fontWeight: FontWeight.w500,
+    height: 1.5,
+  );
+  // VoiceMealInput timer: `font-heading text-7xl font-bold tabular-nums
+  // tracking-tight leading-none`.
+  static const voiceTimer = TextStyle(
+    fontFamily: AppFonts.heading,
+    color: AppColors.foreground,
+    fontSize: 72,
+    letterSpacing: -1.8,
+    fontWeight: FontWeight.w700,
+    height: 1,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
+  // Live-text status time: `text-base font-semibold tabular-nums`.
+  static const voiceInlineTimer = TextStyle(
+    fontFamily: AppFonts.body,
+    color: AppColors.foreground,
+    fontSize: 16,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
+  // Live-text state words: `font-heading text-[28px] font-bold leading-snug`.
+  static const voiceLiveText = TextStyle(
+    fontFamily: AppFonts.heading,
+    color: AppColors.foreground,
+    fontSize: 28,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w700,
+    height: 1.375,
+  );
   static const error = TextStyle(
     fontFamily: AppFonts.body,
     color: AppColors.destructive,
