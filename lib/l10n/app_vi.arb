@@ -250,6 +250,7 @@
   "mealVoiceBackToRecording": "Quay lại ghi âm",
   "mealVoiceConfirmHeading": "Lành nghe xong rồi",
   "mealVoiceConfirmBody": "Sửa chữ nếu chưa đúng trước khi gửi.",
+  "mealVoiceConfirmHint": "Kết quả chỉ là ước lượng, bạn kiểm tra trước khi lưu.",
   "mealVoiceTypedBody": "Ghi tên món và lượng ăn để Lành ước lượng.",
   "mealVoiceTranscriptLabel": "Chữ chuyển từ giọng nói",
   "mealVoiceTypedLabel": "Mô tả của bạn",

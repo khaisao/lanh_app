@@ -119,10 +119,11 @@ class _VoiceGlow extends StatelessWidget {
 /// Header row: a 44 dp glass control, a centered title and an empty slot of
 /// the same width so the title stays centered.
 class _VoiceHeader extends StatelessWidget {
-  const _VoiceHeader({required this.title, required this.leading});
+  const _VoiceHeader({required this.title, required this.leading, this.color});
 
   final String title;
   final Widget leading;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -134,7 +135,7 @@ class _VoiceHeader extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTypography.sectionTitle,
+            style: AppTypography.sectionTitle.copyWith(color: color),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

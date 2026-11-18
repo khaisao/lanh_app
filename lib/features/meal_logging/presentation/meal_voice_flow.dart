@@ -151,7 +151,9 @@ class _MealVoiceFlowState extends ConsumerState<MealVoiceFlow> {
         }
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
+        value: stage == MealVoiceStage.confirm
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         child: switch (stage) {
           MealVoiceStage.checking ||
           MealVoiceStage.idle ||

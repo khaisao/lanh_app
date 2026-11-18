@@ -1232,6 +1232,12 @@ abstract class AppLocalizations {
   /// **'Sửa chữ nếu chưa đúng trước khi gửi.'**
   String get mealVoiceConfirmBody;
 
+  /// No description provided for @mealVoiceConfirmHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết quả chỉ là ước lượng, bạn kiểm tra trước khi lưu.'**
+  String get mealVoiceConfirmHint;
+
   /// No description provided for @mealVoiceTypedBody.
   ///
   /// In vi, this message translates to:

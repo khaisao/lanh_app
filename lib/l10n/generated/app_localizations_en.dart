@@ -641,6 +641,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mealVoiceConfirmBody => 'Fix any words before sending.';
 
   @override
+  String get mealVoiceConfirmHint =>
+      'This is an estimate. Check it before saving.';
+
+  @override
   String get mealVoiceTypedBody =>
       'Write the dishes and how much you ate for Lành to estimate.';
 

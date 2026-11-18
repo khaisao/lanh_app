@@ -12,7 +12,7 @@ Từ **Ghi bữa ăn → Ghi bằng giọng nói**, Lành mở màn **Ghi giọn
 - Sóng âm: plugin chỉ báo âm lượng ~10 lần/giây và gồm cả tiếng ồn phòng (đo trên iPhone 15 Plus: 0,12–0,19, khoảng −44…−40 dBFS). `VoiceWaveModel` học mức ồn nền (giảm nhanh, tăng chậm ~6 giây), chỉ phần vượt nền ~4 dB mới thành sóng, làm mượt bằng envelope (lên ~60 ms, xuống ~320 ms) và cho từng vạch trượt dần tới chiều cao đích mỗi frame; im lặng là hàng chấm phẳng, khi nói sóng đối xứng cao ở giữa. Animation chỉ repaint canvas.
 - Không nghe được chữ nào: trở về micro với lý do (chưa nghe rõ, thiết bị không hỗ trợ tiếng Việt, lỗi nhận dạng). Có chữ thì vẫn giữ dù hệ thống báo lỗi muộn.
 - Chọn Ghi bằng giọng nói đóng bảng chọn rồi mở màn ghi âm. **X**, **Hủy ghi**, Back hệ thống ở màn ghi âm và đóng màn kết quả đều hủy phiên và quay thẳng về tab đã mở tác vụ, không mở lại bảng chọn (giống luồng ảnh). Back ở màn kiểm tra quay về micro (chưa ghi); **Ghi lại** ghi phiên mới ngay.
-- Màn kiểm tra: ô chữ sửa được, đếm từ thực, tối đa 500 ký tự, nút Gửi phân tích bị vô hiệu khi trống/quá dài. Nhập bằng chữ dùng cùng màn với tiêu đề Mô tả bữa ăn.
+- Màn kiểm tra dùng nền xanh với mascot và tiêu đề ở giữa, cùng một thẻ trắng nổi phía dưới cho ô chữ sửa được, đếm từ thực, ghi chú ước lượng và nút Gửi phân tích. Nút bị vô hiệu khi trống/quá dài; thẻ cuộn được ở màn nhỏ hoặc khi chữ lớn. Nhập bằng chữ dùng cùng bố cục với tiêu đề Mô tả bữa ăn.
 - Ước lượng: cùng nội dung giữ cùng `request_id` khi thử lại; sửa chữ tạo request mới. Quay lại/Back hủy request và bỏ qua kết quả đến muộn. Lỗi giữ nguyên lời kể. Kết quả là bản nháp chưa lưu, giống luồng ảnh.
 - Reduce Motion dừng gợn sóng, sóng âm và chấm nhấp nháy. Không ghi chữ, âm thanh hay kết quả vào log.
 

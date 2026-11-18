@@ -637,6 +637,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mealVoiceConfirmBody => 'Sửa chữ nếu chưa đúng trước khi gửi.';
 
   @override
+  String get mealVoiceConfirmHint =>
+      'Kết quả chỉ là ước lượng, bạn kiểm tra trước khi lưu.';
+
+  @override
   String get mealVoiceTypedBody => 'Ghi tên món và lượng ăn để Lành ước lượng.';
 
   @override

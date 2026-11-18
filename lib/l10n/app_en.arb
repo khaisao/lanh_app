@@ -203,6 +203,7 @@
   "mealVoiceBackToRecording": "Back to recording",
   "mealVoiceConfirmHeading": "Lành heard you",
   "mealVoiceConfirmBody": "Fix any words before sending.",
+  "mealVoiceConfirmHint": "This is an estimate. Check it before saving.",
   "mealVoiceTypedBody": "Write the dishes and how much you ate for Lành to estimate.",
   "mealVoiceTranscriptLabel": "Text from your voice",
   "mealVoiceTypedLabel": "Your description",

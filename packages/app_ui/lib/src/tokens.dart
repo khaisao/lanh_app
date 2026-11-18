@@ -83,6 +83,7 @@ abstract final class AppSizes {
   static const voiceGradient = 520.0;
   static const voiceMascot = 96.0;
   static const voiceConfirmMascot = 64.0;
+  static const voiceConfirmHeroMascot = 144.0;
   // Recorder waveform: `h-32` with `w-[3px]` bars and 3px gaps.
   static const voiceWaveform = 128.0;
   static const voiceWaveBar = 3.0;
