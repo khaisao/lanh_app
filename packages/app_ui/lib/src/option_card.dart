@@ -1,7 +1,7 @@
 part of '../app_ui.dart';
 
 /// The icon, label and caret row in the goal and meal picker exports.
-class AppOptionCard extends StatefulWidget {
+class AppOptionCard extends StatelessWidget {
   const AppOptionCard({
     super.key,
     required this.icon,
@@ -22,113 +22,75 @@ class AppOptionCard extends StatefulWidget {
   final double caretSize;
 
   @override
-  State<AppOptionCard> createState() => _AppOptionCardState();
-}
-
-class _AppOptionCardState extends State<AppOptionCard> {
-  bool _pressed = false;
-
-  @override
   Widget build(BuildContext context) {
-    const radius = BorderRadius.all(Radius.circular(AppRadii.cardSquircle));
-    final foreground = widget.primary
+    final foreground = primary
         ? AppColors.primaryForeground
         : AppColors.foreground;
-    final mutedForeground = widget.primary
+    final mutedForeground = primary
         ? AppColors.primaryForeground.withValues(alpha: 0.8)
         : AppColors.mutedForeground;
-    final shape = RoundedSuperellipseBorder(
-      borderRadius: radius,
-      side: widget.primary
-          ? BorderSide.none
-          : widget.selected
-          ? const BorderSide(
-              color: AppColors.primary,
-              width: AppBorders.selected,
-            )
-          : const BorderSide(color: AppColors.border),
-    );
     return Semantics(
       button: true,
-      enabled: widget.onPressed != null,
-      selected: widget.selected,
-      child: AnimatedScale(
-        scale: _pressed ? AppScales.pressedCard : 1,
-        duration: AppMotion.duration(context),
-        child: Material(
-          color: widget.primary
-              ? AppColors.primary
-              : widget.selected
-              ? AppColors.secondary
-              : AppColors.card,
-          shape: shape,
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: widget.onPressed,
-            onHighlightChanged: (value) => setState(() => _pressed = value),
-            child: Padding(
-              padding: const EdgeInsets.all(
-                AppSpacing.md + AppBorders.hairline,
+      enabled: onPressed != null,
+      selected: selected,
+      child: AppGlassCard(
+        tone: primary
+            ? AppGlassTone.primary
+            : selected
+            ? AppGlassTone.selected
+            : AppGlassTone.glass,
+        onPressed: onPressed,
+        padding: const EdgeInsets.all(AppSpacing.md + AppBorders.hairline),
+        child: Row(
+          children: [
+            SizedBox.square(
+              dimension: AppChoice.well,
+              child: DecoratedBox(
+                decoration: ShapeDecoration(
+                  color: primary
+                      ? AppColors.primaryForeground.withValues(alpha: 0.15)
+                      : selected
+                      ? AppChoice.wellSelected
+                      : AppChoice.wellIdle,
+                  shape: const AppSquircleBorder(radius: AppRadii.glassInner),
+                ),
+                child: Center(
+                  child: AppIcon.asset(
+                    icon,
+                    color: primary
+                        ? foreground
+                        : selected
+                        ? AppChoice.iconSelected
+                        : AppChoice.iconIdle,
+                  ),
+                ),
               ),
-              child: Row(
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox.square(
-                    dimension: AppSizes.choiceIcon,
-                    child: DecoratedBox(
-                      decoration: ShapeDecoration(
-                        color: widget.primary
-                            ? AppColors.primaryForeground.withValues(
-                                alpha: 0.15,
-                              )
-                            : widget.selected
-                            ? AppColors.card
-                            : AppColors.secondary,
-                        shape: const RoundedSuperellipseBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(AppRadii.md),
-                          ),
-                        ),
-                      ),
-                      child: Center(
-                        child: AppIcon.asset(
-                          widget.icon,
-                          color: widget.primary
-                              ? foreground
-                              : AppColors.primary,
-                        ),
-                      ),
-                    ),
+                  Text(
+                    title,
+                    style: AppTypography.cardTitle.copyWith(color: foreground),
                   ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.title,
-                          style: AppTypography.cardTitle.copyWith(
-                            color: foreground,
-                          ),
-                        ),
-                        Text(
-                          widget.description,
-                          style: AppTypography.optionDescription.copyWith(
-                            color: mutedForeground,
-                          ),
-                        ),
-                      ],
+                  Text(
+                    description,
+                    style: AppTypography.optionDescription.copyWith(
+                      color: mutedForeground,
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  AppIcon.asset(
-                    'ph-caret-right',
-                    size: widget.caretSize,
-                    color: mutedForeground,
                   ),
                 ],
               ),
             ),
-          ),
+            const SizedBox(width: AppSpacing.md),
+            AppIcon.asset(
+              'ph-caret-right',
+              size: caretSize,
+              color: mutedForeground,
+            ),
+          ],
         ),
       ),
     );

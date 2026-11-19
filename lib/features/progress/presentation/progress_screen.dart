@@ -367,16 +367,13 @@ class _SurfaceCard extends StatelessWidget {
   final Widget child;
   final Color color;
 
+  // Flat liquid glass as on Today; the tinted variant keeps its colour.
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => AppGlassCard(
     padding: const EdgeInsets.all(AppSpacing.card),
-    decoration: BoxDecoration(
-      color: color,
-      border: color == AppColors.card
-          ? Border.all(color: AppColors.border)
-          : null,
-      borderRadius: BorderRadius.circular(AppRadii.md),
-    ),
+    radius: AppRadii.glassInner,
+    shadows: const [],
+    fill: color == AppColors.card ? null : color,
     child: child,
   );
 }

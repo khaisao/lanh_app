@@ -14,6 +14,23 @@ class AppSquircleBorder extends OutlinedBorder {
   ShapeBorder scale(double t) =>
       AppSquircleBorder(radius: radius * t, side: side.scale(t));
 
+  // Lets ShapeDecoration tween the outline when a card changes state.
+  @override
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) => a is AppSquircleBorder
+      ? AppSquircleBorder(
+          radius: ui.lerpDouble(a.radius, radius, t)!,
+          side: BorderSide.lerp(a.side, side, t),
+        )
+      : super.lerpFrom(a, t);
+
+  @override
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) => b is AppSquircleBorder
+      ? AppSquircleBorder(
+          radius: ui.lerpDouble(radius, b.radius, t)!,
+          side: BorderSide.lerp(side, b.side, t),
+        )
+      : super.lerpTo(b, t);
+
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
       _path(rect.inflate(side.strokeOutset), radius + side.strokeOutset);

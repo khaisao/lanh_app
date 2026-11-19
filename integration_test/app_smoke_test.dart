@@ -42,11 +42,9 @@ void main() {
         await tester.enterText(input, value);
         await tester.pumpAndSettle();
       }
-      tester
-          .widget<TextButton>(find.byKey(const Key('profile-sex-female')))
-          .onPressed!
-          .call();
+      FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();
+      await tap(find.byKey(const Key('profile-sex-female')));
       await tap(action);
       await tap(find.text('Chủ yếu ngồi'));
       await tap(action);

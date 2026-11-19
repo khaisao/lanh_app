@@ -20,3 +20,8 @@ final profileGoalProvider = Provider<AsyncValue<Goal?>>((ref) {
   }
   return profile.whenData((value) => value?.goal);
 });
+
+/// The confirmed daily kcal target, or null when none was chosen.
+final profileEnergyTargetProvider = Provider<int?>(
+  (ref) => ref.watch(savedProfileProvider).value?.dailyEnergyKcal,
+);

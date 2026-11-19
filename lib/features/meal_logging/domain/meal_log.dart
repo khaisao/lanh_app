@@ -51,7 +51,8 @@ final class MealLog {
   final double? totalCarbohydrate;
   final double? totalFat;
 
-  List<String> get names => items.map((item) => item.name).toList(growable: false);
+  List<String> get names =>
+      items.map((item) => item.name).toList(growable: false);
 
   factory MealLog.fromAnalysis({
     required int id,

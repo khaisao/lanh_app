@@ -1,12 +1,10 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-const _cardShape = AppSquircleBorder(
-  radius: AppRadii.exportCardSquircle,
-  side: BorderSide(color: AppColors.border),
-);
-
+/// Progress marks for the four setup steps, with the glass back control from
+/// the Body/Target exports on every step after the first.
 class ProfileStepBar extends StatelessWidget {
   const ProfileStepBar({
     super.key,
@@ -27,35 +25,18 @@ class ProfileStepBar extends StatelessWidget {
     return Row(
       children: [
         if (step > 0) ...[
-          IconButton(
-            tooltip: strings.profileBack,
-            onPressed: onBack,
-            style: IconButton.styleFrom(
-              foregroundColor: AppColors.foreground,
-              fixedSize: const Size.square(AppSizes.compactAction),
-              minimumSize: const Size.square(AppSizes.compactAction),
-              padding: EdgeInsets.zero,
+          Transform.translate(
+            // The 56 dp target keeps the 44 dp glass circle on the page edge.
+            offset: const Offset(
+              -(AppSizes.action - AppSizes.glassControl) / 2,
+              0,
             ),
-            icon: const Align(
-              alignment: AlignmentDirectional.topStart,
-              child: SizedBox.square(
-                dimension: AppSizes.avatar,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.card,
-                    border: Border.fromBorderSide(
-                      BorderSide(color: AppColors.border),
-                    ),
-                  ),
-                  child: Center(
-                    child: AppIcon.asset(
-                      'ph-arrow-left',
-                      size: AppSizes.iconSm,
-                    ),
-                  ),
-                ),
-              ),
+            child: AppGlassIconButton(
+              icon: 'ph-arrow-left',
+              tooltip: strings.profileBack,
+              color: AppColors.foreground,
+              iconSize: AppSizes.iconSm,
+              onPressed: onBack,
             ),
           ),
           const SizedBox(width: AppSpacing.xs),
@@ -64,22 +45,19 @@ class ProfileStepBar extends StatelessWidget {
           child: Semantics(
             label: strings.profileStepStatus(step + 1),
             explicitChildNodes: true,
-            child: Transform.translate(
-              offset: Offset(0, step > 0 ? -AppSpacing.xxs : 0),
-              child: Row(
-                spacing: AppSpacing.stepGap,
-                children: [
-                  for (var index = 0; index < titles.length; index++)
-                    Expanded(
-                      child: _StepMark(
-                        attained: index <= step,
-                        current: index == step && step > 0,
-                        label: strings.profileEditStep(titles[index]),
-                        onTap: index < step ? () => onStep(index) : null,
-                      ),
+            child: Row(
+              spacing: AppSpacing.stepGap,
+              children: [
+                for (var index = 0; index < titles.length; index++)
+                  Expanded(
+                    child: _StepMark(
+                      attained: index <= step,
+                      current: index == step && step > 0,
+                      label: strings.profileEditStep(titles[index]),
+                      onTap: index < step ? () => onStep(index) : null,
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         ),
@@ -103,19 +81,36 @@ class _StepMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mark = Container(
+    // The primary fill grows across the muted track as a step is reached
+    // and shrinks back when the user returns; the current step's halo fades.
+    final mark = AnimatedContainer(
+      duration: AppMotion.of(context, AppMotion.progressFill),
+      curve: Curves.easeInOutCubic,
       height: AppSpacing.stepGap,
       decoration: BoxDecoration(
-        color: attained ? AppColors.primary : AppColors.muted,
+        color: AppColors.muted,
         borderRadius: BorderRadius.circular(AppRadii.pill),
-        boxShadow: current
-            ? const [
-                BoxShadow(
-                  color: AppColors.secondary,
-                  spreadRadius: AppSpacing.xxs,
-                ),
-              ]
-            : null,
+        boxShadow: [
+          BoxShadow(
+            color: current ? AppColors.secondary : const Color(0x00FFFFFF),
+            spreadRadius: AppSpacing.xxs,
+          ),
+        ],
+      ),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(end: attained ? 1 : 0),
+        duration: AppMotion.of(context, AppMotion.progressFill),
+        curve: Curves.easeInOutCubic,
+        builder: (context, fill, _) => FractionallySizedBox(
+          alignment: AlignmentDirectional.centerStart,
+          widthFactor: fill,
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.all(Radius.circular(AppRadii.pill)),
+            ),
+          ),
+        ),
       ),
     );
     if (onTap == null) return mark;
@@ -134,6 +129,8 @@ class _StepMark extends StatelessWidget {
   }
 }
 
+/// Step heading: the bouncing hero mascot on the goal step, or the 64 dp
+/// mascot tile beside the title on later steps.
 class ProfileStepHeading extends StatelessWidget {
   const ProfileStepHeading({
     super.key,
@@ -143,14 +140,23 @@ class ProfileStepHeading extends StatelessWidget {
   });
 
   final String title;
-  final Widget subtitle;
+  final String subtitle;
   final bool hero;
 
   @override
   Widget build(BuildContext context) {
     final heading = Semantics(
       header: true,
-      child: Text(title, style: AppTypography.setupHeading),
+      child: Text(
+        title,
+        style: AppTypography.setupHeading,
+        textAlign: hero ? TextAlign.center : TextAlign.start,
+      ),
+    );
+    final caption = Text(
+      subtitle,
+      style: AppTypography.setupCaption,
+      textAlign: hero ? TextAlign.center : TextAlign.start,
     );
     if (hero) {
       return Column(
@@ -180,7 +186,7 @@ class ProfileStepHeading extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           heading,
           const SizedBox(height: AppSpacing.xs),
-          subtitle,
+          caption,
         ],
       );
     }
@@ -189,11 +195,11 @@ class ProfileStepHeading extends StatelessWidget {
         const DecoratedBox(
           decoration: ShapeDecoration(
             color: AppColors.secondary,
-            shape: AppSquircleBorder(radius: AppRadii.exportCardSquircle),
+            shape: AppSquircleBorder(radius: AppRadii.glassInner),
           ),
           child: Padding(
             padding: EdgeInsets.all(AppSpacing.xxs),
-            child: AppMascot(size: AppSizes.nav - 2 * AppSpacing.xxs),
+            child: AppMascot(size: AppSizes.avatarLarge),
           ),
         ),
         const SizedBox(width: AppSpacing.md),
@@ -201,7 +207,7 @@ class ProfileStepHeading extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: AppSpacing.xxs,
-            children: [heading, subtitle],
+            children: [heading, caption],
           ),
         ),
       ],
@@ -209,149 +215,172 @@ class ProfileStepHeading extends StatelessWidget {
   }
 }
 
-class ProfileFieldCard extends StatefulWidget {
-  const ProfileFieldCard({
-    super.key,
-    required this.label,
-    required this.child,
-    this.onTap,
-  });
+/// A 40 dp secondary icon well (`size-10 rounded-2xl bg-secondary`).
+class ProfileIconWell extends StatelessWidget {
+  const ProfileIconWell(this.icon, {super.key});
 
-  final String label;
-  final Widget child;
-  final VoidCallback? onTap;
+  final String icon;
 
   @override
-  State<ProfileFieldCard> createState() => _ProfileFieldCardState();
+  Widget build(BuildContext context) => ExcludeSemantics(
+    child: SizedBox.square(
+      dimension: AppSizes.avatar,
+      child: DecoratedBox(
+        decoration: const ShapeDecoration(
+          color: AppColors.secondary,
+          shape: AppSquircleBorder(radius: AppRadii.exportCompactSquircle),
+        ),
+        child: Center(
+          child: AppIcon.asset(
+            icon,
+            size: AppSizes.iconMd,
+            color: AppColors.secondaryForeground,
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
-class _ProfileFieldCardState extends State<ProfileFieldCard> {
-  bool _focused = false;
+/// Glass measurement card from Body Direction 2: tap anywhere to type the
+/// value. [inline] lays the label and value in one row (age); otherwise the
+/// icon, label and value stack (height, weight).
+final _decimal = RegExp(r'^\d{0,3}([.,]\d?)?$');
+
+class ProfileMeasureCard extends StatefulWidget {
+  const ProfileMeasureCard({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.controller,
+    required this.onChanged,
+    this.unit,
+    this.whole = false,
+    this.inputAction = TextInputAction.done,
+    this.inline = false,
+    this.error,
+  });
+
+  final String icon;
+  final String label;
+  final String? unit;
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+  final bool whole;
+
+  /// "Next" moves the keyboard to the following field; the last one is done.
+  final TextInputAction inputAction;
+  final bool inline;
+  final String? error;
+
+  @override
+  State<ProfileMeasureCard> createState() => _ProfileMeasureCardState();
+}
+
+class _ProfileMeasureCardState extends State<ProfileMeasureCard> {
+  final _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final shape = _focused
-        ? _cardShape.copyWith(
-            side: const BorderSide(
-              color: AppColors.primary,
-              width: AppBorders.selected,
-            ),
-          )
-        : _cardShape;
-    final content = Padding(
-      padding: const EdgeInsets.all(AppSpacing.md + AppBorders.hairline),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: AppSpacing.xxs,
-        children: [
-          ExcludeSemantics(
-            child: Text(widget.label, style: AppTypography.setupFieldLabel),
-          ),
-          widget.child,
+    final semanticsLabel = widget.unit == null
+        ? widget.label
+        : '${widget.label}, ${widget.unit}';
+    final input = Semantics(
+      label: semanticsLabel,
+      child: TextField(
+        controller: widget.controller,
+        focusNode: _focus,
+        onChanged: widget.onChanged,
+        textAlign: widget.inline ? TextAlign.end : TextAlign.start,
+        keyboardType: TextInputType.numberWithOptions(decimal: !widget.whole),
+        // Whole: up to 3 digits. Decimal: up to 3 digits, one separator
+        // (comma or dot) and one decimal, so "6,1,5" or ",," never appear.
+        inputFormatters: [
+          widget.whole
+              ? FilteringTextInputFormatter.digitsOnly
+              : TextInputFormatter.withFunction(
+                  (old, next) => _decimal.hasMatch(next.text) ? next : old,
+                ),
+          LengthLimitingTextInputFormatter(widget.whole ? 3 : 5),
         ],
+        textInputAction: widget.inputAction,
+        style: AppTypography.setupNumber,
+        decoration: const InputDecoration(
+          isCollapsed: true,
+          filled: false,
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
+        ),
       ),
     );
-    return Focus(
-      canRequestFocus: false,
-      skipTraversal: true,
-      onFocusChange: (focused) => setState(() => _focused = focused),
-      child: DecoratedBox(
-        decoration: ShapeDecoration(color: AppColors.card, shape: shape),
-        child: widget.onTap == null
-            ? content
-            : Material(
-                type: MaterialType.transparency,
-                child: InkWell(
-                  customBorder: shape,
-                  onTap: widget.onTap,
-                  child: content,
-                ),
+    final label = ExcludeSemantics(
+      child: Text(
+        widget.label,
+        style: AppTypography.label,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+    final value = Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      spacing: AppSpacing.xxs,
+      children: [
+        Expanded(child: input),
+        if (widget.unit case final unit?)
+          ExcludeSemantics(
+            child: Text(unit, style: AppTypography.setupCaption),
+          ),
+      ],
+    );
+    // Part of the field for tap-outside: tapping the card focuses it
+    // instead of closing the keyboard first.
+    final card = TextFieldTapRegion(
+      child: AppGlassCard(
+        tone: _focus.hasFocus ? AppGlassTone.selected : AppGlassTone.glass,
+        onPressed: _focus.requestFocus,
+        pressedScale: 1,
+        // Focus only fades the outline in: no tinted fill, no pop.
+        fill: AppGlass.fill,
+        popOnSelect: false,
+        child: widget.inline
+            ? Row(
+                spacing: AppSpacing.md,
+                children: [
+                  ProfileIconWell(widget.icon),
+                  Expanded(child: label),
+                  SizedBox(width: AppSizes.setupBadgeMax / 2, child: value),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: AppSpacing.sm,
+                children: [ProfileIconWell(widget.icon), label, value],
               ),
       ),
     );
-  }
-}
-
-class ProfileNumberField extends StatelessWidget {
-  const ProfileNumberField({
-    super.key,
-    required this.label,
-    required this.unit,
-    required this.controller,
-    required this.validator,
-    this.inputKey,
-    this.whole = false,
-    this.large = false,
-    this.onChanged,
-  });
-
-  final String label;
-  final String unit;
-  final TextEditingController controller;
-  final FormFieldValidator<String> validator;
-  final Key? inputKey;
-  final bool whole;
-  final bool large;
-  final ValueChanged<String>? onChanged;
-
-  @override
-  Widget build(BuildContext context) => FormField<String>(
-    initialValue: controller.text,
-    validator: validator,
-    autovalidateMode: AutovalidateMode.onUserInteraction,
-    builder: (field) => Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ProfileFieldCard(
-          label: label,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            spacing: AppSpacing.xxs,
-            children: [
-              Expanded(
-                child: Semantics(
-                  label: '$label ($unit)',
-                  child: TextField(
-                    key: inputKey,
-                    controller: controller,
-                    onChanged: (value) {
-                      field.didChange(value);
-                      onChanged?.call(value);
-                    },
-                    keyboardType: TextInputType.numberWithOptions(
-                      decimal: !whole,
-                    ),
-                    textInputAction: TextInputAction.done,
-                    style: large
-                        ? AppTypography.setupTargetNumber
-                        : AppTypography.setupNumber,
-                    decoration: const InputDecoration(
-                      isCollapsed: true,
-                      filled: false,
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
-                ),
-              ),
-              ExcludeSemantics(
-                child: Text(
-                  unit,
-                  style: large
-                      ? AppTypography.setupCaption
-                      : AppTypography.navLabel,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (field.errorText case final error?) ProfileFieldError(error),
+        card,
+        if (widget.error case final error?) ProfileFieldError(error),
       ],
-    ),
-  );
+    );
+  }
 }
 
 class ProfileFieldError extends StatelessWidget {
@@ -361,57 +390,13 @@ class ProfileFieldError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: AppSpacing.xxs),
+    padding: const EdgeInsetsDirectional.only(
+      start: AppSpacing.xxs,
+      top: AppSpacing.xxs,
+    ),
     child: Semantics(
       liveRegion: true,
       child: Text(message, style: AppTypography.error),
     ),
-  );
-}
-
-class ProfileFieldset extends StatelessWidget {
-  const ProfileFieldset({super.key, required this.label, required this.child});
-
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) => Stack(
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(top: AppSpacing.xs),
-        child: DecoratedBox(
-          decoration: const ShapeDecoration(
-            color: AppColors.card,
-            shape: _cardShape,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md + AppBorders.hairline,
-              AppSpacing.md + AppSpacing.denseGap + AppBorders.hairline,
-              AppSpacing.md + AppBorders.hairline,
-              AppSpacing.md + AppBorders.hairline,
-            ),
-            child: child,
-          ),
-        ),
-      ),
-      PositionedDirectional(
-        start: AppSpacing.md + AppBorders.hairline,
-        top: 0,
-        child: ExcludeSemantics(
-          child: ColoredBox(
-            color: AppColors.background,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxs),
-              child: Text(
-                label,
-                style: AppTypography.setupFieldLabel.copyWith(height: 16 / 12),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ],
   );
 }

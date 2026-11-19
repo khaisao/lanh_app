@@ -245,9 +245,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get profileBody => 'Về bạn';
 
   @override
-  String get profileBodyCaption => 'Chỉ để ước tính.';
-
-  @override
   String get profileAge => 'Tuổi';
 
   @override
@@ -263,20 +260,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get profileSex => 'Giới tính';
 
   @override
-  String get profileBodyInsightTitle => 'Thông tin cơ thể';
-
-  @override
-  String get profileBodyInsightEmpty =>
-      'Nhập đủ tuổi, chiều cao, cân nặng và giới tính để xem thông tin tham khảo.';
-
-  @override
-  String get profileBmiLabel => 'BMI hiện tại';
-
-  @override
   String get profileBmiAdultUnderweight => 'Dưới vùng khỏe mạnh';
 
   @override
-  String get profileBmiAdultHealthy => 'Trong vùng khỏe mạnh';
+  String get profileBmiAdultHealthy => 'Trong khoảng thường gặp';
 
   @override
   String get profileBmiAdultOverweight => 'Cao hơn vùng khỏe mạnh';
@@ -286,11 +273,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get profileBmiTeenHint =>
-      'Tuổi 13–19 được so theo tuổi và giới, không dùng ngưỡng người lớn.';
-
-  @override
-  String get profileBmiHint =>
-      'BMI chỉ là chỉ số tham khảo, không phải chẩn đoán.';
+      'Tuổi 13–19: Lành đọc theo tuổi và giới (CDC), không dùng ngưỡng người lớn.';
 
   @override
   String get profileFemale => 'Nữ';
@@ -305,48 +288,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get profileTargetWeight => 'Cân nặng mong muốn';
 
   @override
-  String get profileTargetSuggestionsTitle => 'Gợi ý từ Lành';
-
-  @override
-  String get profileTargetSuggestionsSubtitle =>
-      'Chọn một mốc để bắt đầu; bạn vẫn có thể chỉnh lại.';
-
-  @override
-  String profileTargetSuggestionFive(String weight) {
-    return 'Mục tiêu ban đầu · $weight kg';
-  }
-
-  @override
-  String profileTargetSuggestionTen(String weight) {
-    return 'Mục tiêu dài hơn · $weight kg';
-  }
-
-  @override
-  String profileTargetSuggestionGain(String weight) {
-    return 'Tăng đều · $weight kg';
-  }
-
-  @override
-  String get profileTargetSuggestionCustom => 'Tự nhập mục tiêu';
-
-  @override
-  String get profileTargetManualTitle => 'Mục tiêu của bạn';
-
-  @override
-  String get profileTargetManualChip => 'Tự nhập';
-
-  @override
-  String get profileTargetHelper =>
-      'Bạn có thể chỉnh con số này trước khi tiếp tục.';
-
-  @override
   String get profileTargetDate => 'Ngày muốn đạt';
 
   @override
   String get profilePickDate => 'Chọn ngày';
-
-  @override
-  String get profileWeeklyEstimate => 'Ước tính mỗi tuần';
 
   @override
   String get profileEstimate => 'Ước tính';
@@ -362,7 +307,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get profileActivityHeading => 'Một ngày thường';
 
   @override
-  String get profileActivityCaption => 'Chọn mức gần nhất.';
+  String get profileActivityCaption =>
+      'Chọn mức gần nhất để Lành ước tính năng lượng mỗi ngày.';
 
   @override
   String get profileSitting => 'Chủ yếu ngồi';
@@ -399,31 +345,13 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get profileInvalidAge => 'Nhập tuổi bằng số nguyên dương.';
+  String get profileInvalidAge => 'Tuổi chưa hợp lệ';
 
   @override
-  String get profileAgeTooYoung => 'Lành hỗ trợ mục tiêu cân nặng từ 13 tuổi.';
-
-  @override
-  String get profileInvalidNumber => 'Nhập một số lớn hơn 0.';
+  String get profileAgeTooYoung => 'Lành dành cho người từ 13 tuổi';
 
   @override
   String get profileMissingSex => 'Chọn giới tính để tiếp tục.';
-
-  @override
-  String get profileLowerTarget =>
-      'Cân nặng mong muốn phải thấp hơn cân hiện tại.';
-
-  @override
-  String get profileHigherTarget =>
-      'Cân nặng mong muốn phải cao hơn cân hiện tại.';
-
-  @override
-  String get profileTargetBelowHealthy =>
-      'Mục tiêu này thấp hơn vùng cân nặng khỏe mạnh theo chiều cao.';
-
-  @override
-  String get profileFutureDate => 'Chọn ngày sau hôm nay.';
 
   @override
   String get profileReview => 'Xem lại thông tin';
@@ -467,35 +395,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get profileTeenBmiStatusObesity => 'Cần được chuyên gia đánh giá';
-
-  @override
-  String get profileEstimateRecommended => 'Trong khoảng khuyến nghị';
-
-  @override
-  String get profileEstimateSlower => 'Chậm hơn nhưng vẫn hợp lý';
-
-  @override
-  String get profileEstimateTooFast =>
-      'Mục tiêu hơi nhanh — chọn ngày muộn hơn';
-
-  @override
-  String get profileEstimateCaution => 'Nên tăng chậm hơn';
-
-  @override
-  String get profileEstimateRate => 'Tốc độ dự kiến';
-
-  @override
-  String profileEstimateRateValue(String value) {
-    return '$value kg/tuần';
-  }
-
-  @override
-  String get profileEstimateDuration => 'Thời gian ước tính';
-
-  @override
-  String profileEstimateWeeks(int count) {
-    return 'Khoảng $count tuần';
-  }
 
   @override
   String profileEstimateDate(String date) {
@@ -543,9 +442,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get todayWater => 'Nước';
-
-  @override
-  String get todayNoMeals => 'Chưa ghi món nào hôm nay.';
 
   @override
   String get todayMealReadError => 'Chưa đọc được nhật ký hôm nay.';
@@ -890,4 +786,355 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get mealVoiceAllowCaption => 'Chạm để cho phép micro';
+
+  @override
+  String get profileBodyTapCaption => 'Chạm vào từng thẻ để nhập.';
+
+  @override
+  String get profileBmiEstimateTitle => 'BMI ước tính';
+
+  @override
+  String get profileBmiDisclaimer => 'Ước tính, không thay thế khám sức khỏe.';
+
+  @override
+  String get profileBmiAsianNote =>
+      'Theo ngưỡng WHO cho người châu Á: bình thường 18,5–22,9.';
+
+  @override
+  String get profileReadingAdult => 'Lành đọc theo người lớn.';
+
+  @override
+  String get profileHeightRange => 'Chiều cao trong khoảng 100–250 cm';
+
+  @override
+  String get profileWeightRange => 'Cân nặng trong khoảng 25–350 kg';
+
+  @override
+  String profileTargetSubtitle(String goal, String weight) {
+    return '$goal · hiện tại $weight kg';
+  }
+
+  @override
+  String get profileTargetModeLabel => 'Cách đặt mốc';
+
+  @override
+  String get profileTargetModeSuggested => 'Theo gợi ý của Lành';
+
+  @override
+  String get profileTargetModeCustom => 'Tự chọn';
+
+  @override
+  String profileTargetSuggestedFrom(String weight) {
+    return 'Lành tính sẵn từ cân nặng hiện tại $weight kg';
+  }
+
+  @override
+  String profileTargetPlanGentle(String percent) {
+    return 'Nhẹ nhàng · $percent%';
+  }
+
+  @override
+  String profileTargetPlanGainGentle(String percent) {
+    return 'Tăng nhẹ · $percent%';
+  }
+
+  @override
+  String profileTargetPlanLonger(String percent) {
+    return 'Mốc dài hơn · $percent%';
+  }
+
+  @override
+  String profileTargetRateApprox(String value) {
+    return '~$value kg/tuần';
+  }
+
+  @override
+  String profileTargetWeeksShort(int count) {
+    return '$count tuần';
+  }
+
+  @override
+  String get profileTargetCustomTitle => 'Mốc bạn đang chọn';
+
+  @override
+  String profileTargetCustomDeltaLose(String delta, String current) {
+    return 'Giảm $delta kg so với $current kg hiện tại';
+  }
+
+  @override
+  String profileTargetCustomDeltaGain(String delta, String current) {
+    return 'Tăng $delta kg so với $current kg hiện tại';
+  }
+
+  @override
+  String get profileTargetCustomEmpty => 'Chọn một mốc bên dưới.';
+
+  @override
+  String get profileTargetPickerLabel => 'Chọn cân nặng mong muốn (kg)';
+
+  @override
+  String profileTargetPickerRangeLose(String min) {
+    return 'Từ $min kg (BMI 18,5 theo chiều cao) đến dưới cân hiện tại.';
+  }
+
+  @override
+  String profileTargetPickerRangeGain(String max) {
+    return 'Từ trên cân hiện tại đến $max kg (BMI 24,9 theo chiều cao).';
+  }
+
+  @override
+  String get profileTargetWhenTitle => 'Khi nào muốn đạt?';
+
+  @override
+  String get profileTargetWhenLabel => 'Thời gian';
+
+  @override
+  String get profileTargetNoDate => 'Không đặt ngày';
+
+  @override
+  String get profileTargetNoDateNote =>
+      'Lành chỉ theo dõi xu hướng, không đặt ngày cụ thể.';
+
+  @override
+  String get profileTargetDateRequired => 'Chọn ngày muốn đạt.';
+
+  @override
+  String profileTargetEarliestDate(String date) {
+    return 'Sớm nhất trong nhịp an toàn: $date';
+  }
+
+  @override
+  String get profilePlanEstimateTitle => 'Ước tính kế hoạch';
+
+  @override
+  String get profilePlanRate => 'Tốc độ';
+
+  @override
+  String get profilePlanDuration => 'Thời gian';
+
+  @override
+  String profilePlanDurationValue(int count) {
+    return 'khoảng $count tuần';
+  }
+
+  @override
+  String get profilePaceGentle => 'Nhịp nhẹ nhàng, dễ duy trì';
+
+  @override
+  String get profilePaceCommonLose =>
+      'Trong khoảng 0,5–1 kg/tuần mà NHS và CDC mô tả là an toàn';
+
+  @override
+  String get profilePaceCommonGain =>
+      'Trong khoảng tăng từ từ 0,25–0,5% cân nặng mỗi tuần';
+
+  @override
+  String get profilePaceTooFast => 'Nhanh hơn mức an toàn — chọn ngày muộn hơn';
+
+  @override
+  String get profileTargetUnavailableLose =>
+      'Cân nặng hiện tại đã ở mức BMI 18,5 theo chiều cao. Lành không gợi ý giảm thêm; hãy cân nhắc Giữ cân hoặc hỏi chuyên gia.';
+
+  @override
+  String get profileTargetUnavailableGain =>
+      'Cân nặng hiện tại đã ở mức BMI 22,9 theo chiều cao. Lành không gợi ý tăng thêm; hãy cân nhắc Giữ cân hoặc hỏi chuyên gia.';
+
+  @override
+  String get profileTargetPreviousKept =>
+      'Mục tiêu cũ được giữ cho đến khi bạn xác nhận ở bước cuối.';
+
+  @override
+  String get profileActivitySittingHint => 'Làm văn phòng, ít đi lại';
+
+  @override
+  String get profileActivityLightHint => 'Đi lại nhẹ, làm việc nhà';
+
+  @override
+  String get profileActivityModerateHint => 'Bán hàng, phục vụ, đi bộ nhiều';
+
+  @override
+  String get profileActivityHeavyHint => 'Xây dựng, làm nông, tập luyện nặng';
+
+  @override
+  String get profileActivityVariableHint =>
+      'Lành tính theo mức thấp để an toàn';
+
+  @override
+  String get profileEnergyTitle => 'Cơ thể bạn dùng khoảng';
+
+  @override
+  String profileEnergyValue(String kcal) {
+    return '$kcal kcal/ngày';
+  }
+
+  @override
+  String profileEnergyRange(String low, String high) {
+    return '$low–$high kcal/ngày';
+  }
+
+  @override
+  String get profileEnergyCaption =>
+      'Ước tính từ tuổi, giới, chiều cao, cân nặng và mức vận động (Mifflin‑St Jeor × hệ số vận động FAO/WHO). Không thay thế tư vấn dinh dưỡng.';
+
+  @override
+  String get profileEnergyPickActivity =>
+      'Chọn một mức để xem năng lượng ước tính.';
+
+  @override
+  String get profilePregnancyLabel => 'Đang mang thai hoặc cho con bú';
+
+  @override
+  String get profilePregnancyHint =>
+      'Lành sẽ không tự tính kcal hay mục tiêu cân nặng.';
+
+  @override
+  String get profilePregnancyNote =>
+      'Khi mang thai hoặc cho con bú, nhu cầu thay đổi theo từng giai đoạn. Lành không tự lập kế hoạch cân nặng hay kcal; hãy hỏi bác sĩ hoặc chuyên gia dinh dưỡng.';
+
+  @override
+  String profileTargetDailyKcal(String kcal) {
+    return '≈ $kcal kcal/ngày';
+  }
+
+  @override
+  String profileTargetEnergyLimited(String kcal) {
+    return 'Lành kéo dài kế hoạch để bạn vẫn ăn ít nhất khoảng $kcal kcal/ngày.';
+  }
+
+  @override
+  String profileTargetUnavailableEnergy(String kcal) {
+    return 'Với mức vận động này, giảm cân sẽ cần ăn dưới mức an toàn (khoảng $kcal kcal/ngày). Hãy cân nhắc Giữ cân, vận động nhiều hơn hoặc hỏi chuyên gia.';
+  }
+
+  @override
+  String get profilePlanDailyKcal => 'Ăn khoảng';
+
+  @override
+  String profileTargetPlanModerate(String percent) {
+    return 'Vừa phải · $percent%';
+  }
+
+  @override
+  String get profileAgeEmpty => 'Nhập tuổi của bạn';
+
+  @override
+  String get profileHeightEmpty => 'Nhập chiều cao của bạn';
+
+  @override
+  String get profileWeightEmpty => 'Nhập cân nặng của bạn';
+
+  @override
+  String get planTitle => 'Kế hoạch của bạn';
+
+  @override
+  String get planDailyLabel => 'Mỗi ngày nên nạp';
+
+  @override
+  String planBodyUsesApprox(String kcal) {
+    return 'Cơ thể dùng ~$kcal';
+  }
+
+  @override
+  String planBodyUses(String kcal) {
+    return 'Cơ thể dùng $kcal';
+  }
+
+  @override
+  String planEat(String kcal) {
+    return 'Nạp $kcal';
+  }
+
+  @override
+  String planCut(String kcal) {
+    return 'Bớt $kcal';
+  }
+
+  @override
+  String planAdd(String kcal) {
+    return 'Thêm $kcal';
+  }
+
+  @override
+  String get planMatchesBody => 'Bằng mức cơ thể dùng';
+
+  @override
+  String get planTileTarget => 'Mục tiêu';
+
+  @override
+  String get planTilePerWeek => 'mỗi tuần';
+
+  @override
+  String get planTileDue => 'Dự kiến';
+
+  @override
+  String get planTileHold => 'Giữ quanh';
+
+  @override
+  String get planTileActivity => 'Vận động';
+
+  @override
+  String get planTileGoal => 'Mong muốn';
+
+  @override
+  String get planTileNow => 'Hiện tại';
+
+  @override
+  String get planNoKcalTitle => 'Theo dõi, không đếm kcal';
+
+  @override
+  String get planNoKcalTeen =>
+      'Giai đoạn này cần đủ năng lượng. Hỏi chuyên gia khi cần.';
+
+  @override
+  String get planNoKcalPregnant =>
+      'Nhu cầu thay đổi theo từng giai đoạn. Hỏi bác sĩ khi cần.';
+
+  @override
+  String get planStart => 'Bắt đầu';
+
+  @override
+  String get planEdit => 'Chỉnh lại';
+
+  @override
+  String get profileActivityShortSitting => 'Chủ yếu ngồi';
+
+  @override
+  String get profileActivityShortLight => 'Đi lại vừa';
+
+  @override
+  String get profileActivityShortModerate => 'Đi lại nhiều';
+
+  @override
+  String get profileActivityShortHeavy => 'Lao động nặng';
+
+  @override
+  String get profileActivityShortVariable => 'Thay đổi';
+
+  @override
+  String todayOfTarget(String target) {
+    return '/ $target kcal';
+  }
+
+  @override
+  String todayLeftKcal(String kcal) {
+    return 'Còn $kcal kcal';
+  }
+
+  @override
+  String todayOverKcal(String kcal) {
+    return 'Đã quá $kcal kcal';
+  }
+
+  @override
+  String get todayReachedKcal => 'Đã đạt mục tiêu';
+
+  @override
+  String get todayFirstMealTitle => 'Ghi bữa đầu tiên hôm nay';
+
+  @override
+  String get todayFirstMealBody =>
+      'Chụp ảnh, nói hoặc tìm món — Lành ước tính kcal cho bạn.';
+
+  @override
+  String get profileSwitchToMaintain => 'Chuyển sang Giữ cân';
 }

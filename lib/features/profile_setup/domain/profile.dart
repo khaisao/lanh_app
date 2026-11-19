@@ -11,6 +11,7 @@ class Profile {
     required this.sex,
     required this.activityLevel,
     required this.goal,
+    this.dailyEnergyKcal,
   });
 
   final int ageYears;
@@ -18,6 +19,9 @@ class Profile {
   final ProfileSex sex;
   final ActivityLevel activityLevel;
   final Goal goal;
+
+  /// Daily kcal target the user confirmed; null until they choose one.
+  final int? dailyEnergyKcal;
 }
 
 abstract interface class ProfileRepository {

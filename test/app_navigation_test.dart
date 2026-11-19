@@ -3,19 +3,21 @@ import 'dart:ui' show PointerDeviceKind;
 
 import 'package:app_ui/app_ui.dart' show AppBottomBar;
 
-import 'package:flutter/rendering.dart' show BackdropFilterLayer;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lanh_app/app/app_router.dart';
 import 'package:lanh_app/app/app.dart';
 import 'package:lanh_app/features/goal/goal.dart';
+import 'package:lanh_app/features/meal_logging/meal_logging.dart'
+    show mealLogRepositoryProvider;
 import 'package:lanh_app/features/onboarding/onboarding_providers.dart';
 import 'package:lanh_app/features/profile_setup/profile_setup_providers.dart';
 import 'package:material_ui/material_ui.dart'
     show DatePickerDialog, FilledButton, Icon, MaterialLocalizations;
 
 import 'support/test_goal_repository.dart';
+import 'support/test_meal_log_repository.dart';
 import 'support/test_onboarding_repository.dart';
 import 'support/test_profile_repository.dart';
 
@@ -59,12 +61,20 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  Future<void> fillBody(WidgetTester tester) async {
+  Future<void> fillBody(WidgetTester tester, {String weight = '62,5'}) async {
     await enterProfileValue(tester, 'age', '32');
     await enterProfileValue(tester, 'height', '160');
-    await enterProfileValue(tester, 'current-weight', '62,5');
+    await enterProfileValue(tester, 'current-weight', weight);
     await tapText(tester, 'Nữ');
     await tapSetupAction(tester);
+  }
+
+  Future<void> tapKey(WidgetTester tester, String key) async {
+    final target = find.byKey(Key(key));
+    await tester.ensureVisible(target);
+    await tester.pumpAndSettle();
+    await tester.tap(target);
+    await tester.pumpAndSettle();
   }
 
   Future<void> pickTargetDate(WidgetTester tester) async {
@@ -86,10 +96,16 @@ void main() {
     expect(find.text('Một ngày thường'), findsOneWidget);
   }
 
+  // Activity now comes before the target so plans can show kcal.
+  Future<void> chooseActivity(WidgetTester tester) async {
+    await tapText(tester, 'Chủ yếu ngồi');
+    await tapSetupAction(tester);
+  }
+
   Future<void> openReview(WidgetTester tester) async {
     await tapText(tester, 'Chủ yếu ngồi');
     await tapSetupAction(tester);
-    expect(find.text('Xem lại thông tin'), findsOneWidget);
+    expect(find.byKey(const Key('profile-plan-sheet')), findsOneWidget);
   }
 
   Future<void> openApp(
@@ -107,6 +123,7 @@ void main() {
         overrides: [
           onboardingRepositoryProvider.overrideWithValue(repository),
           goalRepositoryProvider.overrideWithValue(TestGoalRepository()),
+          mealLogRepositoryProvider.overrideWithValue(TestMealLogRepository()),
           profileRepositoryProvider.overrideWithValue(
             profiles ?? TestProfileRepository(),
           ),
@@ -135,11 +152,14 @@ void main() {
       await tapText(tester, 'Giảm cân');
       await tapSetupAction(tester);
       await fillBody(tester);
-      await enterProfileValue(tester, 'target-weight', '58');
+      await chooseActivity(tester);
+      await tapText(tester, 'Tự chọn');
+      await tapKey(tester, 'profile-target-kg-58');
+      await tapText(tester, 'Chọn ngày');
       await pickTargetDate(tester);
       await tapSetupAction(tester);
-      await openReview(tester);
-      await tapText(tester, 'Về Hôm nay');
+      expect(find.byKey(const Key('profile-plan-sheet')), findsOneWidget);
+      await tapText(tester, 'Bắt đầu');
       final container = ProviderScope.containerOf(
         tester.element(find.byType(Application)),
       );
@@ -148,7 +168,11 @@ void main() {
       expect(profile.heightCm, 160);
       expect(profile.goal.currentWeight, 62.5);
       expect(profile.goal.targetWeight, 58);
+      expect(profile.goal.targetDate, isNotNull);
       expect(profile.goal.type, GoalType.lose);
+      expect(profile.activityLevel.name, 'sitting');
+      // Lành's suggested budget is kept unless the user changes it.
+      expect(profile.dailyEnergyKcal, isNotNull);
       expect(find.byKey(const Key('today-energy-lose')), findsOneWidget);
       expect(tester.takeException(), isNull);
       expect(
@@ -343,7 +367,8 @@ void main() {
       expect(initialBounds.top, 48);
       expect(initialBounds.bottom, 600);
       expect(shown.bottom, 550);
-      expect(tester.layers.whereType<BackdropFilterLayer>(), hasLength(1));
+      // Today's glass cards blur too, so layer counts are not compared;
+      // the hidden nav is checked by its surface leaving the tree.
 
       final gesture = await tester.startGesture(initialBounds.center);
       await gesture.moveBy(const Offset(0, -60));
@@ -359,9 +384,6 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.getRect(list), initialBounds);
       expect(surface, accessibleNavigation ? findsOneWidget : findsNothing);
-      if (!accessibleNavigation) {
-        expect(tester.layers.whereType<BackdropFilterLayer>(), isEmpty);
-      }
 
       // Reverse midway through the list, while the same drag is active.
       await gesture.moveBy(const Offset(0, 40));
@@ -374,14 +396,15 @@ void main() {
       );
       await gesture.up();
 
-      await tester.drag(list, const Offset(0, -400));
+      // Scroll to the end: the taller first-meal card must clear the bar.
+      await tester.drag(list, const Offset(0, -1200));
       await tester.pumpAndSettle();
       final logMeal = find.descendant(
         of: find.byKey(const Key('today-screen')),
         matching: find.text('Ghi bữa ăn'),
       );
       expect(logMeal.hitTestable(), findsOneWidget);
-      await tester.drag(list, const Offset(0, 480));
+      await tester.drag(list, const Offset(0, 1400));
       await tester.pumpAndSettle();
       expect(tester.getRect(surface), shown);
       await tester.tap(action);
@@ -478,12 +501,14 @@ void main() {
     expect(find.byKey(const Key('progress-screen')), findsOneWidget);
   });
 
-  for (final (goal, invalid, valid, error) in [
-    ('Giảm cân', '64', '58', 'Cân nặng mong muốn phải thấp hơn cân hiện tại.'),
-    ('Tăng cân', '58', '65', 'Cân nặng mong muốn phải cao hơn cân hiện tại.'),
+  for (final (goal, weight, valid, outside) in [
+    // 62.5 kg at 160 cm can lose down to 48 kg (BMI 18.5).
+    ('Giảm cân', '62,5', '58', ['63', '47']),
+    // 55 kg at 160 cm can only gain to 58 kg before BMI 22.9.
+    ('Tăng cân', '55', '58', ['55', '59']),
   ]) {
     testWidgets(
-      '$goal validates the target and preserves the draft when going back',
+      '$goal offers only healthy targets and preserves the draft when going back',
       (tester) async {
         await openApp(tester);
         await tapText(tester, goalAction);
@@ -495,33 +520,71 @@ void main() {
         await tapText(tester, goal);
         await tapSetupAction(tester);
         await tapSetupAction(tester);
-        expect(find.text('Nhập tuổi bằng số nguyên dương.'), findsOneWidget);
-        await fillBody(tester);
+        // Empty fields get a short "enter it" hint.
+        expect(find.text('Nhập tuổi của bạn'), findsOneWidget);
+        // Male is preselected, so no sex error appears.
+        expect(find.text('Chọn giới tính để tiếp tục.'), findsNothing);
+        await fillBody(tester, weight: weight);
+        expect(find.byKey(const Key('profile-setup-activity')), findsOneWidget);
+        await chooseActivity(tester);
         expect(find.byKey(const Key('profile-setup-target')), findsOneWidget);
-        await enterProfileValue(tester, 'target-weight', invalid);
+        await tapText(tester, 'Tự chọn');
+        for (final kg in outside) {
+          expect(find.byKey(Key('profile-target-kg-$kg')), findsNothing);
+        }
+        await tapKey(tester, 'profile-target-kg-$valid');
+        await tapText(tester, 'Chọn ngày');
         await tapSetupAction(tester);
-        expect(find.text(error), findsOneWidget);
-        expect(find.text('Chọn ngày sau hôm nay.'), findsNothing);
-        await enterProfileValue(tester, 'target-weight', valid);
+        expect(find.text('Chọn ngày muốn đạt.'), findsOneWidget);
 
         await pickTargetDate(tester);
-        await tapSetupAction(tester);
-        expect(find.byKey(const Key('profile-setup-activity')), findsOneWidget);
-        expect(tester.widget<FilledButton>(button).onPressed, isNull);
 
         await tester.binding.handlePopRoute();
         await tester.pumpAndSettle();
-        expect(find.byKey(const Key('profile-setup-target')), findsOneWidget);
-        expect(find.text(valid), findsOneWidget);
+        expect(find.byKey(const Key('profile-setup-activity')), findsOneWidget);
         await tapSetupAction(tester);
-        await openReview(tester);
-        expect(find.text('Cân nặng mong muốn · $valid kg'), findsOneWidget);
-        await tapText(tester, 'Về Hôm nay');
+        expect(find.byKey(const Key('profile-setup-target')), findsOneWidget);
+        expect(find.text('$valid kg'), findsOneWidget);
+        await tapSetupAction(tester);
+        expect(find.byKey(const Key('profile-plan-sheet')), findsOneWidget);
+        // The plan's first tile is the chosen target.
+        expect(
+          find.descendant(
+            of: find.byKey(const Key('profile-plan-tile-0')),
+            matching: find.text('$valid kg'),
+          ),
+          findsOneWidget,
+        );
+        await tapText(tester, 'Bắt đầu');
         final mode = goal == 'Tăng cân' ? 'gain' : 'lose';
         expect(find.byKey(Key('today-energy-$mode')), findsOneWidget);
       },
     );
   }
+
+  testWidgets('plan start saves the shown kcal and opens a guided Today', (
+    tester,
+  ) async {
+    final profiles = TestProfileRepository();
+    await openApp(tester, profiles: profiles);
+    await reachActivity(tester);
+    await openReview(tester);
+    // Maintain, 32 y, 160 cm, 62.5 kg, mostly sitting: 1,825.6 → 1.850.
+    expect(find.text('1.850'), findsOneWidget);
+    await tapText(tester, 'Bắt đầu');
+    expect(profiles.profile?.dailyEnergyKcal, 1850);
+    expect(profiles.profile?.goal.type, GoalType.maintain);
+    // Today: "0 / 1.850 kcal", what is left, and the first-meal guide.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('/ 1.850 kcal'), findsOneWidget);
+    expect(find.text('Còn 1.850 kcal'), findsOneWidget);
+    expect(find.byKey(const Key('today-first-meal')), findsOneWidget);
+    expect(find.text('Ghi bữa đầu tiên hôm nay'), findsOneWidget);
+    expect(
+      tester.widget<AppBottomBar>(find.byType(AppBottomBar)).highlightAction,
+      isTrue,
+    );
+  });
 
   testWidgets('failed profile write prevents completion and can retry', (
     tester,
@@ -530,13 +593,13 @@ void main() {
     await openApp(tester, profiles: profiles);
     await reachActivity(tester);
     await openReview(tester);
-    await tapText(tester, 'Về Hôm nay');
+    await tapText(tester, 'Bắt đầu');
     expect(find.byKey(const Key('onboarding-save-error')), findsOneWidget);
     expect(find.byKey(const Key('today-screen')), findsNothing);
     expect(profiles.profile, isNull);
     profiles.failWrite = false;
     await openReview(tester);
-    await tapText(tester, 'Về Hôm nay');
+    await tapText(tester, 'Bắt đầu');
     expect(profiles.profile?.goal.type, GoalType.maintain);
     expect(profiles.profile?.goal.targetDate, isNull);
     expect(find.byKey(const Key('today-energy-maintain')), findsOneWidget);
@@ -548,7 +611,7 @@ void main() {
     await openApp(tester, fail: true);
     await reachActivity(tester);
     await openReview(tester);
-    await tapText(tester, 'Về Hôm nay');
+    await tapText(tester, 'Bắt đầu');
     expect(find.byKey(const Key('onboarding-save-error')), findsOneWidget);
     expect(find.byKey(const Key('today-screen')), findsNothing);
 
@@ -560,7 +623,7 @@ void main() {
     ) as TestOnboardingRepository;
     repository.failWrite = false;
     await openReview(tester);
-    await tapText(tester, 'Về Hôm nay');
+    await tapText(tester, 'Bắt đầu');
     expect(find.byKey(const Key('today-screen')), findsOneWidget);
   });
   for (final viewport in const [
@@ -735,7 +798,7 @@ void main() {
     await openApp(tester);
     await reachActivity(tester);
     await openReview(tester);
-    await tapText(tester, 'Về Hôm nay');
+    await tapText(tester, 'Bắt đầu');
     expect(find.byKey(const Key('today-screen')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

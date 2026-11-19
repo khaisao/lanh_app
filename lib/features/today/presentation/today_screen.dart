@@ -20,6 +20,7 @@ class TodayScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
     final savedGoal = ref.watch(profileGoalProvider);
+    final target = ref.watch(profileEnergyTargetProvider);
     final mealLogs = ref.watch(todayMealLogsProvider);
     final goal = savedGoal.value?.type;
     final loading = savedGoal.isLoading;
@@ -39,19 +40,34 @@ class TodayScreen extends ConsumerWidget {
       GoalType.maintain => strings.todayMaintainRange,
       GoalType.logOnly || null => strings.todayEnergy,
     };
-    final hint = switch (goal) {
-      GoalType.gain || GoalType.lose => strings.todayTargetUnavailable,
-      GoalType.maintain => strings.todayRangeUnavailable,
-      _ => strings.todayEmptyBody,
-    };
+    final targetHint = _targetHint(
+      strings,
+      numberFormat,
+      goal,
+      target,
+      totalCalories,
+    );
+    final hint =
+        targetHint ??
+        switch (goal) {
+          GoalType.gain || GoalType.lose => strings.todayTargetUnavailable,
+          GoalType.maintain => strings.todayRangeUnavailable,
+          _ => strings.todayEmptyBody,
+        };
 
     return TodayDashboard(
       energy: TodayEnergyCard(
         mode: goal,
         heading: heading,
-        value: hasCalories
+        progress: targetHint == null ? null : totalCalories / target!,
+        // With a confirmed target the card reads "0 / 1.600 kcal" from the
+        // first moment; without one, missing data stays a dash, not zero.
+        value: hasCalories || targetHint != null
             ? numberFormat.format(totalCalories)
             : strings.todayNoEnergy,
+        unit: targetHint == null
+            ? null
+            : strings.todayOfTarget(numberFormat.format(target)),
         footer: loading
             ? strings.todayLoadingProfile
             : failed
@@ -105,18 +121,8 @@ class TodayScreen extends ConsumerWidget {
               ),
             ),
           ] else if (loggedMeals.isEmpty) ...[
-            TodayCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: AppSpacing.xs,
-                children: [
-                  Text(strings.todayNoMeals, style: AppTypography.bodySmall),
-                  AppButton.secondary(
-                    onPressed: () => unawaited(showMealMethodSheet(context)),
-                    child: Text(strings.logMeal),
-                  ),
-                ],
-              ),
+            TodayFirstMealCard(
+              onLog: () => unawaited(showMealMethodSheet(context)),
             ),
           ] else ...[
             TodayCard(
@@ -165,4 +171,26 @@ class TodayScreen extends ConsumerWidget {
       photo: photo,
     );
   }
+}
+
+/// Footer against the confirmed kcal target; null when there is none, so
+/// the card keeps its "no target" text and hides the progress.
+String? _targetHint(
+  AppLocalizations strings,
+  NumberFormat format,
+  GoalType? goal,
+  int? target,
+  double logged,
+) {
+  if (target == null ||
+      target <= 0 ||
+      goal == null ||
+      goal == GoalType.logOnly) {
+    return null;
+  }
+  final left = target - logged;
+  if (left > 0) return strings.todayLeftKcal(format.format(left));
+  return goal == GoalType.gain || left == 0
+      ? strings.todayReachedKcal
+      : strings.todayOverKcal(format.format(-left));
 }

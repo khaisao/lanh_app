@@ -44,15 +44,14 @@ void main() {
     await _enter(tester, 'profile-current-weight', '42');
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();
-    final female = find.byKey(const Key('profile-sex-female'));
-    await tester.ensureVisible(female);
-    tester.widget<TextButton>(female).onPressed!.call();
-    await tester.pumpAndSettle();
+    await _tapFemale(tester);
     await tester.tap(find.byKey(const Key('profile-setup-action')));
     await tester.pumpAndSettle();
 
+    // Ages 13–19 skip the numeric target and read guidance on Activity.
+    expect(find.byKey(const Key('profile-setup-activity')), findsOneWidget);
     expect(find.text('Mục tiêu an toàn trong giai đoạn lớn'), findsOneWidget);
-    expect(find.byKey(const Key('profile-target-weight')), findsNothing);
+    expect(find.byKey(const Key('profile-target-kg-picker')), findsNothing);
     expect(find.textContaining('vùng tham chiếu theo tuổi'), findsNWidgets(2));
   });
 
@@ -95,11 +94,7 @@ void main() {
     await _enter(tester, 'profile-current-weight', '42');
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();
-    tester
-        .widget<TextButton>(find.byKey(const Key('profile-sex-female')))
-        .onPressed!
-        .call();
-    await tester.pumpAndSettle();
+    await _tapFemale(tester);
     await tester.tap(find.byKey(const Key('profile-setup-action')));
     await tester.pumpAndSettle();
 
@@ -114,5 +109,13 @@ Future<void> _enter(WidgetTester tester, String key, String value) async {
     matching: find.byType(EditableText),
   );
   await tester.enterText(field, value);
+  await tester.pumpAndSettle();
+}
+
+Future<void> _tapFemale(WidgetTester tester) async {
+  final female = find.byKey(const Key('profile-sex-female'));
+  await tester.ensureVisible(female);
+  await tester.pumpAndSettle();
+  await tester.tap(female);
   await tester.pumpAndSettle();
 }

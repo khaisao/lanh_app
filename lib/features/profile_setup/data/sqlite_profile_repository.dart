@@ -3,6 +3,9 @@ import 'package:sqflite/sqflite.dart';
 
 import '../domain/profile.dart';
 
+const _energyColumn =
+    'daily_energy_kcal INTEGER CHECK (daily_energy_kcal IS NULL OR daily_energy_kcal > 0)';
+
 class SqliteProfileRepository implements ProfileRepository {
   Future<Database>? _database;
 
@@ -19,7 +22,7 @@ class SqliteProfileRepository implements ProfileRepository {
     final directory = await getDatabasesPath();
     return openDatabase(
       '$directory/lanh_profile.db',
-      version: 1,
+      version: 2,
       onCreate: (db, _) => db.execute('''
         CREATE TABLE profile (
           id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -27,9 +30,17 @@ class SqliteProfileRepository implements ProfileRepository {
           height_cm REAL NOT NULL CHECK (height_cm > 0),
           sex TEXT NOT NULL,
           activity_level TEXT NOT NULL,
-          goal TEXT NOT NULL
+          goal TEXT NOT NULL,
+          $_energyColumn
         )
       '''),
+      // Version 2 adds an optional kcal target. Adding a nullable column
+      // keeps every existing row unchanged, so no copy or rewrite is needed.
+      onUpgrade: (db, from, _) async {
+        if (from < 2) {
+          await db.execute('ALTER TABLE profile ADD COLUMN $_energyColumn');
+        }
+      },
     );
   }
 
@@ -50,6 +61,7 @@ class SqliteProfileRepository implements ProfileRepository {
         row['activity_level'] as String,
       ),
       goal: goal,
+      dailyEnergyKcal: row['daily_energy_kcal'] as int?,
     );
   }
 
@@ -63,6 +75,7 @@ class SqliteProfileRepository implements ProfileRepository {
       'sex': profile.sex.name,
       'activity_level': profile.activityLevel.name,
       'goal': profile.goal.encode(),
+      'daily_energy_kcal': profile.dailyEnergyKcal,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }

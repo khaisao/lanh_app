@@ -1,21 +1,35 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:app_ui/app_ui.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../domain/profile.dart';
+import '../domain/body_metrics.dart';
+import '../domain/energy_estimate.dart';
 import '../domain/goal_policy.dart';
+import '../domain/profile.dart';
 import '../domain/teen_bmi.dart';
+import '../profile_setup_providers.dart';
+import 'profile_activity_step.dart';
+import 'profile_body_step.dart';
+import 'profile_plan_sheet.dart';
 import 'profile_setup_controller.dart';
 import 'profile_setup_widgets.dart';
+import 'profile_target_draft.dart';
+import 'profile_target_step.dart';
 
-enum _Step { goal, body, target, activity }
+enum _Step { goal, body, activity, target }
 
 const _weightGoals = [GoalType.gain, GoalType.lose, GoalType.maintain];
 
+/// Four-step Profile Setup: goal → body → activity → target → review.
+/// Activity comes before the target so plans can show a daily kcal budget
+/// and respect the energy floor. Maintain, ages 13–19 and pregnancy skip the
+/// numeric target step. Nothing is written until the user confirms the
+/// review.
 class ProfileSetupScreen extends ConsumerStatefulWidget {
   const ProfileSetupScreen({super.key});
 
@@ -24,136 +38,228 @@ class ProfileSetupScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
-  final _form = GlobalKey<FormState>();
   final _age = TextEditingController();
   final _height = TextEditingController();
   final _weight = TextEditingController();
-  final _target = TextEditingController();
 
   _Step _step = _Step.goal;
   GoalType? _goal;
-  int? _sex;
-  int? _activity;
-  DateTime? _targetDate;
+  // Male is preselected; the user can switch with one tap.
+  ProfileSex? _sex = ProfileSex.male;
+  ActivityLevel? _activity;
+  bool _pregnant = false;
+  bool _stepForward = true;
+  ProfileTargetDraft _target = const ProfileTargetDraft();
+  Map<ProfileBodyField, String> _bodyErrors = const {};
+  String? _targetError;
   bool _reviewing = false;
   bool _saveFailed = false;
 
-  bool get _maintaining => _goal == GoalType.maintain;
-  int? get _ageValue => int.tryParse(_age.text.trim());
-  bool get _isTeen => (_ageValue ?? 0) >= 13 && (_ageValue ?? 0) <= 19;
-  TeenBmiStatus? get _teenStatus {
-    final age = _ageValue;
-    final sex = _sex;
-    final height = _positiveNumber(_height.text);
-    final weight = _positiveNumber(_weight.text);
-    if (age == null || sex == null || height == null || weight == null) {
-      return null;
-    }
-    return teenBmiStatus(
-      ageYears: age,
-      sex: ProfileSex.values[sex],
-      heightCm: height,
-      weightKg: weight,
-    );
-  }
-
   AppLocalizations get _strings => AppLocalizations.of(context);
+  int? get _ageValue => int.tryParse(_age.text.trim());
+  double? get _heightValue => parsePositiveNumber(_height.text);
+  double? get _weightValue => parsePositiveNumber(_weight.text);
+  bool get _isTeen =>
+      (_ageValue ?? BodyLimits.adultAge) >= BodyLimits.minAge &&
+      (_ageValue ?? BodyLimits.adultAge) < BodyLimits.adultAge;
+  bool get _skipsTarget =>
+      _goal == GoalType.maintain || _isTeen || _pregnantApplies;
+  bool get _pregnantApplies =>
+      _pregnant && _sex == ProfileSex.female && !_isTeen;
+  _Step get _lastStep => _skipsTarget ? _Step.activity : _Step.target;
+
+  EnergyEstimate? get _energy => estimateEnergy(
+    ageYears: _ageValue,
+    heightCm: _heightValue,
+    weightKg: _weightValue,
+    sex: _sex,
+    activity: _activity,
+    pregnantOrBreastfeeding: _pregnantApplies,
+  );
 
   @override
   void dispose() {
     _age.dispose();
     _height.dispose();
     _weight.dispose();
-    _target.dispose();
     super.dispose();
   }
+
+  bool get _actionEnabled => switch (_step) {
+    _Step.goal => _goal != null,
+    _Step.target =>
+      !_reviewing &&
+          lossPlanAllowed(_goal!, _energy) &&
+          selectableTargets(
+            goal: _goal!,
+            currentKg: _weightValue!,
+            heightCm: _heightValue!,
+          ).isNotEmpty,
+    _Step.activity => _activity != null && !_reviewing,
+    _Step.body => true,
+  };
 
   @override
   Widget build(BuildContext context) {
     final strings = _strings;
-    final actionEnabled = switch (_step) {
-      _Step.goal => _goal != null,
-      _Step.activity => _activity != null && !_reviewing,
-      _ => true,
-    };
+    final editing = ref.watch(savedProfileProvider).value != null;
     return PopScope(
       canPop: _step == _Step.goal,
       onPopInvokedWithResult: (popped, _) {
         if (!popped && !_reviewing && _step != _Step.goal) _back();
       },
       child: Scaffold(
-        key: ValueKey('profile-setup-${_step.name}'),
+        key: const Key('profile-setup'),
         body: SafeArea(
           bottom: false,
-          minimum: const EdgeInsets.only(top: AppSpacing.onboardingTop),
+          minimum: const EdgeInsets.only(top: AppSpacing.xl),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
-              child: ListView(
-                key: ValueKey(_step),
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.pageHorizontal,
-                  0,
-                  AppSpacing.pageHorizontal,
-                  AppSpacing.xl,
-                ),
+              // The back button and progress stay pinned; only the step
+              // content scrolls.
+              child: Column(
                 children: [
-                  ProfileStepBar(
-                    step: _step.index,
-                    titles: [
-                      strings.profileGoal,
-                      strings.profileBody,
-                      _maintaining
-                          ? strings.profileBody
-                          : strings.profileTarget,
-                      strings.profileActivity,
-                    ],
-                    onBack: () {
-                      if (!_reviewing) _back();
-                    },
-                    onStep: (index) {
-                      if (!_reviewing && index < _step.index) {
-                        _show(
-                          _maintaining && index == _Step.target.index
-                              ? _Step.body
-                              : _Step.values[index],
-                        );
-                      }
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.pageHorizontal,
+                    ),
+                    child: ProfileStepBar(
+                      step: _step.index,
+                      titles: [
+                        strings.profileGoal,
+                        strings.profileBody,
+                        strings.profileActivity,
+                        strings.profileTarget,
+                      ],
+                      onBack: () {
+                        if (!_reviewing) _back();
+                      },
+                      onStep: (index) {
+                        if (_reviewing || index >= _step.index) return;
+                        final step = _Step.values[index];
+                        _show(step);
+                      },
+                    ),
                   ),
-                  SizedBox(
-                    height: _step == _Step.goal
-                        ? AppSpacing.pageTop
-                        : AppSpacing.xl,
+                  Expanded(
+                    child: _switchStep(
+                      BackdropGroup(
+                        key: ValueKey('profile-setup-${_step.name}'),
+                        child: ListView(
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.pageHorizontal,
+                            0,
+                            AppSpacing.pageHorizontal,
+                            AppSpacing.xl,
+                          ),
+                          children: [
+                            SizedBox(
+                              height: _step == _Step.goal
+                                  ? AppSpacing.pageTop
+                                  : AppSpacing.lg,
+                            ),
+                            switch (_step) {
+                              _Step.goal => _goalPage(),
+                              _Step.body => ProfileBodyStep(
+                                age: _age,
+                                height: _height,
+                                weight: _weight,
+                                sex: _sex,
+                                errors: _bodyErrors,
+                                onEdited: (field) => setState(() {
+                                  _bodyErrors = {..._bodyErrors}..remove(field);
+                                }),
+                                onSex: (sex) => setState(() {
+                                  _sex = sex;
+                                  _bodyErrors = {..._bodyErrors}
+                                    ..remove(ProfileBodyField.sex);
+                                }),
+                                pregnant: _pregnant,
+                                onPregnant: (value) =>
+                                    setState(() => _pregnant = value),
+                              ),
+                              _Step.target => ProfileTargetStep(
+                                goal: _goal!,
+                                goalLabel: _goalLabel(_goal!),
+                                currentKg: _weightValue!,
+                                heightCm: _heightValue!,
+                                draft: _target,
+                                energy: _energy,
+                                error: _targetError,
+                                // No healthy target for this goal: keep the
+                                // answers and finish as Maintain.
+                                onSwitchToMaintain: () {
+                                  setState(() => _goal = GoalType.maintain);
+                                  _show(_Step.activity);
+                                },
+                                onChanged: (draft) => setState(() {
+                                  _target = draft;
+                                  _targetError = null;
+                                }),
+                              ),
+                              _Step.activity => ProfileActivityStep(
+                                selected: _activity,
+                                onSelected: (level) =>
+                                    setState(() => _activity = level),
+                                energy: _energy,
+                                showsEnergy: !_isTeen && !_pregnantApplies,
+                                notice: _isTeen
+                                    ? _teenGuidanceCard(_goal!)
+                                    : _pregnantApplies
+                                    ? _pregnancyNote()
+                                    : null,
+                              ),
+                            },
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  ...switch (_step) {
-                    _Step.goal => _goalPage(),
-                    _Step.body => _bodyPage(),
-                    _Step.target => _targetPage(),
-                    _Step.activity => _activityPage(),
-                  },
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: Center(
-          heightFactor: 1,
-          child: SizedBox(
-            width: AppSizes.contentMax,
+        bottomNavigationBar: _bottomBar(
+          strings,
+          showPreviousNote: editing && _step == _Step.target,
+        ),
+      ),
+    );
+  }
+
+  Widget _bottomBar(
+    AppLocalizations strings, {
+    required bool showPreviousNote,
+  }) {
+    final enabled = _actionEnabled;
+    return Center(
+      heightFactor: 1,
+      child: SizedBox(
+        width: AppSizes.contentMax,
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: AppGlass.blurStrong,
+              sigmaY: AppGlass.blurStrong,
+            ),
             child: DecoratedBox(
-              decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: AppColors.border)),
+              decoration: BoxDecoration(
+                color: MediaQuery.highContrastOf(context)
+                    ? AppColors.background
+                    : AppGlass.track,
+                border: const Border(top: BorderSide(color: AppGlass.edge)),
               ),
               child: SafeArea(
                 top: false,
                 minimum: const EdgeInsets.fromLTRB(
                   AppSpacing.pageHorizontal,
-                  AppSpacing.md + AppBorders.hairline,
+                  AppSpacing.sm,
                   AppSpacing.pageHorizontal,
-                  AppSpacing.lg,
+                  AppSpacing.card,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -169,34 +275,57 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     AppButton(
                       key: const Key('profile-setup-action'),
                       animatePress: true,
-                      onPressed: actionEnabled ? _advance : null,
-                      child: _step == _Step.activity
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: AppSpacing.xs,
-                              children: [
-                                ExcludeSemantics(
-                                  child: AppIcon.asset(
-                                    'ph-check-circle-fill',
-                                    size: AppSizes.iconMd,
-                                    color: actionEnabled
-                                        ? AppColors.primaryForeground
-                                        : AppColors.secondaryForeground,
+                      onPressed: enabled ? _advance : null,
+                      child: AnimatedSwitcher(
+                        duration: AppMotion.of(context, AppMotion.selection),
+                        transitionBuilder: (label, animation) => FadeTransition(
+                          opacity: animation,
+                          child: ScaleTransition(
+                            scale: Tween(
+                              begin: 0.92,
+                              end: 1.0,
+                            ).animate(animation),
+                            child: label,
+                          ),
+                        ),
+                        child: _step == _lastStep
+                            ? Row(
+                                key: const ValueKey('confirm'),
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: AppSpacing.xs,
+                                children: [
+                                  ExcludeSemantics(
+                                    child: AppIcon.asset(
+                                      'ph-check-circle-fill',
+                                      size: AppSizes.iconMd,
+                                      color: enabled
+                                          ? AppColors.primaryForeground
+                                          : AppColors.secondaryForeground,
+                                    ),
                                   ),
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    strings.profileConfirm,
-                                    textAlign: TextAlign.center,
+                                  Flexible(
+                                    child: Text(
+                                      strings.profileConfirm,
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-                          : Text(
-                              strings.profileContinue,
-                              textAlign: TextAlign.center,
-                            ),
+                                ],
+                              )
+                            : Text(
+                                strings.profileContinue,
+                                key: const ValueKey('continue'),
+                                textAlign: TextAlign.center,
+                              ),
+                      ),
                     ),
+                    if (showPreviousNote) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        strings.profileTargetPreviousKept,
+                        textAlign: TextAlign.center,
+                        style: AppTypography.micro,
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -207,617 +336,51 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     );
   }
 
-  List<Widget> _goalPage() => [
-    ProfileStepHeading(
-      hero: true,
-      title: _strings.profileGoalHeading,
-      subtitle: Text(
-        _strings.profileGoalCaption,
-        style: AppTypography.setupCaption,
-        textAlign: TextAlign.center,
-      ),
-    ),
-    const SizedBox(height: AppSpacing.xl),
-    Semantics(
-      label: _strings.profileGoal,
-      explicitChildNodes: true,
-      child: Column(
-        spacing: AppSpacing.sm,
-        children: [
-          for (final goal in _weightGoals)
-            AppSelectionTile(
-              key: Key('profile-goal-${goal.name}'),
-              icon: _goalIcon(goal),
-              label: _goalLabel(goal),
-              selected: _goal == goal,
-              onPressed: () => setState(() => _goal = goal),
-            ),
-        ],
-      ),
-    ),
-  ];
-
-  List<Widget> _bodyPage() {
-    final strings = _strings;
-    final age = ProfileNumberField(
-      key: const Key('profile-age'),
-      label: strings.profileAge,
-      unit: strings.profileYears,
-      controller: _age,
-      whole: true,
-      validator: (value) {
-        final years = int.tryParse(value?.trim() ?? '');
-        return years == null || years <= 0
-            ? strings.profileInvalidAge
-            : years < 13
-            ? strings.profileAgeTooYoung
-            : years > 120
-            ? strings.profileInvalidAge
-            : null;
-      },
-      onChanged: (_) => setState(() {}),
-    );
-    final height = ProfileNumberField(
-      key: const Key('profile-height'),
-      label: strings.profileHeight,
-      unit: 'cm',
-      controller: _height,
-      validator: _validateNumber,
-      onChanged: (_) => setState(() {}),
-    );
-    return [
+  Widget _goalPage() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
       ProfileStepHeading(
-        title: strings.profileBody,
-        subtitle: Text(
-          strings.profileBodyCaption,
-          style: AppTypography.setupCaption,
-        ),
+        hero: true,
+        title: _strings.profileGoalHeading,
+        subtitle: _strings.profileGoalCaption,
       ),
       const SizedBox(height: AppSpacing.xl),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _bodyInsightCard(),
-          const SizedBox(height: AppSpacing.md),
-          Form(
-            key: _form,
-            child: Column(
-              spacing: AppSpacing.sm,
-              children: [
-                if (MediaQuery.textScalerOf(context).scale(12) <= 18)
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: AppSpacing.sm,
-                    children: [
-                      Expanded(child: age),
-                      Expanded(child: height),
-                    ],
-                  )
-                else ...[
-                  age,
-                  height,
-                ],
-                ProfileNumberField(
-                  key: const Key('profile-current-weight'),
-                  label: strings.profileCurrentWeight,
-                  unit: 'kg',
-                  controller: _weight,
-                  validator: _validateNumber,
-                  onChanged: (_) => setState(() {}),
-                ),
-                _sexField(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ];
-  }
-
-  Widget _bodyInsightCard() {
-    final strings = _strings;
-    final age = _ageValue;
-    final height = _positiveNumber(_height.text);
-    final weight = _positiveNumber(_weight.text);
-    final sex = _sex;
-    final complete =
-        age != null &&
-        age >= 13 &&
-        age <= 120 &&
-        height != null &&
-        weight != null &&
-        sex != null;
-    if (!complete) {
-      return ProfileFieldCard(
-        key: const Key('profile-body-insight'),
-        label: strings.profileBodyInsightTitle,
-        child: Text(
-          strings.profileBodyInsightEmpty,
-          style: AppTypography.bodySmall,
-        ),
-      );
-    }
-
-    final bmi = weight / ((height / 100) * (height / 100));
-    final formatter = NumberFormat.decimalPattern(strings.localeName)
-      ..maximumFractionDigits = 1;
-    final isTeen = age <= 19;
-    final status = isTeen
-        ? switch (teenBmiStatus(
-            ageYears: age,
-            sex: ProfileSex.values[sex],
-            heightCm: height,
-            weightKg: weight,
-          )) {
-            TeenBmiStatus.underweight =>
-              strings.profileTeenBmiStatusUnderweight,
-            TeenBmiStatus.healthy => strings.profileTeenBmiStatusHealthy,
-            TeenBmiStatus.overweight => strings.profileTeenBmiStatusOverweight,
-            TeenBmiStatus.obesity => strings.profileTeenBmiStatusObesity,
-            null => strings.profileBmiHint,
-          }
-        : bmi < 18.5
-        ? strings.profileBmiAdultUnderweight
-        : bmi < 25
-        ? strings.profileBmiAdultHealthy
-        : bmi < 30
-        ? strings.profileBmiAdultOverweight
-        : strings.profileBmiAdultObesity;
-    return DecoratedBox(
-      key: const Key('profile-body-insight'),
-      decoration: const ShapeDecoration(
-        color: AppColors.secondary,
-        shape: AppSquircleBorder(radius: AppRadii.exportCardSquircle),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+      Semantics(
+        label: _strings.profileGoal,
+        explicitChildNodes: true,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: AppSpacing.xs,
+          spacing: AppSpacing.sm,
           children: [
-            Wrap(
-              spacing: AppSpacing.xs,
-              runSpacing: AppSpacing.xxs,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  strings.profileBodyInsightTitle,
-                  style: AppTypography.label.copyWith(
-                    color: AppColors.secondaryForeground,
-                  ),
+            for (final (index, goal) in _weightGoals.indexed)
+              AppEntrance(
+                index: index + 1,
+                child: AppSelectionTile(
+                  key: Key('profile-goal-${goal.name}'),
+                  icon: _goalIcon(goal),
+                  label: _goalLabel(goal),
+                  selected: _goal == goal,
+                  onPressed: () => setState(() => _goal = goal),
                 ),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: AppColors.accent,
-                    borderRadius: BorderRadius.circular(AppRadii.pill),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xs,
-                      vertical: AppSpacing.navLabelGap,
-                    ),
-                    child: Text(
-                      strings.profileBmiLabel,
-                      style: AppTypography.micro.copyWith(
-                        color: AppColors.accentForeground,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  formatter.format(bmi),
-                  style: AppTypography.setupNumber.copyWith(
-                    color: AppColors.secondaryForeground,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-                    child: Text(
-                      status,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.secondaryForeground,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Text(
-              isTeen ? strings.profileBmiTeenHint : strings.profileBmiHint,
-              style: AppTypography.caption.copyWith(
-                color: AppColors.secondaryForeground,
               ),
-            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _sexField() {
-    final strings = _strings;
-    final labels = [strings.profileFemale, strings.profileMale];
-    return FormField<int>(
-      initialValue: _sex,
-      validator: (value) => value == null ? strings.profileMissingSex : null,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      builder: (field) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ProfileFieldset(
-            label: strings.profileSex,
-            child: Semantics(
-              label: strings.profileSex,
-              explicitChildNodes: true,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: AppColors.muted,
-                  borderRadius: BorderRadius.circular(AppRadii.pill),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xxs),
-                  child: Row(
-                    spacing: AppSpacing.xxs,
-                    children: [
-                      for (var index = 0; index < labels.length; index++)
-                        Expanded(
-                          child: Semantics(
-                            checked: index == _sex,
-                            inMutuallyExclusiveGroup: true,
-                            child: TextButton(
-                              key: Key(
-                                'profile-sex-${index == 0 ? 'female' : 'male'}',
-                              ),
-                              style: TextButton.styleFrom(
-                                minimumSize: const Size(0, AppSizes.backAction),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                foregroundColor: index == _sex
-                                    ? AppColors.foreground
-                                    : AppColors.mutedForeground,
-                                backgroundColor: index == _sex
-                                    ? AppColors.card
-                                    : null,
-                                side: index == _sex
-                                    ? const BorderSide(color: AppColors.border)
-                                    : null,
-                                textStyle: AppTypography.setupCaption.copyWith(
-                                  fontWeight: index == _sex
-                                      ? FontWeight.w600
-                                      : FontWeight.w400,
-                                ),
-                              ),
-                              onPressed: () {
-                                field.didChange(index);
-                                setState(() => _sex = index);
-                              },
-                              child: Text(
-                                labels[index],
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          if (field.errorText case final error?) ProfileFieldError(error),
-        ],
-      ),
-    );
-  }
-
-  List<Widget> _targetPage() {
-    final strings = _strings;
-    final goal = _goal!;
-    if (_isTeen) return _teenTargetPage(goal);
-    return [
-      ProfileStepHeading(
-        title: strings.profileTarget,
-        subtitle: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.denseGap,
-            vertical: AppSpacing.xxs,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.secondary,
-            borderRadius: BorderRadius.circular(AppRadii.pill),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: AppSpacing.stepGap,
-            children: [
-              ExcludeSemantics(
-                child: AppIcon.asset(
-                  _goalIcon(goal),
-                  size: AppSizes.iconInfo,
-                  color: AppColors.primary,
-                ),
-              ),
-              Flexible(
-                child: Text(
-                  '${_goalLabel(goal)} · ${_weight.text.trim()} kg',
-                  style: AppTypography.label.copyWith(
-                    color: AppColors.secondaryForeground,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      const SizedBox(height: AppSpacing.xl),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _targetSuggestionSection(),
-          const SizedBox(height: AppSpacing.md),
-          Wrap(
-            spacing: AppSpacing.xs,
-            runSpacing: AppSpacing.xxs,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(
-                strings.profileTargetManualTitle,
-                style: AppTypography.sectionTitle,
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: AppColors.accent,
-                  borderRadius: BorderRadius.circular(AppRadii.pill),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xs,
-                    vertical: AppSpacing.navLabelGap,
-                  ),
-                  child: Text(
-                    strings.profileTargetManualChip,
-                    style: AppTypography.micro.copyWith(
-                      color: AppColors.accentForeground,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Form(
-            key: _form,
-            child: Column(
-              spacing: AppSpacing.sm,
-              children: [
-                ProfileNumberField(
-                  label: strings.profileTargetWeight,
-                  unit: 'kg',
-                  controller: _target,
-                  inputKey: const Key('profile-target-weight'),
-                  large: true,
-                  validator: _validateTarget,
-                  onChanged: (_) => setState(() {}),
-                ),
-                _dateField(),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          _estimateCard(),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            strings.profileEstimateCaption,
-            textAlign: TextAlign.center,
-            style: AppTypography.caption,
-          ),
-        ],
-      ),
-    ];
-  }
-
-  Widget _targetSuggestionSection() {
-    final strings = _strings;
-    final current = _positiveNumber(_weight.text);
-    final height = _positiveNumber(_height.text);
-    if (current == null) return const SizedBox.shrink();
-    final suggestions = <(String, double)>[];
-    if (_goal == GoalType.lose) {
-      final floor = height == null
-          ? 0
-          : 18.5 * ((height / 100) * (height / 100));
-      final starter = (current * 0.95).clamp(floor, current - 0.1).toDouble();
-      final longer = (current * 0.90).clamp(floor, current - 0.1).toDouble();
-      suggestions.add(('five', starter));
-      if (longer < starter - 0.05) {
-        suggestions.add(('ten', longer));
-      }
-    } else if (_goal == GoalType.gain) {
-      suggestions.add(('gain', current * 1.05));
-    }
-    return DecoratedBox(
-      key: const Key('profile-target-suggestions'),
-      decoration: const ShapeDecoration(
-        color: AppColors.secondary,
-        shape: AppSquircleBorder(radius: AppRadii.exportCardSquircle),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: AppSpacing.xs,
-          children: [
-            Text(
-              strings.profileTargetSuggestionsTitle,
-              style: AppTypography.sectionTitle.copyWith(
-                color: AppColors.secondaryForeground,
-              ),
-            ),
-            Text(
-              strings.profileTargetSuggestionsSubtitle,
-              style: AppTypography.caption.copyWith(
-                color: AppColors.secondaryForeground,
-              ),
-            ),
-            for (final (kind, value) in suggestions)
-              _targetSuggestionTile(kind: kind, value: value),
-            AppButton.surface(
-              key: const Key('profile-target-suggestion-custom'),
-              onPressed: () {
-                _target.clear();
-                setState(() => _targetDate = null);
-              },
-              child: Text(strings.profileTargetSuggestionCustom),
-            ),
-            Text(
-              strings.profileTargetHelper,
-              style: AppTypography.caption.copyWith(
-                color: AppColors.secondaryForeground,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _targetSuggestionTile({required String kind, required double value}) {
-    final strings = _strings;
-    final current = _positiveNumber(_weight.text);
-    final estimate = current == null
-        ? null
-        : estimateAdultGoal(
-            goal: _goal!,
-            currentWeight: current,
-            targetWeight: value,
-          );
-    final title = switch (kind) {
-      'five' => strings.profileTargetSuggestionFive(_formatWeight(value)),
-      'ten' => strings.profileTargetSuggestionTen(_formatWeight(value)),
-      _ => strings.profileTargetSuggestionGain(_formatWeight(value)),
-    };
-    final detail = estimate == null
-        ? '${_formatWeight(value)} kg'
-        : '${_formatWeight(value)} kg · ${_formatDate(estimate.targetDate!)}';
-    final pace = estimate == null
-        ? null
-        : '${strings.profileEstimateWeeks(estimate.weeks)} · ${strings.profileEstimateRateValue(estimate.rateKgPerWeek.toStringAsFixed(2))}';
-    final icon = kind == 'ten' ? 'ph-target' : 'ph-plant';
-    return Semantics(
-      button: true,
-      label: '$title, $detail${pace == null ? '' : ', $pace'}',
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-          key: Key('profile-target-suggestion-$kind'),
-          onTap: () => _applyTargetSuggestion(value),
-          customBorder: const AppSquircleBorder(
-            radius: AppRadii.exportCardSquircle,
-          ),
-          child: Ink(
-            decoration: const ShapeDecoration(
-              color: AppColors.card,
-              shape: AppSquircleBorder(
-                radius: AppRadii.exportCardSquircle,
-                side: BorderSide(color: AppColors.border),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: AppSpacing.sm,
-                children: [
-                  DecoratedBox(
-                    decoration: const ShapeDecoration(
-                      color: AppColors.secondary,
-                      shape: AppSquircleBorder(
-                        radius: AppRadii.exportCardSquircle,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.sm),
-                      child: AppIcon.asset(
-                        icon,
-                        size: AppSizes.iconMd,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: AppSpacing.navLabelGap,
-                      children: [
-                        Text(title, style: AppTypography.cardTitle),
-                        Text(detail, style: AppTypography.setupNumber),
-                        if (pace != null)
-                          Text(pace, style: AppTypography.caption),
-                      ],
-                    ),
-                  ),
-                  const DecoratedBox(
-                    decoration: ShapeDecoration(
-                      shape: CircleBorder(
-                        side: BorderSide(color: AppColors.border),
-                      ),
-                    ),
-                    child: SizedBox.square(dimension: AppSizes.iconMd),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _applyTargetSuggestion(double value) {
-    _target.text = _formatWeight(value);
-    final current = _positiveNumber(_weight.text);
-    final target = _positiveNumber(_target.text);
-    final estimate = current == null || target == null
-        ? null
-        : estimateAdultGoal(
-            goal: _goal!,
-            currentWeight: current,
-            targetWeight: target,
-          );
-    setState(() => _targetDate = estimate?.targetDate);
-  }
-
-  String _formatWeight(double value) => value.toStringAsFixed(1);
-
-  List<Widget> _teenTargetPage(GoalType goal) {
-    final strings = _strings;
-    return [
-      ProfileStepHeading(
-        title: strings.profileTarget,
-        subtitle: Text(
-          '${_goalLabel(goal)} · ${_weight.text.trim()} kg',
-          style: AppTypography.setupCaption,
-        ),
-      ),
-      const SizedBox(height: AppSpacing.xl),
-      _teenGuidanceCard(goal),
-      const SizedBox(height: AppSpacing.md),
-      Text(
-        strings.profileEstimateCaption,
-        textAlign: TextAlign.center,
-        style: AppTypography.caption,
-      ),
-    ];
-  }
+    ],
+  );
 
   Widget _teenGuidanceCard(GoalType goal) {
-    final status = _teenStatus;
+    final age = _ageValue;
+    final height = _heightValue;
+    final weight = _weightValue;
+    final status =
+        age == null || height == null || weight == null || _sex == null
+        ? null
+        : teenBmiStatus(
+            ageYears: age,
+            sex: _sex!,
+            heightCm: height,
+            weightKg: weight,
+          );
     final statusLabel = switch (status) {
       TeenBmiStatus.underweight => _strings.profileTeenBmiStatusUnderweight,
       TeenBmiStatus.healthy => _strings.profileTeenBmiStatusHealthy,
@@ -829,266 +392,75 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       (TeenBmiStatus.underweight, GoalType.gain) =>
         _strings.profileTeenUnderweightGain,
       (TeenBmiStatus.underweight, _) => _strings.profileTeenUnderweightLose,
-      (TeenBmiStatus.healthy, _) => _strings.profileTeenHealthy,
       (TeenBmiStatus.overweight || TeenBmiStatus.obesity, GoalType.lose) =>
         _strings.profileTeenOverweightLose,
-      (TeenBmiStatus.overweight || TeenBmiStatus.obesity, _) =>
+      (TeenBmiStatus.overweight || TeenBmiStatus.obesity, GoalType.gain) =>
         _strings.profileTeenOverweightGain,
       _ => _strings.profileTeenHealthy,
     };
-    return DecoratedBox(
-      decoration: const ShapeDecoration(
-        color: AppColors.secondary,
-        shape: AppSquircleBorder(radius: AppRadii.exportCardSquircle),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: AppSpacing.sm,
-          children: [
-            Text(
-              _strings.profileTeenGuidanceTitle,
-              style: AppTypography.sectionTitle.copyWith(
-                color: AppColors.secondaryForeground,
-              ),
-            ),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(AppRadii.pill),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                child: Text(statusLabel, style: AppTypography.label),
-              ),
-            ),
-            Text(
-              body,
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.secondaryForeground,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _dateField() {
-    final strings = _strings;
-    return FormField<DateTime>(
-      initialValue: _targetDate,
-      validator: (value) =>
-          value != null && !value.isAfter(DateUtils.dateOnly(DateTime.now()))
-          ? strings.profileFutureDate
-          : null,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      builder: (field) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return AppGlassCard(
+      key: const Key('profile-teen-guidance'),
+      padding: const EdgeInsets.all(AppSpacing.card),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: AppSpacing.sm,
         children: [
-          ProfileFieldCard(
-            key: const Key('profile-target-date'),
-            label: strings.profileTargetDate,
-            onTap: () async {
-              FocusManager.instance.primaryFocus?.unfocus();
-              final firstDate = _minimumTargetDate();
-              final previous = _targetDate;
-              final picked = await showDatePicker(
-                context: context,
-                firstDate: firstDate,
-                initialDate: previous == null || previous.isBefore(firstDate)
-                    ? firstDate
-                    : previous,
-                lastDate: DateUtils.addDaysToDate(firstDate, 36500),
-              );
-              if (!mounted || !field.mounted || picked == null) return;
-              field.didChange(picked);
-              setState(() => _targetDate = picked);
-            },
-            child: Row(
-              spacing: AppSpacing.xs,
-              children: [
-                Expanded(
-                  child: Text(
-                    _targetDate == null
-                        ? strings.profilePickDate
-                        : _formatDate(_targetDate!),
-                    style: AppTypography.cardTitle,
-                    semanticsLabel:
-                        '${strings.profileTargetDate}, ${_targetDate == null ? strings.profilePickDate : _formatDate(_targetDate!)}',
-                  ),
-                ),
-                const ExcludeSemantics(
-                  child: AppIcon.asset(
-                    'ph-calendar-blank',
-                    size: AppSizes.iconSm,
-                    color: AppColors.foreground,
-                  ),
-                ),
-              ],
-            ),
+          Text(
+            _strings.profileTeenGuidanceTitle,
+            style: AppTypography.sectionTitle,
           ),
-          if (field.errorText case final error?) ProfileFieldError(error),
-        ],
-      ),
-    );
-  }
-
-  DateTime _minimumTargetDate() {
-    final now = DateUtils.dateOnly(DateTime.now());
-    final current = _positiveNumber(_weight.text);
-    final target = _positiveNumber(_target.text);
-    if (current == null || target == null || _goal == GoalType.maintain) {
-      return DateUtils.addDaysToDate(now, 1);
-    }
-    final delta = (target - current).abs();
-    final maxRate = _goal == GoalType.lose ? 1.0 : current * 0.005;
-    final days = (delta / maxRate * 7).ceil().clamp(14, 36500);
-    return DateUtils.addDaysToDate(now, days);
-  }
-
-  Widget _estimateCard() {
-    final current = _positiveNumber(_weight.text);
-    final target = _positiveNumber(_target.text);
-    final estimate = current == null || target == null
-        ? null
-        : estimateAdultGoal(
-            goal: _goal!,
-            currentWeight: current,
-            targetWeight: target,
-            targetDate: _targetDate,
-          );
-    final status = switch (estimate?.status) {
-      GoalEstimateStatus.recommended => _strings.profileEstimateRecommended,
-      GoalEstimateStatus.slower => _strings.profileEstimateSlower,
-      GoalEstimateStatus.tooFast => _strings.profileEstimateTooFast,
-      GoalEstimateStatus.caution => _strings.profileEstimateCaution,
-      null => _strings.profileEstimate,
-    };
-    final rate = estimate == null
-        ? '—'
-        : _strings.profileEstimateRateValue(
-            estimate.rateKgPerWeek.toStringAsFixed(1),
-          );
-    return DecoratedBox(
-      decoration: const ShapeDecoration(
-        color: AppColors.secondary,
-        shape: AppSquircleBorder(radius: AppRadii.exportCardSquircle),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: AppSpacing.xs,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _strings.profileEstimateRate,
-                    style: AppTypography.label.copyWith(
-                      color: AppColors.secondaryForeground,
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    rate,
-                    textAlign: TextAlign.end,
-                    style: AppTypography.setupNumber.copyWith(
-                      color: AppColors.secondaryForeground,
-                    ),
-                  ),
-                ),
-              ],
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius: BorderRadius.circular(AppRadii.pill),
             ),
-            if (estimate != null) ...[
-              Text(
-                _strings.profileEstimateWeeks(estimate.weeks),
-                style: AppTypography.bodySmall.copyWith(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xxs,
+              ),
+              child: Text(
+                statusLabel,
+                style: AppTypography.label.copyWith(
                   color: AppColors.secondaryForeground,
                 ),
               ),
-              if (estimate.targetDate != null)
-                Text(
-                  _strings.profileEstimateDate(
-                    _formatDate(estimate.targetDate!),
-                  ),
-                  style: AppTypography.caption.copyWith(
-                    color: AppColors.secondaryForeground,
-                  ),
-                ),
-            ],
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: AppColors.accent,
-                  borderRadius: BorderRadius.circular(AppRadii.pill),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xs,
-                    vertical: AppSpacing.navLabelGap,
-                  ),
-                  child: Text(
-                    status,
-                    style: AppTypography.micro.copyWith(
-                      color: AppColors.accentForeground,
-                    ),
-                  ),
-                ),
-              ),
             ),
-          ],
-        ),
+          ),
+          Text(
+            body,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.foreground,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  List<(String, String)> get _activityOptions => [
-    ('ph-armchair', _strings.profileSitting),
-    ('ph-footprints', _strings.profileLight),
-    ('ph-person-simple-walk', _strings.profileModerate),
-    ('ph-barbell', _strings.profileHeavy),
-    ('ph-calendar-dots', _strings.profileVariable),
-  ];
-
-  List<Widget> _activityPage() => [
-    ProfileStepHeading(
-      title: _strings.profileActivityHeading,
-      subtitle: Text(
-        _strings.profileActivityCaption,
-        style: AppTypography.setupCaption,
-      ),
-    ),
-    if (_isTeen) ...[
-      const SizedBox(height: AppSpacing.md),
-      _teenGuidanceCard(GoalType.maintain),
-    ],
-    const SizedBox(height: AppSpacing.xl),
-    Semantics(
-      label: _strings.profileActivity,
-      explicitChildNodes: true,
-      child: Column(
-        spacing: AppSpacing.denseGap,
-        children: [
-          for (final (index, (icon, label)) in _activityOptions.indexed)
-            AppSelectionTile(
-              icon: icon,
-              label: label,
-              compact: true,
-              selected: _activity == index,
-              onPressed: () => setState(() => _activity = index),
+  Widget _pregnancyNote() => AppGlassCard(
+    key: const Key('profile-pregnancy-note'),
+    padding: const EdgeInsets.all(AppSpacing.card),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: AppSpacing.sm,
+      children: [
+        const AppIcon.asset(
+          'ph-info',
+          size: AppSizes.iconMd,
+          color: AppColors.primary,
+        ),
+        Expanded(
+          child: Text(
+            _strings.profilePregnancyNote,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.foreground,
             ),
-        ],
-      ),
+          ),
+        ),
+      ],
     ),
-  ];
+  );
 
   String _goalLabel(GoalType goal) => switch (goal) {
     GoalType.gain => _strings.profileGain,
@@ -1104,139 +476,204 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     GoalType.logOnly => 'ph-bowl-food',
   };
 
-  String _formatDate(DateTime date) =>
-      MaterialLocalizations.of(context).formatCompactDate(date);
-
-  double? _positiveNumber(String? value) {
-    final number = double.tryParse((value ?? '').trim().replaceAll(',', '.'));
-    return number != null && number.isFinite && number > 0 ? number : null;
+  Map<ProfileBodyField, String> _validateBody() {
+    final strings = _strings;
+    final age = _ageValue;
+    final height = _heightValue;
+    final weight = _weightValue;
+    // Short, friendly hints: "enter it" when empty, the range when not.
+    return {
+      if (_age.text.trim().isEmpty)
+        ProfileBodyField.age: strings.profileAgeEmpty
+      else if (age == null || age <= 0 || age > BodyLimits.maxAge)
+        ProfileBodyField.age: strings.profileInvalidAge
+      else if (age < BodyLimits.minAge)
+        ProfileBodyField.age: strings.profileAgeTooYoung,
+      if (_height.text.trim().isEmpty)
+        ProfileBodyField.height: strings.profileHeightEmpty
+      else if (height == null ||
+          height < BodyLimits.minHeightCm ||
+          height > BodyLimits.maxHeightCm)
+        ProfileBodyField.height: strings.profileHeightRange,
+      if (_weight.text.trim().isEmpty)
+        ProfileBodyField.weight: strings.profileWeightEmpty
+      else if (weight == null ||
+          weight < BodyLimits.minWeightKg ||
+          weight > BodyLimits.maxWeightKg)
+        ProfileBodyField.weight: strings.profileWeightRange,
+      if (_sex == null) ProfileBodyField.sex: strings.profileMissingSex,
+    };
   }
 
-  String? _validateNumber(String? value) =>
-      _positiveNumber(value) == null ? _strings.profileInvalidNumber : null;
-
-  String? _validateTarget(String? value) {
-    final target = _positiveNumber(value);
-    final current = _positiveNumber(_weight.text)!;
-    if (target == null) return _strings.profileInvalidNumber;
-    if (_goal == GoalType.lose && target >= current) {
-      return _strings.profileLowerTarget;
+  String? _validateTarget() {
+    final target = _target.targetKg;
+    if (target == null) return _strings.profileTargetCustomEmpty;
+    if (_target.mode == ProfileTargetMode.custom &&
+        _target.timing == ProfileTargetTiming.date &&
+        _target.date == null) {
+      return _strings.profileTargetDateRequired;
     }
-    if (_goal == GoalType.gain && target <= current) {
-      return _strings.profileHigherTarget;
-    }
-    if (_goal == GoalType.lose) {
-      final height = _positiveNumber(_height.text);
-      if (height != null && target / ((height / 100) * (height / 100)) < 18.5) {
-        return _strings.profileTargetBelowHealthy;
-      }
-      final estimate = estimateAdultGoal(
-        goal: _goal!,
-        currentWeight: current,
-        targetWeight: target,
-        targetDate: _targetDate,
-      );
-      if (estimate?.status == GoalEstimateStatus.tooFast) {
-        return _strings.profileEstimateTooFast;
-      }
-    }
+    final estimate = estimateAdultGoal(
+      goal: _goal!,
+      currentWeight: _weightValue!,
+      targetWeight: target,
+      targetDate: _target.targetDate,
+      energy: _energy,
+    );
+    if (estimate == null) return _strings.profileTargetCustomEmpty;
+    if (estimate.pace == GoalPace.tooFast) return _strings.profilePaceTooFast;
     return null;
   }
 
   void _back() => _show(switch (_step) {
-    _Step.activity => _maintaining ? _Step.body : _Step.target,
-    _Step.target => _Step.body,
+    _Step.target => _Step.activity,
+    _Step.activity => _Step.body,
     _ => _Step.goal,
   });
 
   void _show(_Step step) {
     FocusManager.instance.primaryFocus?.unfocus();
-    setState(() => _step = step);
+    setState(() {
+      if (step == _Step.target) {
+        _target = _target.reconcile(
+          goal: _goal!,
+          currentKg: _weightValue!,
+          heightCm: _heightValue!,
+        );
+      }
+      _stepForward = step.index >= _step.index;
+      _step = step;
+    });
+  }
+
+  /// Steps cross-fade with a short slide in the direction of travel: forward
+  /// enters from the right, back from the left. The outgoing step leaves the
+  /// other way. Reduce Motion swaps instantly.
+  Widget _switchStep(Widget child) {
+    final shift = _stepForward ? 0.08 : -0.08;
+    return AnimatedSwitcher(
+      duration: AppMotion.of(context, AppMotion.stepSwitch),
+      reverseDuration: AppMotion.of(context, AppMotion.feedbackRelease),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      layoutBuilder: (current, previous) =>
+          Stack(fit: StackFit.expand, children: [...previous, ?current]),
+      transitionBuilder: (step, animation) {
+        final incoming = step.key == child.key;
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween(
+              begin: Offset(incoming ? shift : -shift, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: step,
+          ),
+        );
+      },
+      child: child,
+    );
   }
 
   Future<void> _advance() async {
-    final form = _form.currentState;
-    if (form != null && !form.validate()) return;
     switch (_step) {
       case _Step.goal:
         _show(_Step.body);
       case _Step.body:
-        _show(_maintaining ? _Step.activity : _Step.target);
-      case _Step.target:
+        final errors = _validateBody();
+        if (errors.isNotEmpty) {
+          setState(() => _bodyErrors = errors);
+          return;
+        }
         _show(_Step.activity);
       case _Step.activity:
+        if (_skipsTarget) {
+          await _review();
+        } else {
+          _show(_Step.target);
+        }
+      case _Step.target:
+        final error = _validateTarget();
+        if (error != null) {
+          setState(() => _targetError = error);
+          return;
+        }
         await _review();
     }
   }
 
+  /// What the plan sheet shows for the current answers. kcal values use the
+  /// display step, and the saved target is exactly the number shown.
+  ProfilePlanSummary _planSummary() {
+    final goal = _goal!;
+    final current = _weightValue!;
+    final savesTarget = !_skipsTarget;
+    final targetKg = savesTarget ? _target.targetKg : null;
+    final energy = _energy;
+    final estimate = targetKg == null
+        ? null
+        : estimateAdultGoal(
+            goal: goal,
+            currentWeight: current,
+            targetWeight: targetKg,
+            targetDate: _target.targetDate,
+            energy: energy,
+          );
+    final body = energy == null ? null : roundKcal(energy.totalKcal);
+    final planned = estimate?.dailyKcal;
+    final kind = switch (goal) {
+      _ when energy == null => ProfilePlanKind.noKcal,
+      GoalType.maintain => ProfilePlanKind.maintain,
+      _ when planned == null => ProfilePlanKind.noKcal,
+      _ when roundKcal(planned) == body => ProfilePlanKind.maintain,
+      GoalType.gain => ProfilePlanKind.gain,
+      _ => ProfilePlanKind.lose,
+    };
+    return ProfilePlanSummary(
+      kind: kind,
+      goal: goal,
+      currentKg: current,
+      activity: _activity!,
+      budgetKcal: switch (kind) {
+        ProfilePlanKind.noKcal => null,
+        _ when planned != null && goal != GoalType.maintain => roundKcal(
+          planned,
+        ),
+        _ => body,
+      },
+      bodyKcal: body,
+      targetKg: targetKg,
+      rateKgPerWeek: estimate?.rateKgPerWeek,
+      projectedDate: estimate?.projectedDate,
+      bmi: bodyMassIndex(weightKg: current, heightCm: _heightValue),
+      pregnant: _pregnantApplies,
+    );
+  }
+
   Future<void> _review() async {
-    final strings = _strings;
+    final savesTarget = !_skipsTarget;
+    final targetKg = savesTarget ? _target.targetKg : null;
+    final targetDate = savesTarget ? _target.targetDate : null;
+    final summary = _planSummary();
     setState(() {
       _reviewing = true;
       _saveFailed = false;
     });
     try {
-      final proceed = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(strings.profileReview),
-          scrollable: true,
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            spacing: AppSpacing.xs,
-            children: [
-              Text(_goalLabel(_goal!), style: AppTypography.cardTitle),
-              Text(
-                '${strings.profileAge} · ${_age.text.trim()} ${strings.profileYears}',
-              ),
-              Text('${strings.profileHeight} · ${_height.text.trim()} cm'),
-              Text(
-                '${strings.profileCurrentWeight} · ${_weight.text.trim()} kg',
-              ),
-              Text(
-                '${strings.profileSex} · ${_sex == 0 ? strings.profileFemale : strings.profileMale}',
-              ),
-              if (!_maintaining && !_isTeen) ...[
-                Text(
-                  '${strings.profileTargetWeight} · ${_target.text.trim()} kg',
-                ),
-                if (_targetDate != null)
-                  Text(
-                    '${strings.profileTargetDate} · ${_formatDate(_targetDate!)}',
-                  ),
-              ],
-              if (_isTeen) Text(strings.profileTeenGuidanceTitle),
-              Text(_activityOptions[_activity!].$2),
-              Text(strings.profileReviewNotice, style: AppTypography.caption),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(strings.profileBack),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(strings.backToToday),
-            ),
-          ],
-        ),
-      );
+      final proceed = await showProfilePlanSheet(context, summary);
       if (!mounted || proceed != true) return;
       final now = DateTime.now();
       final profile = Profile(
-        ageYears: int.parse(_age.text.trim()),
-        heightCm: _positiveNumber(_height.text)!,
-        sex: ProfileSex.values[_sex!],
-        activityLevel: ActivityLevel.values[_activity!],
+        ageYears: _ageValue!,
+        heightCm: _heightValue!,
+        sex: _sex!,
+        activityLevel: _activity!,
+        dailyEnergyKcal: summary.budgetKcal,
         goal: Goal(
           type: _goal!,
-          currentWeight: _positiveNumber(_weight.text),
-          targetWeight: _maintaining || _isTeen
-              ? null
-              : _positiveNumber(_target.text),
-          targetDate: _maintaining || _isTeen ? null : _targetDate,
+          currentWeight: _weightValue,
+          targetWeight: targetKg,
+          targetDate: targetDate,
           createdAt: now,
           updatedAt: now,
         ),

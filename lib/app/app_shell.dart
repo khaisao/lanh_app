@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lanh_app/features/meal_logging/meal_logging.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-class AppShell extends StatefulWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({
     super.key,
     required this.navigationShell,
@@ -17,10 +18,10 @@ class AppShell extends StatefulWidget {
   final String location;
 
   @override
-  State<AppShell> createState() => _AppShellState();
+  ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends ConsumerState<AppShell> {
   static const _scrollThreshold = 16.0;
   static const _hiddenOffset = 1.25;
 
@@ -135,6 +136,10 @@ class _AppShellState extends State<AppShell> {
       actionKey: const Key('nav-log-meal'),
       actionLabel: strings.logMeal,
       onAction: () => unawaited(showMealMethodSheet(context)),
+      // Points at the action while today's journal is still empty.
+      highlightAction:
+          selectedIndex == 0 &&
+          (ref.watch(todayMealLogsProvider).value?.isEmpty ?? false),
     );
     return Scaffold(
       body: Stack(

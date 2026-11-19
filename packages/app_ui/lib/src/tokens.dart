@@ -32,6 +32,71 @@ abstract final class AppColors {
   static const glassRim = Color(0x80FFFFFF);
 }
 
+/// Liquid glass card recipe shared by every card in the app. Mirrors the Sleek
+/// export `bg-card/70 backdrop-blur-xl border border-card/80 ring-1 ring-inset
+/// ring-white/50 shadow-[0_20px_40px_-20px_rgba(59,47,37,0.3),inset_0_1px_0_0_
+/// rgba(255,255,255,0.6)]`.
+/// Single-choice items across the app (goal, activity, option lists), from
+/// the Profile Setup Goal export: an idle item is plain glass with a
+/// `secondary` icon well and an empty `border-2 border-border` ring; a chosen
+/// item fills with `bg-primary/5`, gets a `border-2 border-primary` stroke,
+/// a solid primary icon well and a filled check.
+abstract final class AppChoice {
+  /// `bg-primary/5` over the glass blur.
+  static const selectedFill = Color(0x0D2F5D3A);
+  static const selectedStroke = AppColors.primary;
+  static const selectedStrokeWidth = AppBorders.selected;
+  static const wellIdle = AppColors.secondary;
+  static const wellSelected = AppColors.primary;
+  static const iconIdle = AppColors.primary;
+  static const iconSelected = AppColors.primaryForeground;
+  static const markIdle = AppColors.border;
+  static const markSelected = AppColors.primary;
+  static const markStroke = AppBorders.selected;
+
+  /// `size-6` ring / check.
+  static const markSize = AppSizes.iconLg;
+
+  /// `size-12` well on full items, `size-10` on compact ones.
+  static const well = AppSizes.choiceIcon;
+  static const wellCompact = AppSizes.avatar;
+}
+
+abstract final class AppGlass {
+  /// `shadow-inner` on segmented tracks: the top inside edge shade.
+  static const insetShade = Color(0x0D000000);
+
+  /// `bg-card/70`.
+  static const fill = Color(0xB3FFFDF7);
+
+  /// `bg-card/50`, used by tracks and docked bars behind glass content.
+  static const track = Color(0x80FFFDF7);
+
+  /// `bg-card/90`, the raised segment inside a track.
+  static const raised = Color(0xE6FFFDF7);
+
+  /// `bg-background/60`, recessed chips inside a card.
+  static const recessed = Color(0x99F8F3E8);
+
+  /// `border-card/80`.
+  static const edge = Color(0xCCFFFDF7);
+
+  /// `ring-1 ring-inset ring-white/50`.
+  static const ring = Color(0x80FFFFFF);
+
+  /// `inset 0 1px 0 0 rgba(255,255,255,0.6)`: the specular top highlight.
+  static const highlight = Color(0x99FFFFFF);
+
+  /// Backdrop blur sigma for `backdrop-blur-xl` (24px CSS blur ≈ sigma 12).
+  static const blur = 12.0;
+
+  /// Backdrop blur sigma for `backdrop-blur-2xl` tracks and bars.
+  static const blurStrong = 20.0;
+
+  /// Opaque replacement used when the platform requests high contrast.
+  static const contrastFill = AppColors.card;
+}
+
 abstract final class AppSpacing {
   static const xxs = 4.0;
   static const xs = 8.0;
@@ -76,6 +141,9 @@ abstract final class AppRadii {
   static const glassHero = 90.0;
   static const glassPanel = 80.0;
   static const glassItem = 70.0;
+  // Liquid glass cards: `rounded-3xl` (32) and `rounded-2xl` (24) x 2.5.
+  static const glassCard = 80.0;
+  static const glassInner = 60.0;
 }
 
 abstract final class AppSizes {
@@ -109,6 +177,12 @@ abstract final class AppSizes {
   static const avatar = 40.0;
   static const avatarLarge = 56.0;
   static const choiceIcon = 48.0;
+  // Sex choice circle and light icon (`size-14`, 30 px) in Body Direction 2.
+  static const sexChoiceCircle = 56.0;
+  static const sexChoiceIcon = 30.0;
+  // Plan sheet mascot (`size-24`) and tile icon circles (`size-9`).
+  static const planMascot = 96.0;
+  static const planTileIcon = 36.0;
   static const compactAction = 48.0;
   static const action = 56.0;
   static const nav = 60.0;
@@ -262,6 +336,45 @@ abstract final class AppShadows {
       blurRadius: 60,
       spreadRadius: -28,
       offset: Offset(0, 32),
+    ),
+  ];
+  // Liquid glass card drop shadow: `0 20px 40px -20px rgba(59,47,37,.3)`.
+  static const glassCard = [
+    BoxShadow(
+      color: Color(0x4D3B2F25),
+      blurRadius: 40,
+      spreadRadius: -20,
+      offset: Offset(0, 20),
+    ),
+  ];
+  // Selected primary card: `shadow-xl shadow-primary/30`.
+  static const primaryCard = [
+    BoxShadow(
+      color: Color(0x4D2F5D3A),
+      blurRadius: 25,
+      spreadRadius: -5,
+      offset: Offset(0, 20),
+    ),
+    BoxShadow(
+      color: Color(0x4D2F5D3A),
+      blurRadius: 10,
+      spreadRadius: -6,
+      offset: Offset(0, 8),
+    ),
+  ];
+  // Raised segment inside a glass track: `shadow-md`.
+  static const glassRaised = [
+    BoxShadow(
+      color: Color(0x1A000000),
+      blurRadius: 6,
+      spreadRadius: -1,
+      offset: Offset(0, 4),
+    ),
+    BoxShadow(
+      color: Color(0x1A000000),
+      blurRadius: 4,
+      spreadRadius: -2,
+      offset: Offset(0, 2),
     ),
   ];
   static const primaryGlow = [

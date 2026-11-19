@@ -22,6 +22,9 @@ class Application extends ConsumerWidget {
         ...GlobalMaterialLocalizations.delegates,
       ],
       routerConfig: router,
+      // A tap outside any text field closes the keyboard, app-wide.
+      builder: (context, child) =>
+          AppKeyboardDismiss(child: child ?? const SizedBox.shrink()),
     );
   }
 }

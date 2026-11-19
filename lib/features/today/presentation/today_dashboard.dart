@@ -48,26 +48,29 @@ class TodayDashboard extends StatelessWidget {
   );
 }
 
+/// Today's liquid glass card, as in the Today export: `bg-card/70
+/// backdrop-blur-xl border-card/80 ring-white/50`. Only the hero energy card
+/// is [raised] with the glass drop shadow; the water and journal cards sit
+/// flat (`rounded-2xl`, no shadow).
 class TodayCard extends StatelessWidget {
   const TodayCard({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(AppSpacing.md),
-    this.radius = AppRadii.lg,
+    this.radius = AppRadii.glassInner,
+    this.raised = false,
   });
 
   final Widget child;
   final EdgeInsets padding;
   final double radius;
+  final bool raised;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => AppGlassCard(
     padding: padding,
-    decoration: BoxDecoration(
-      color: AppColors.card,
-      border: Border.all(color: AppColors.border),
-      borderRadius: BorderRadius.circular(radius),
-    ),
+    radius: radius,
+    shadows: raised ? AppShadows.glassCard : const [],
     child: child,
   );
 }
@@ -83,6 +86,7 @@ class TodayEnergyCard extends StatelessWidget {
     this.range,
     this.estimated = false,
     this.action,
+    this.unit,
   });
 
   final GoalType? mode;
@@ -94,11 +98,15 @@ class TodayEnergyCard extends StatelessWidget {
   final bool estimated;
   final Widget? action;
 
+  /// Text after the number; defaults to "kcal đã ghi".
+  final String? unit;
+
   @override
   Widget build(BuildContext context) => TodayCard(
     key: ValueKey('today-energy-${mode?.name ?? 'none'}'),
     padding: const EdgeInsets.all(AppSpacing.lg),
-    radius: AppRadii.xl,
+    radius: AppRadii.glassCard,
+    raised: true,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: AppSpacing.md,
@@ -138,7 +146,7 @@ class TodayEnergyCard extends StatelessWidget {
           children: [
             Text(value, style: AppTypography.numericLarge),
             Text(
-              AppLocalizations.of(context).todayLoggedKcal,
+              unit ?? AppLocalizations.of(context).todayLoggedKcal,
               style: AppTypography.bodySmall,
             ),
           ],
@@ -419,4 +427,66 @@ class TodayMealRow extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// Empty-day journal card from the Today First Run export: the mascot, a
+/// short invitation and one action into meal logging.
+class TodayFirstMealCard extends StatelessWidget {
+  const TodayFirstMealCard({super.key, required this.onLog});
+
+  final VoidCallback onLog;
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
+    return TodayCard(
+      key: const Key('today-first-meal'),
+      radius: AppRadii.glassCard,
+      raised: true,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        spacing: AppSpacing.xs,
+        children: [
+          const AppEntrance(
+            index: 0,
+            child: AppMascot(size: AppSizes.planMascot - AppSpacing.lg),
+          ),
+          Text(
+            strings.todayFirstMealTitle,
+            textAlign: TextAlign.center,
+            style: AppTypography.cardTitle.copyWith(
+              fontFamily: AppFonts.heading,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          Text(
+            strings.todayFirstMealBody,
+            textAlign: TextAlign.center,
+            style: AppTypography.bodySmall,
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          SizedBox(
+            width: double.infinity,
+            child: AppButton(
+              key: const Key('today-first-meal-action'),
+              animatePress: true,
+              onPressed: onLog,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: AppSpacing.xs,
+                children: [
+                  const AppIcon.asset(
+                    'ph-plus-bold',
+                    size: AppSizes.iconMd,
+                    color: AppColors.primaryForeground,
+                  ),
+                  Flexible(child: Text(strings.logMeal)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -30,6 +30,7 @@ class AppBottomBar extends StatelessWidget {
     required this.actionKey,
     required this.actionLabel,
     required this.onAction,
+    this.highlightAction = false,
   }) : assert(destinations.length == 4);
 
   static const _glassLook = GlassLook(
@@ -50,6 +51,9 @@ class AppBottomBar extends StatelessWidget {
   final Key actionKey;
   final String actionLabel;
   final VoidCallback onAction;
+
+  /// Pulses a halo behind the action (e.g. while today's journal is empty).
+  final bool highlightAction;
 
   @override
   Widget build(BuildContext context) => GlassScope(
@@ -104,20 +108,23 @@ class AppBottomBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Tooltip(
-                    message: actionLabel,
-                    triggerMode: TooltipTriggerMode.manual,
-                    excludeFromSemantics: true,
-                    child: _NavPressTarget(
-                      targetKey: actionKey,
-                      label: actionLabel,
-                      onTap: onAction,
-                      circle: true,
-                      child: const Center(
-                        child: Icon(
-                          Icons.add_rounded,
-                          size: AppSizes.iconXl,
-                          color: AppColors.primaryForeground,
+                  AppPulseHalo(
+                    active: highlightAction,
+                    child: Tooltip(
+                      message: actionLabel,
+                      triggerMode: TooltipTriggerMode.manual,
+                      excludeFromSemantics: true,
+                      child: _NavPressTarget(
+                        targetKey: actionKey,
+                        label: actionLabel,
+                        onTap: onAction,
+                        circle: true,
+                        child: const Center(
+                          child: Icon(
+                            Icons.add_rounded,
+                            size: AppSizes.iconXl,
+                            color: AppColors.primaryForeground,
+                          ),
                         ),
                       ),
                     ),

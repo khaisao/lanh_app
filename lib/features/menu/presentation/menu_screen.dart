@@ -92,13 +92,10 @@ class _ProfileCard extends StatelessWidget {
   final String goalName;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => AppGlassCard(
     padding: const EdgeInsets.all(AppSpacing.md),
-    decoration: BoxDecoration(
-      color: AppColors.card,
-      border: Border.all(color: AppColors.border),
-      borderRadius: BorderRadius.circular(AppRadii.md),
-    ),
+    radius: AppRadii.glassInner,
+    shadows: const [],
     child: Row(
       children: [
         const CircleAvatar(
@@ -140,23 +137,25 @@ class _MenuGroup extends StatelessWidget {
         child: Text(title.toUpperCase(), style: AppTypography.label),
       ),
       const SizedBox(height: AppSpacing.xs),
-      DecoratedBox(
-        decoration: BoxDecoration(
-          color: AppColors.card,
-          border: Border.all(color: AppColors.border),
-          borderRadius: BorderRadius.circular(AppRadii.md),
-        ),
-        child: Column(
-          children: [
-            for (var index = 0; index < items.length; index++) ...[
-              _MenuRow(item: items[index]),
-              if (index < items.length - 1)
-                const Divider(
-                  height: AppBorders.hairline,
-                  color: AppColors.border,
-                ),
+      AppGlassCard(
+        padding: EdgeInsets.zero,
+        radius: AppRadii.glassInner,
+        shadows: const [],
+        // Own Material so row ink shows above the glass fill.
+        child: Material(
+          type: MaterialType.transparency,
+          child: Column(
+            children: [
+              for (var index = 0; index < items.length; index++) ...[
+                _MenuRow(item: items[index]),
+                if (index < items.length - 1)
+                  const Divider(
+                    height: AppBorders.hairline,
+                    color: AppColors.border,
+                  ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     ],

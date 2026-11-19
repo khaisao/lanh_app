@@ -1,10 +1,8 @@
 part of '../app_ui.dart';
 
-/// Frosted card from the MealReview export: `bg-card/60 backdrop-blur-2xl
-/// border-white/60` with a soft drop shadow.
-///
-/// Inside a [BackdropGroup] the blur is shared with sibling surfaces, so a
-/// scrolling page with many cards renders one backdrop pass.
+/// Frosted surface from the MealReview export: `bg-card/60 backdrop-blur-2xl
+/// border-white/60`. It is the [AppGlassCard] recipe with the MealReview fill
+/// and blur, so the specular rim and high-contrast fallback stay shared.
 class AppGlassSurface extends StatelessWidget {
   const AppGlassSurface({
     super.key,
@@ -24,32 +22,15 @@ class AppGlassSurface extends StatelessWidget {
   final bool stadium;
 
   @override
-  Widget build(BuildContext context) {
-    const side = BorderSide(color: AppColors.glassEdge);
-    final ShapeBorder shape = stadium
-        ? const StadiumBorder(side: side)
-        : AppSquircleBorder(radius: radius, side: side);
-    final filter = ui.ImageFilter.blur(
-      sigmaX: AppSizes.glassBlur,
-      sigmaY: AppSizes.glassBlur,
-    );
-    final content = DecoratedBox(
-      decoration: ShapeDecoration(
-        color: AppColors.card.withValues(alpha: opacity),
-        shape: shape,
-      ),
-      child: Padding(padding: padding, child: child),
-    );
-    return DecoratedBox(
-      decoration: ShapeDecoration(shape: shape, shadows: shadows),
-      child: ClipPath(
-        clipper: ShapeBorderClipper(shape: shape),
-        child: BackdropGroup.of(context) == null
-            ? BackdropFilter(filter: filter, child: content)
-            : BackdropFilter.grouped(filter: filter, child: content),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => AppGlassCard(
+    radius: radius,
+    stadium: stadium,
+    shadows: shadows,
+    padding: padding,
+    fill: AppColors.card.withValues(alpha: opacity),
+    blur: AppSizes.glassBlur,
+    child: child,
+  );
 }
 
 /// Round frosted icon control from the MealReview header (`size-11`), kept

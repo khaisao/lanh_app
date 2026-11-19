@@ -57,6 +57,45 @@ abstract final class AppMotion {
   static const voiceEnter = Duration(milliseconds: 520);
   static const voiceGrow = Duration(milliseconds: 220);
   static const feedbackCurve = Curves.easeOutCubic;
+  // Selection: tone cross-fade, the pop when a card becomes chosen, the
+  // check mark and rolling numbers.
+  static const selection = Duration(milliseconds: 260);
+  static const selectionCurve = Curves.easeOutCubic;
+  static const selectionPop = Duration(milliseconds: 340);
+  static const checkIn = Duration(milliseconds: 280);
+  static const rollingText = Duration(milliseconds: 300);
+  // Step change and the staggered rise of a step's cards.
+  static const stepSwitch = Duration(milliseconds: 360);
+  static const entrance = Duration(milliseconds: 420);
+  static const entranceStagger = Duration(milliseconds: 55);
+  static const entranceRise = 18.0;
+  static const progressFill = Duration(milliseconds: 420);
+
+  static Duration of(BuildContext context, Duration duration) =>
+      MediaQuery.disableAnimationsOf(context) ? Duration.zero : duration;
+
+  // Log-meal halo on an empty day: three slow swells.
+  static const pulse = Duration(milliseconds: 1400);
+  static const pulseCount = 3;
+  // Plan sheet (Plan Ready export): slide-up with a little overshoot, the
+  // mascot hop and sparkles, the kcal count, the energy bar and the CTA shine.
+  static const planSheet = Duration(milliseconds: 520);
+  static const planSheetCurve = Cubic(0.2, 0.9, 0.3, 1.15);
+  static const planMascotHop = Duration(milliseconds: 700);
+  static const planSparkle = Duration(milliseconds: 1400);
+  static const planCount = Duration(milliseconds: 1100);
+  static const planBar = Duration(milliseconds: 1200);
+  static const planShine = Duration(milliseconds: 2000);
+
+  // Segmented control thumb slide and label colour.
+  static const segmentSlide = Duration(milliseconds: 280);
+  static const segmentCurve = Curves.easeOutCubic;
+  // BMI card reveal: debounce while typing, then grow-in and ring sweep.
+  static const bmiShowDelay = Duration(milliseconds: 350);
+  static const bmiHideDelay = Duration(milliseconds: 700);
+  static const bmiReveal = Duration(milliseconds: 480);
+  static const bmiRing = Duration(milliseconds: 1100);
+  static const bmiRevealCurve = Curves.easeOutQuart;
   static const feedbackPress = Duration(milliseconds: 75);
   static const feedbackRelease = Duration(milliseconds: 150);
   static const dockCurve = Curves.easeInOutSine;
