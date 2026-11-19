@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/features/meal_logging/meal_logging.dart';
 import 'package:lanh_app/features/profile_setup/profile_setup.dart';
@@ -18,9 +20,18 @@ class TodayScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
     final savedGoal = ref.watch(profileGoalProvider);
+    final mealLogs = ref.watch(todayMealLogsProvider);
     final goal = savedGoal.value?.type;
     final loading = savedGoal.isLoading;
     final failed = savedGoal.hasError;
+    final loggedMeals = mealLogs.asData?.value ?? const <MealLog>[];
+    final totalCalories = loggedMeals
+        .map((meal) => meal.totalCalories)
+        .whereType<double>()
+        .fold<double>(0, (sum, value) => sum + value);
+    final hasCalories = loggedMeals.any((meal) => meal.totalCalories != null);
+    final numberFormat = NumberFormat.decimalPattern(strings.localeName)
+      ..maximumFractionDigits = 0;
 
     final heading = switch (goal) {
       GoalType.gain => strings.todayGainGoal,
@@ -38,7 +49,9 @@ class TodayScreen extends ConsumerWidget {
       energy: TodayEnergyCard(
         mode: goal,
         heading: heading,
-        value: strings.todayNoEnergy,
+        value: hasCalories
+            ? numberFormat.format(totalCalories)
+            : strings.todayNoEnergy,
         footer: loading
             ? strings.todayLoadingProfile
             : failed
@@ -62,21 +75,94 @@ class TodayScreen extends ConsumerWidget {
       water: TodayWaterCard(value: strings.todayNoWater),
       journal: TodayJournal(
         entries: [
-          TodayCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: AppSpacing.xs,
-              children: [
-                Text(strings.todayNoMeals, style: AppTypography.bodySmall),
-                AppButton.secondary(
-                  onPressed: () => unawaited(showMealMethodSheet(context)),
-                  child: Text(strings.logMeal),
-                ),
-              ],
+          if (mealLogs.isLoading) ...[
+            const TodayCard(child: Center(child: CircularProgressIndicator())),
+          ] else if (mealLogs.hasError) ...[
+            TodayCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: AppSpacing.xs,
+                children: [
+                  Text(
+                    strings.todayMealReadError,
+                    style: AppTypography.bodySmall,
+                  ),
+                  Wrap(
+                    spacing: AppSpacing.xs,
+                    children: [
+                      TextButton(
+                        onPressed: () => ref.invalidate(todayMealLogsProvider),
+                        child: Text(strings.retry),
+                      ),
+                      AppButton.secondary(
+                        onPressed: () =>
+                            unawaited(showMealMethodSheet(context)),
+                        child: Text(strings.logMeal),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
+          ] else if (loggedMeals.isEmpty) ...[
+            TodayCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: AppSpacing.xs,
+                children: [
+                  Text(strings.todayNoMeals, style: AppTypography.bodySmall),
+                  AppButton.secondary(
+                    onPressed: () => unawaited(showMealMethodSheet(context)),
+                    child: Text(strings.logMeal),
+                  ),
+                ],
+              ),
+            ),
+          ] else ...[
+            TodayCard(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  for (var index = 0; index < loggedMeals.length; index++) ...[
+                    if (index > 0)
+                      const Divider(
+                        height: 1,
+                        indent: AppSpacing.md,
+                        endIndent: AppSpacing.md,
+                      ),
+                    _mealRow(context, loggedMeals[index], numberFormat),
+                  ],
+                ],
+              ),
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _mealRow(
+    BuildContext context,
+    MealLog meal,
+    NumberFormat numberFormat,
+  ) {
+    final strings = AppLocalizations.of(context);
+    final imagePath = meal.imagePath;
+    final photo = imagePath == null || !File(imagePath).existsSync()
+        ? null
+        : FileImage(File(imagePath));
+    final energy = meal.totalCalories == null
+        ? '${strings.mealReviewUnknown} ${strings.mealReviewKcal}'
+        : '${numberFormat.format(meal.totalCalories)} ${strings.mealReviewKcal}';
+    final time = DateFormat.Hm(strings.localeName)
+        .format(meal.createdAt.toLocal());
+    return TodayMealRow(
+      name: meal.items.length == 1
+          ? meal.items.single.name
+          : meal.items.map((item) => item.name).join(', '),
+      time: time,
+      energy: energy,
+      photo: photo,
     );
   }
 }

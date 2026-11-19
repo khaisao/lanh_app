@@ -78,10 +78,28 @@
   "profileHeight": "Height",
   "profileCurrentWeight": "Current weight",
   "profileSex": "Sex",
+  "profileBodyInsightTitle": "Your body snapshot",
+  "profileBodyInsightEmpty": "Enter age, height, weight and sex to see a useful snapshot.",
+  "profileBmiLabel": "Current BMI",
+  "profileBmiAdultUnderweight": "Below the healthy range",
+  "profileBmiAdultHealthy": "Within the healthy range",
+  "profileBmiAdultOverweight": "Above the healthy range",
+  "profileBmiAdultObesity": "Needs professional review",
+  "profileBmiTeenHint": "Ages 13–19 are compared by age and sex, not adult cutoffs.",
+  "profileBmiHint": "BMI is a reference indicator, not a diagnosis.",
   "profileFemale": "Female",
   "profileMale": "Male",
   "profileTarget": "Your target",
   "profileTargetWeight": "Target weight",
+  "profileTargetSuggestionsTitle": "Lành suggestions",
+  "profileTargetSuggestionsSubtitle": "Choose a starting point; you can still edit it.",
+  "profileTargetSuggestionFive": "Starter goal · {weight} kg",
+  "profileTargetSuggestionTen": "Longer goal · {weight} kg",
+  "profileTargetSuggestionGain": "Gradual gain · {weight} kg",
+  "profileTargetSuggestionCustom": "Enter my own goal",
+  "profileTargetManualTitle": "Your target",
+  "profileTargetManualChip": "Custom",
+  "profileTargetHelper": "You can adjust this number before continuing.",
   "profileTargetDate": "Target date",
   "profilePickDate": "Choose a date",
   "profileWeeklyEstimate": "Weekly estimate",
@@ -101,13 +119,34 @@
   "profileStepStatus": "Step {step} of 4",
   "profileEditStep": "Edit: {title}",
   "profileInvalidAge": "Enter an age in whole years.",
+  "profileAgeTooYoung": "Lành supports weight goals from age 13.",
   "profileInvalidNumber": "Enter a number greater than zero.",
   "profileMissingSex": "Choose an option to continue.",
   "profileLowerTarget": "Target weight must be below current weight.",
   "profileHigherTarget": "Target weight must be above current weight.",
+  "profileTargetBelowHealthy": "This target is below the healthy weight range for this height.",
   "profileFutureDate": "Choose a date after today.",
   "profileReview": "Review your information",
   "profileReviewNotice": "This information will be saved on your device.",
+  "profileTeenGuidanceTitle": "A safer goal while you grow",
+  "profileTeenUnderweightGain": "Your age-based measure is below the reference range. Prioritize enough food and talk with a trusted adult or health professional; Lành will not set an automatic gain rate for a growing body.",
+  "profileTeenUnderweightLose": "Lành does not recommend setting a weight-loss goal when the age-based measure is below the reference range. Talk with a trusted adult or health professional.",
+  "profileTeenHealthy": "Your age-based measure is in the reference range. While you are growing, Lành prioritizes steady routines and healthy growth over forcing a weight change.",
+  "profileTeenOverweightLose": "Lành will focus on healthy routines and growth over time. Any weight-change goal should be discussed with family and a health professional.",
+  "profileTeenOverweightGain": "Lành will not set an automatic gain goal when the age-based measure is above the reference range. Talk with family and a health professional.",
+  "profileTeenBmiStatusUnderweight": "Below the age-based reference range",
+  "profileTeenBmiStatusHealthy": "Within the age-based reference range",
+  "profileTeenBmiStatusOverweight": "Above the age-based reference range",
+  "profileTeenBmiStatusObesity": "Needs professional review",
+  "profileEstimateRecommended": "Within the recommended range",
+  "profileEstimateSlower": "Slower, but still reasonable",
+  "profileEstimateTooFast": "This goal is too fast — choose a later date",
+  "profileEstimateCaution": "Consider gaining more slowly",
+  "profileEstimateRate": "Expected pace",
+  "profileEstimateRateValue": "{value} kg/week",
+  "profileEstimateDuration": "Estimated time",
+  "profileEstimateWeeks": "About {count} weeks",
+  "profileEstimateDate": "Expected {date}",
   "@profileStepStatus": {
     "placeholders": {
       "step": {
@@ -120,6 +159,42 @@
       "title": {
         "type": "String"
       }
+    }
+  },
+  "@profileEstimateWeeks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@profileEstimateRateValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@profileEstimateDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@profileTargetSuggestionFive": {
+    "placeholders": {
+      "weight": {"type": "String"}
+    }
+  },
+  "@profileTargetSuggestionTen": {
+    "placeholders": {
+      "weight": {"type": "String"}
+    }
+  },
+  "@profileTargetSuggestionGain": {
+    "placeholders": {
+      "weight": {"type": "String"}
     }
   },
   "profileSaveError": "Could not finish saving your profile. Try again.",
@@ -137,6 +212,7 @@
   "todayNoWater": "Nothing logged",
   "todayWater": "Water",
   "todayNoMeals": "No food logged today.",
+  "todayMealReadError": "Could not load today’s food journal.",
   "todayJournal": "Food journal",
   "todayDetails": "Details",
   "todayEstimated": "Estimated",
@@ -171,6 +247,8 @@
   "mealReviewMissingCalories": "{count, plural, one{1 item has no calories and isn’t in the total.} other{{count} items have no calories and aren’t in the total.}}",
   "mealReviewDisclaimer": "These numbers are estimated from the photo and may differ from what you actually ate.",
   "mealReviewSaveSoon": "Save meal · Coming soon",
+  "mealReviewSave": "Save meal",
+  "mealReviewSaveError": "Could not save this meal. Please try again.",
   "mealReviewDiscard": "Cancel, don’t save",
   "mealUnitGram": "g",
   "mealUnitMilliliter": "ml",

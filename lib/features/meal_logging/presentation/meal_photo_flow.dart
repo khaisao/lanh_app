@@ -11,6 +11,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../meal_logging_providers.dart';
 import '../domain/meal_analysis.dart';
+import '../domain/meal_log.dart';
 import '../domain/meal_photo_repository.dart';
 import 'meal_camera.dart';
 import 'meal_photo_controller.dart';
@@ -134,6 +135,7 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
   late final AppLifecycleListener _lifecycle;
   Animation<double>? _routeAnimation;
   bool _appActive = true;
+  bool _savingMeal = false;
 
   @override
   void initState() {
@@ -223,6 +225,34 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
     setState(() {});
   }
 
+  Future<void> _saveMeal() async {
+    if (_savingMeal) return;
+    final analysis = _controller.analysis;
+    final photo = _controller.photo;
+    if (analysis == null || photo == null || !mounted) return;
+    setState(() => _savingMeal = true);
+    try {
+      await ref
+          .read(mealLogRepositoryProvider)
+          .save(
+            analysis: analysis,
+            source: MealLogSource.photo,
+            portionScale: _controller.portionScale,
+            photo: photo,
+          );
+      ref.invalidate(todayMealLogsProvider);
+      if (mounted) Navigator.of(context).pop();
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _savingMeal = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context).mealReviewSaveError),
+        ),
+      );
+    }
+  }
+
   @override
   void dispose() {
     _lifecycle.dispose();
@@ -252,7 +282,7 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         if (estimating) {
-          _controller.returnToPhoto();
+          if (!_savingMeal) _controller.returnToPhoto();
         } else if (reviewing) {
           _controller.returnFromReview();
         }
@@ -321,6 +351,8 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
               onPortion: _controller.selectPortion,
               onBack: _controller.returnToPhoto,
               onDiscard: close,
+              onSave: busy || _savingMeal ? null : _saveMeal,
+              saving: _savingMeal,
             ),
           },
         ),
@@ -368,6 +400,8 @@ class MealAnalysisResultScreen extends StatelessWidget {
     required this.onPortion,
     required this.onBack,
     required this.onDiscard,
+    this.onSave,
+    this.saving = false,
   });
 
   final MealAnalysis analysis;
@@ -375,6 +409,8 @@ class MealAnalysisResultScreen extends StatelessWidget {
   final ValueChanged<double> onPortion;
   final VoidCallback onBack;
   final VoidCallback onDiscard;
+  final Future<void> Function()? onSave;
+  final bool saving;
 
   @override
   Widget build(BuildContext context) => _MealAnalysisResultView(
@@ -384,5 +420,7 @@ class MealAnalysisResultScreen extends StatelessWidget {
     onPortion: onPortion,
     onBack: onBack,
     onDiscard: onDiscard,
+    onSave: onSave,
+    saving: saving,
   );
 }

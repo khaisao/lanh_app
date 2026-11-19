@@ -279,16 +279,20 @@ class ProfileNumberField extends StatelessWidget {
     required this.unit,
     required this.controller,
     required this.validator,
+    this.inputKey,
     this.whole = false,
     this.large = false,
+    this.onChanged,
   });
 
   final String label;
   final String unit;
   final TextEditingController controller;
   final FormFieldValidator<String> validator;
+  final Key? inputKey;
   final bool whole;
   final bool large;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) => FormField<String>(
@@ -309,8 +313,12 @@ class ProfileNumberField extends StatelessWidget {
                 child: Semantics(
                   label: '$label ($unit)',
                   child: TextField(
+                    key: inputKey,
                     controller: controller,
-                    onChanged: field.didChange,
+                    onChanged: (value) {
+                      field.didChange(value);
+                      onChanged?.call(value);
+                    },
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: !whole,
                     ),

@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lanh_app/app/app.dart';
 import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/features/meal_logging/domain/meal_analysis.dart';
+import 'package:lanh_app/features/meal_logging/domain/meal_log.dart';
 import 'package:lanh_app/features/meal_logging/domain/meal_photo_repository.dart';
 import 'package:lanh_app/features/meal_logging/meal_logging_providers.dart';
 import 'package:lanh_app/features/meal_logging/presentation/meal_camera.dart';
@@ -23,6 +24,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'support/test_goal_repository.dart';
 import 'support/test_meal_analysis_repository.dart';
+import 'support/test_meal_log_repository.dart';
 import 'support/test_onboarding_repository.dart';
 import 'support/test_profile_repository.dart';
 
@@ -31,6 +33,7 @@ const _library = 'Chọn ảnh từ thư viện';
 const _allow = 'Cho phép camera';
 const _estimate = 'Ước lượng bữa ăn';
 late TestMealAnalysisRepository _analysis;
+late TestMealLogRepository _mealLogs;
 final _photo = MealPhoto(
   File('assets/design/images/dzdAuAChai1.jpeg').readAsBytesSync(),
 );
@@ -205,7 +208,7 @@ void main() {
       expect(segmentSizes[1].width, greaterThan(segmentSizes[0].width));
       expect(segmentSizes[0].width, greaterThan(segmentSizes[2].width));
       final save = find.byKey(const Key('meal-analysis-save'));
-      expect(tester.widget<AppButton>(save).onPressed, isNull);
+      expect(tester.widget<AppButton>(save).onPressed, isNotNull);
       if (captureDirectory != null && size.width == 390) {
         await _capture(tester, captureDirectory, 'analysis-result');
       }
@@ -666,6 +669,46 @@ void main() {
     await _tap(tester, find.byTooltip('Chụp ảnh'));
     expect(find.byTooltip('Chụp lại'), findsOneWidget);
   });
+
+  testWidgets('saves a reviewed meal and returns to Today', (tester) async {
+    final repository = _PhotoRepository()..recovered = _photo;
+    await _mount(tester, repository, _Camera());
+    await _startEstimate(tester);
+    _analysis.succeed();
+    await tester.pumpAndSettle();
+
+    await _tap(tester, find.byKey(const Key('meal-analysis-save')));
+
+    expect(_mealLogs.saved, hasLength(1));
+    expect(_mealLogs.saved.single.source, MealLogSource.photo);
+    expect(find.byKey(const Key('nav-log-meal')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('save errors keep the review available for retry', (
+    tester,
+  ) async {
+    final repository = _PhotoRepository()..recovered = _photo;
+    await _mount(tester, repository, _Camera());
+    await _startEstimate(tester);
+    _analysis.succeed();
+    await tester.pumpAndSettle();
+    _mealLogs.failSave = true;
+
+    await _tap(tester, find.byKey(const Key('meal-analysis-save')));
+
+    expect(
+      find.text('Chưa lưu được bữa ăn. Vui lòng thử lại.'),
+      findsOneWidget,
+    );
+    expect(find.text('Kiểm tra bữa ăn'), findsOneWidget);
+    expect(
+      tester
+          .widget<AppButton>(find.byKey(const Key('meal-analysis-save')))
+          .onPressed,
+      isNotNull,
+    );
+  });
 }
 
 Future<void> _mount(
@@ -676,6 +719,7 @@ Future<void> _mount(
   Locale locale = const Locale('vi'),
 }) async {
   _analysis = TestMealAnalysisRepository();
+  _mealLogs = TestMealLogRepository();
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -689,6 +733,7 @@ Future<void> _mount(
           factory ?? (facing) async => camera,
         ),
         mealAnalysisRepositoryProvider.overrideWithValue(_analysis),
+        mealLogRepositoryProvider.overrideWithValue(_mealLogs),
       ],
       child: RepaintBoundary(
         key: const Key('photo-flow-capture'),

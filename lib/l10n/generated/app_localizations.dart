@@ -566,6 +566,60 @@ abstract class AppLocalizations {
   /// **'Giới tính'**
   String get profileSex;
 
+  /// No description provided for @profileBodyInsightTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin cơ thể'**
+  String get profileBodyInsightTitle;
+
+  /// No description provided for @profileBodyInsightEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập đủ tuổi, chiều cao, cân nặng và giới tính để xem thông tin tham khảo.'**
+  String get profileBodyInsightEmpty;
+
+  /// No description provided for @profileBmiLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'BMI hiện tại'**
+  String get profileBmiLabel;
+
+  /// No description provided for @profileBmiAdultUnderweight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dưới vùng khỏe mạnh'**
+  String get profileBmiAdultUnderweight;
+
+  /// No description provided for @profileBmiAdultHealthy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong vùng khỏe mạnh'**
+  String get profileBmiAdultHealthy;
+
+  /// No description provided for @profileBmiAdultOverweight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao hơn vùng khỏe mạnh'**
+  String get profileBmiAdultOverweight;
+
+  /// No description provided for @profileBmiAdultObesity.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần được chuyên gia đánh giá'**
+  String get profileBmiAdultObesity;
+
+  /// No description provided for @profileBmiTeenHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuổi 13–19 được so theo tuổi và giới, không dùng ngưỡng người lớn.'**
+  String get profileBmiTeenHint;
+
+  /// No description provided for @profileBmiHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'BMI chỉ là chỉ số tham khảo, không phải chẩn đoán.'**
+  String get profileBmiHint;
+
   /// No description provided for @profileFemale.
   ///
   /// In vi, this message translates to:
@@ -589,6 +643,60 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Cân nặng mong muốn'**
   String get profileTargetWeight;
+
+  /// No description provided for @profileTargetSuggestionsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gợi ý từ Lành'**
+  String get profileTargetSuggestionsTitle;
+
+  /// No description provided for @profileTargetSuggestionsSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn một mốc để bắt đầu; bạn vẫn có thể chỉnh lại.'**
+  String get profileTargetSuggestionsSubtitle;
+
+  /// No description provided for @profileTargetSuggestionFive.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu ban đầu · {weight} kg'**
+  String profileTargetSuggestionFive(String weight);
+
+  /// No description provided for @profileTargetSuggestionTen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu dài hơn · {weight} kg'**
+  String profileTargetSuggestionTen(String weight);
+
+  /// No description provided for @profileTargetSuggestionGain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng đều · {weight} kg'**
+  String profileTargetSuggestionGain(String weight);
+
+  /// No description provided for @profileTargetSuggestionCustom.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự nhập mục tiêu'**
+  String get profileTargetSuggestionCustom;
+
+  /// No description provided for @profileTargetManualTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu của bạn'**
+  String get profileTargetManualTitle;
+
+  /// No description provided for @profileTargetManualChip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự nhập'**
+  String get profileTargetManualChip;
+
+  /// No description provided for @profileTargetHelper.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể chỉnh con số này trước khi tiếp tục.'**
+  String get profileTargetHelper;
 
   /// No description provided for @profileTargetDate.
   ///
@@ -704,6 +812,12 @@ abstract class AppLocalizations {
   /// **'Nhập tuổi bằng số nguyên dương.'**
   String get profileInvalidAge;
 
+  /// No description provided for @profileAgeTooYoung.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành hỗ trợ mục tiêu cân nặng từ 13 tuổi.'**
+  String get profileAgeTooYoung;
+
   /// No description provided for @profileInvalidNumber.
   ///
   /// In vi, this message translates to:
@@ -728,6 +842,12 @@ abstract class AppLocalizations {
   /// **'Cân nặng mong muốn phải cao hơn cân hiện tại.'**
   String get profileHigherTarget;
 
+  /// No description provided for @profileTargetBelowHealthy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu này thấp hơn vùng cân nặng khỏe mạnh theo chiều cao.'**
+  String get profileTargetBelowHealthy;
+
   /// No description provided for @profileFutureDate.
   ///
   /// In vi, this message translates to:
@@ -745,6 +865,120 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thông tin này sẽ được lưu trên thiết bị.'**
   String get profileReviewNotice;
+
+  /// No description provided for @profileTeenGuidanceTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu an toàn trong giai đoạn lớn'**
+  String get profileTeenGuidanceTitle;
+
+  /// No description provided for @profileTeenUnderweightGain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cơ thể bạn đang ở dưới vùng tham chiếu theo tuổi. Hãy ưu tiên ăn đủ và trao đổi với người lớn hoặc chuyên gia; Lành không tự đặt tốc độ tăng cân cho tuổi đang lớn.'**
+  String get profileTeenUnderweightGain;
+
+  /// No description provided for @profileTeenUnderweightLose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành không khuyến nghị đặt mục tiêu giảm cân khi chỉ số theo tuổi đang dưới vùng tham chiếu. Hãy trao đổi với người lớn hoặc chuyên gia.'**
+  String get profileTeenUnderweightLose;
+
+  /// No description provided for @profileTeenHealthy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cơ thể bạn đang ở vùng tham chiếu theo tuổi. Trong giai đoạn lớn, Lành ưu tiên thói quen đều đặn và giữ nhịp tăng trưởng thay vì ép cân.'**
+  String get profileTeenHealthy;
+
+  /// No description provided for @profileTeenOverweightLose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành sẽ tập trung vào thói quen lành mạnh và nhịp tăng trưởng. Mục tiêu thay đổi cân nặng nên được trao đổi cùng gia đình và chuyên gia.'**
+  String get profileTeenOverweightLose;
+
+  /// No description provided for @profileTeenOverweightGain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành không tự đặt mục tiêu tăng cân khi chỉ số theo tuổi đang cao hơn vùng tham chiếu. Hãy trao đổi với gia đình và chuyên gia.'**
+  String get profileTeenOverweightGain;
+
+  /// No description provided for @profileTeenBmiStatusUnderweight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dưới vùng tham chiếu theo tuổi'**
+  String get profileTeenBmiStatusUnderweight;
+
+  /// No description provided for @profileTeenBmiStatusHealthy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong vùng tham chiếu theo tuổi'**
+  String get profileTeenBmiStatusHealthy;
+
+  /// No description provided for @profileTeenBmiStatusOverweight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao hơn vùng tham chiếu theo tuổi'**
+  String get profileTeenBmiStatusOverweight;
+
+  /// No description provided for @profileTeenBmiStatusObesity.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần được chuyên gia đánh giá'**
+  String get profileTeenBmiStatusObesity;
+
+  /// No description provided for @profileEstimateRecommended.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trong khoảng khuyến nghị'**
+  String get profileEstimateRecommended;
+
+  /// No description provided for @profileEstimateSlower.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chậm hơn nhưng vẫn hợp lý'**
+  String get profileEstimateSlower;
+
+  /// No description provided for @profileEstimateTooFast.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu hơi nhanh — chọn ngày muộn hơn'**
+  String get profileEstimateTooFast;
+
+  /// No description provided for @profileEstimateCaution.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nên tăng chậm hơn'**
+  String get profileEstimateCaution;
+
+  /// No description provided for @profileEstimateRate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tốc độ dự kiến'**
+  String get profileEstimateRate;
+
+  /// No description provided for @profileEstimateRateValue.
+  ///
+  /// In vi, this message translates to:
+  /// **'{value} kg/tuần'**
+  String profileEstimateRateValue(String value);
+
+  /// No description provided for @profileEstimateDuration.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian ước tính'**
+  String get profileEstimateDuration;
+
+  /// No description provided for @profileEstimateWeeks.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng {count} tuần'**
+  String profileEstimateWeeks(int count);
+
+  /// No description provided for @profileEstimateDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dự kiến {date}'**
+  String profileEstimateDate(String date);
 
   /// No description provided for @profileSaveError.
   ///
@@ -835,6 +1069,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa ghi món nào hôm nay.'**
   String get todayNoMeals;
+
+  /// No description provided for @todayMealReadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đọc được nhật ký hôm nay.'**
+  String get todayMealReadError;
 
   /// No description provided for @todayJournal.
   ///
@@ -1039,6 +1279,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Lưu bữa ăn · Sắp có'**
   String get mealReviewSaveSoon;
+
+  /// No description provided for @mealReviewSave.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu bữa ăn'**
+  String get mealReviewSave;
+
+  /// No description provided for @mealReviewSaveError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được bữa ăn. Vui lòng thử lại.'**
+  String get mealReviewSaveError;
 
   /// No description provided for @mealReviewDiscard.
   ///

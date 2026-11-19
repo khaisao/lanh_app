@@ -3,8 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'data/device_meal_camera.dart';
 import 'data/device_meal_photo_repository.dart';
 import 'data/device_meal_voice_recognizer.dart';
+import 'data/fake_meal_analysis_repository.dart';
 import 'data/http_meal_analysis_repository.dart';
+import 'data/sqlite_meal_log_repository.dart';
 import 'domain/meal_analysis.dart';
+import 'domain/meal_log.dart';
+import 'domain/meal_log_repository.dart';
 import 'domain/meal_photo_repository.dart';
 import 'domain/meal_voice_recognizer.dart';
 import 'presentation/meal_camera.dart';
@@ -21,6 +25,10 @@ final mealCameraFactoryProvider = Provider<MealCameraFactory>(
 /// Set per build with `--dart-define=LANH_MEAL_API_BASE_URL=...`; never embed
 /// the private inference server (Ollama) address here.
 const _mealApiBaseUrl = String.fromEnvironment('LANH_MEAL_API_BASE_URL');
+const _useFakeMealAnalysis = bool.fromEnvironment(
+  'LANH_USE_FAKE_MEAL_ANALYSIS',
+  defaultValue: false,
+);
 
 Uri? mealApiBaseUri([String value = _mealApiBaseUrl]) {
   final uri = Uri.tryParse(value.trim());
@@ -29,8 +37,18 @@ Uri? mealApiBaseUri([String value = _mealApiBaseUrl]) {
 }
 
 final mealAnalysisRepositoryProvider = Provider<MealAnalysisRepository>(
-  (ref) => HttpMealAnalysisRepository(baseUri: mealApiBaseUri()),
+  (ref) => _useFakeMealAnalysis
+      ? FakeMealAnalysisRepository()
+      : HttpMealAnalysisRepository(baseUri: mealApiBaseUri()),
 );
+
+final mealLogRepositoryProvider = Provider<MealLogRepository>(
+  (ref) => SqliteMealLogRepository(),
+);
+
+final todayMealLogsProvider = FutureProvider<List<MealLog>>((ref) {
+  return ref.watch(mealLogRepositoryProvider).readForDate(DateTime.now());
+});
 
 final mealVoiceRecognizerProvider = Provider<MealVoiceRecognizer>(
   (ref) => DeviceMealVoiceRecognizer(),

@@ -78,10 +78,28 @@
   "profileHeight": "Chiều cao",
   "profileCurrentWeight": "Cân nặng hiện tại",
   "profileSex": "Giới tính",
+  "profileBodyInsightTitle": "Thông tin cơ thể",
+  "profileBodyInsightEmpty": "Nhập đủ tuổi, chiều cao, cân nặng và giới tính để xem thông tin tham khảo.",
+  "profileBmiLabel": "BMI hiện tại",
+  "profileBmiAdultUnderweight": "Dưới vùng khỏe mạnh",
+  "profileBmiAdultHealthy": "Trong vùng khỏe mạnh",
+  "profileBmiAdultOverweight": "Cao hơn vùng khỏe mạnh",
+  "profileBmiAdultObesity": "Cần được chuyên gia đánh giá",
+  "profileBmiTeenHint": "Tuổi 13–19 được so theo tuổi và giới, không dùng ngưỡng người lớn.",
+  "profileBmiHint": "BMI chỉ là chỉ số tham khảo, không phải chẩn đoán.",
   "profileFemale": "Nữ",
   "profileMale": "Nam",
   "profileTarget": "Mong muốn",
   "profileTargetWeight": "Cân nặng mong muốn",
+  "profileTargetSuggestionsTitle": "Gợi ý từ Lành",
+  "profileTargetSuggestionsSubtitle": "Chọn một mốc để bắt đầu; bạn vẫn có thể chỉnh lại.",
+  "profileTargetSuggestionFive": "Mục tiêu ban đầu · {weight} kg",
+  "profileTargetSuggestionTen": "Mục tiêu dài hơn · {weight} kg",
+  "profileTargetSuggestionGain": "Tăng đều · {weight} kg",
+  "profileTargetSuggestionCustom": "Tự nhập mục tiêu",
+  "profileTargetManualTitle": "Mục tiêu của bạn",
+  "profileTargetManualChip": "Tự nhập",
+  "profileTargetHelper": "Bạn có thể chỉnh con số này trước khi tiếp tục.",
   "profileTargetDate": "Ngày muốn đạt",
   "profilePickDate": "Chọn ngày",
   "profileWeeklyEstimate": "Ước tính mỗi tuần",
@@ -101,13 +119,34 @@
   "profileStepStatus": "Bước {step} trên 4",
   "profileEditStep": "Chỉnh sửa: {title}",
   "profileInvalidAge": "Nhập tuổi bằng số nguyên dương.",
+  "profileAgeTooYoung": "Lành hỗ trợ mục tiêu cân nặng từ 13 tuổi.",
   "profileInvalidNumber": "Nhập một số lớn hơn 0.",
   "profileMissingSex": "Chọn giới tính để tiếp tục.",
   "profileLowerTarget": "Cân nặng mong muốn phải thấp hơn cân hiện tại.",
   "profileHigherTarget": "Cân nặng mong muốn phải cao hơn cân hiện tại.",
+  "profileTargetBelowHealthy": "Mục tiêu này thấp hơn vùng cân nặng khỏe mạnh theo chiều cao.",
   "profileFutureDate": "Chọn ngày sau hôm nay.",
   "profileReview": "Xem lại thông tin",
   "profileReviewNotice": "Thông tin này sẽ được lưu trên thiết bị.",
+  "profileTeenGuidanceTitle": "Mục tiêu an toàn trong giai đoạn lớn",
+  "profileTeenUnderweightGain": "Cơ thể bạn đang ở dưới vùng tham chiếu theo tuổi. Hãy ưu tiên ăn đủ và trao đổi với người lớn hoặc chuyên gia; Lành không tự đặt tốc độ tăng cân cho tuổi đang lớn.",
+  "profileTeenUnderweightLose": "Lành không khuyến nghị đặt mục tiêu giảm cân khi chỉ số theo tuổi đang dưới vùng tham chiếu. Hãy trao đổi với người lớn hoặc chuyên gia.",
+  "profileTeenHealthy": "Cơ thể bạn đang ở vùng tham chiếu theo tuổi. Trong giai đoạn lớn, Lành ưu tiên thói quen đều đặn và giữ nhịp tăng trưởng thay vì ép cân.",
+  "profileTeenOverweightLose": "Lành sẽ tập trung vào thói quen lành mạnh và nhịp tăng trưởng. Mục tiêu thay đổi cân nặng nên được trao đổi cùng gia đình và chuyên gia.",
+  "profileTeenOverweightGain": "Lành không tự đặt mục tiêu tăng cân khi chỉ số theo tuổi đang cao hơn vùng tham chiếu. Hãy trao đổi với gia đình và chuyên gia.",
+  "profileTeenBmiStatusUnderweight": "Dưới vùng tham chiếu theo tuổi",
+  "profileTeenBmiStatusHealthy": "Trong vùng tham chiếu theo tuổi",
+  "profileTeenBmiStatusOverweight": "Cao hơn vùng tham chiếu theo tuổi",
+  "profileTeenBmiStatusObesity": "Cần được chuyên gia đánh giá",
+  "profileEstimateRecommended": "Trong khoảng khuyến nghị",
+  "profileEstimateSlower": "Chậm hơn nhưng vẫn hợp lý",
+  "profileEstimateTooFast": "Mục tiêu hơi nhanh — chọn ngày muộn hơn",
+  "profileEstimateCaution": "Nên tăng chậm hơn",
+  "profileEstimateRate": "Tốc độ dự kiến",
+  "profileEstimateRateValue": "{value} kg/tuần",
+  "profileEstimateDuration": "Thời gian ước tính",
+  "profileEstimateWeeks": "Khoảng {count} tuần",
+  "profileEstimateDate": "Dự kiến {date}",
   "@profileStepStatus": {
     "placeholders": {
       "step": {
@@ -120,6 +159,42 @@
       "title": {
         "type": "String"
       }
+    }
+  },
+  "@profileEstimateWeeks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@profileEstimateRateValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@profileEstimateDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@profileTargetSuggestionFive": {
+    "placeholders": {
+      "weight": {"type": "String"}
+    }
+  },
+  "@profileTargetSuggestionTen": {
+    "placeholders": {
+      "weight": {"type": "String"}
+    }
+  },
+  "@profileTargetSuggestionGain": {
+    "placeholders": {
+      "weight": {"type": "String"}
     }
   },
   "profileSaveError": "Chưa lưu xong hồ sơ. Vui lòng thử lại.",
@@ -137,6 +212,7 @@
   "todayNoWater": "Chưa ghi",
   "todayWater": "Nước",
   "todayNoMeals": "Chưa ghi món nào hôm nay.",
+  "todayMealReadError": "Chưa đọc được nhật ký hôm nay.",
   "todayJournal": "Nhật ký ăn uống",
   "todayDetails": "Chi tiết",
   "todayEstimated": "Ước tính",
@@ -185,6 +261,8 @@
   },
   "mealReviewDisclaimer": "Số liệu là ước tính từ ảnh, có thể lệch so với phần bạn thực ăn.",
   "mealReviewSaveSoon": "Lưu bữa ăn · Sắp có",
+  "mealReviewSave": "Lưu bữa ăn",
+  "mealReviewSaveError": "Chưa lưu được bữa ăn. Vui lòng thử lại.",
   "mealReviewDiscard": "Hủy, không lưu",
   "mealUnitGram": "g",
   "mealUnitMilliliter": "ml",

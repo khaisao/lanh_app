@@ -10,6 +10,8 @@ class _MealAnalysisResultView extends StatefulWidget {
     required this.onPortion,
     required this.onBack,
     required this.onDiscard,
+    this.onSave,
+    this.saving = false,
   });
 
   /// Null when the estimate came from a voice or typed description.
@@ -19,6 +21,8 @@ class _MealAnalysisResultView extends StatefulWidget {
   final ValueChanged<double> onPortion;
   final VoidCallback onBack;
   final VoidCallback onDiscard;
+  final Future<void> Function()? onSave;
+  final bool saving;
 
   @override
   State<_MealAnalysisResultView> createState() =>
@@ -81,6 +85,8 @@ class _MealAnalysisResultViewState extends State<_MealAnalysisResultView>
           bottomNavigationBar: _ResultDock(
             totalLabel: format.kcal(analysis.totalCalories(scale)),
             onDiscard: widget.onDiscard,
+            onSave: widget.onSave,
+            saving: widget.saving,
           ),
           body: Builder(
             builder: (context) => SafeArea(
@@ -414,10 +420,17 @@ class _EnergyCard extends StatelessWidget {
 }
 
 class _ResultDock extends StatelessWidget {
-  const _ResultDock({required this.totalLabel, required this.onDiscard});
+  const _ResultDock({
+    required this.totalLabel,
+    required this.onDiscard,
+    required this.onSave,
+    required this.saving,
+  });
 
   final String totalLabel;
   final VoidCallback onDiscard;
+  final Future<void> Function()? onSave;
+  final bool saving;
 
   @override
   Widget build(BuildContext context) {
@@ -473,20 +486,29 @@ class _ResultDock extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Saving needs the meal journal, which does not exist yet.
                   AppButton(
                     key: const Key('meal-analysis-save'),
-                    onPressed: null,
+                    onPressed: onSave,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: AppSpacing.xs,
                       children: [
-                        const AppIcon.asset(
-                          'ph-check-bold',
-                          size: AppSizes.iconSm,
-                          color: AppColors.secondaryForeground,
+                        if (saving)
+                          const SizedBox.square(
+                            dimension: AppSizes.iconSm,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        else
+                          const AppIcon.asset(
+                            'ph-check-bold',
+                            size: AppSizes.iconSm,
+                            color: AppColors.secondaryForeground,
+                          ),
+                        Flexible(
+                          child: Text(
+                            saving ? strings.saving : strings.mealReviewSave,
+                          ),
                         ),
-                        Flexible(child: Text(strings.mealReviewSaveSoon)),
                       ],
                     ),
                   ),

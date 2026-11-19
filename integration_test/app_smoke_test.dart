@@ -42,11 +42,23 @@ void main() {
         await tester.enterText(input, value);
         await tester.pumpAndSettle();
       }
-      await tap(find.text('Nữ'));
+      tester
+          .widget<TextButton>(find.byKey(const Key('profile-sex-female')))
+          .onPressed!
+          .call();
+      await tester.pumpAndSettle();
       await tap(action);
       await tap(find.text('Chủ yếu ngồi'));
       await tap(action);
       await tap(find.text('Về Hôm nay'));
+      for (
+        var attempt = 0;
+        attempt < 30 &&
+            find.byKey(const Key('today-screen')).evaluate().isEmpty;
+        attempt++
+      ) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
     }
     expect(find.byKey(const Key('today-screen')), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());

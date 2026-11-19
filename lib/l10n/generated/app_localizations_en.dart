@@ -264,6 +264,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSex => 'Sex';
 
   @override
+  String get profileBodyInsightTitle => 'Your body snapshot';
+
+  @override
+  String get profileBodyInsightEmpty =>
+      'Enter age, height, weight and sex to see a useful snapshot.';
+
+  @override
+  String get profileBmiLabel => 'Current BMI';
+
+  @override
+  String get profileBmiAdultUnderweight => 'Below the healthy range';
+
+  @override
+  String get profileBmiAdultHealthy => 'Within the healthy range';
+
+  @override
+  String get profileBmiAdultOverweight => 'Above the healthy range';
+
+  @override
+  String get profileBmiAdultObesity => 'Needs professional review';
+
+  @override
+  String get profileBmiTeenHint =>
+      'Ages 13–19 are compared by age and sex, not adult cutoffs.';
+
+  @override
+  String get profileBmiHint => 'BMI is a reference indicator, not a diagnosis.';
+
+  @override
   String get profileFemale => 'Female';
 
   @override
@@ -274,6 +303,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileTargetWeight => 'Target weight';
+
+  @override
+  String get profileTargetSuggestionsTitle => 'Lành suggestions';
+
+  @override
+  String get profileTargetSuggestionsSubtitle =>
+      'Choose a starting point; you can still edit it.';
+
+  @override
+  String profileTargetSuggestionFive(String weight) {
+    return 'Starter goal · $weight kg';
+  }
+
+  @override
+  String profileTargetSuggestionTen(String weight) {
+    return 'Longer goal · $weight kg';
+  }
+
+  @override
+  String profileTargetSuggestionGain(String weight) {
+    return 'Gradual gain · $weight kg';
+  }
+
+  @override
+  String get profileTargetSuggestionCustom => 'Enter my own goal';
+
+  @override
+  String get profileTargetManualTitle => 'Your target';
+
+  @override
+  String get profileTargetManualChip => 'Custom';
+
+  @override
+  String get profileTargetHelper =>
+      'You can adjust this number before continuing.';
 
   @override
   String get profileTargetDate => 'Target date';
@@ -337,6 +401,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileInvalidAge => 'Enter an age in whole years.';
 
   @override
+  String get profileAgeTooYoung => 'Lành supports weight goals from age 13.';
+
+  @override
   String get profileInvalidNumber => 'Enter a number greater than zero.';
 
   @override
@@ -351,6 +418,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Target weight must be above current weight.';
 
   @override
+  String get profileTargetBelowHealthy =>
+      'This target is below the healthy weight range for this height.';
+
+  @override
   String get profileFutureDate => 'Choose a date after today.';
 
   @override
@@ -359,6 +430,78 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profileReviewNotice =>
       'This information will be saved on your device.';
+
+  @override
+  String get profileTeenGuidanceTitle => 'A safer goal while you grow';
+
+  @override
+  String get profileTeenUnderweightGain =>
+      'Your age-based measure is below the reference range. Prioritize enough food and talk with a trusted adult or health professional; Lành will not set an automatic gain rate for a growing body.';
+
+  @override
+  String get profileTeenUnderweightLose =>
+      'Lành does not recommend setting a weight-loss goal when the age-based measure is below the reference range. Talk with a trusted adult or health professional.';
+
+  @override
+  String get profileTeenHealthy =>
+      'Your age-based measure is in the reference range. While you are growing, Lành prioritizes steady routines and healthy growth over forcing a weight change.';
+
+  @override
+  String get profileTeenOverweightLose =>
+      'Lành will focus on healthy routines and growth over time. Any weight-change goal should be discussed with family and a health professional.';
+
+  @override
+  String get profileTeenOverweightGain =>
+      'Lành will not set an automatic gain goal when the age-based measure is above the reference range. Talk with family and a health professional.';
+
+  @override
+  String get profileTeenBmiStatusUnderweight =>
+      'Below the age-based reference range';
+
+  @override
+  String get profileTeenBmiStatusHealthy =>
+      'Within the age-based reference range';
+
+  @override
+  String get profileTeenBmiStatusOverweight =>
+      'Above the age-based reference range';
+
+  @override
+  String get profileTeenBmiStatusObesity => 'Needs professional review';
+
+  @override
+  String get profileEstimateRecommended => 'Within the recommended range';
+
+  @override
+  String get profileEstimateSlower => 'Slower, but still reasonable';
+
+  @override
+  String get profileEstimateTooFast =>
+      'This goal is too fast — choose a later date';
+
+  @override
+  String get profileEstimateCaution => 'Consider gaining more slowly';
+
+  @override
+  String get profileEstimateRate => 'Expected pace';
+
+  @override
+  String profileEstimateRateValue(String value) {
+    return '$value kg/week';
+  }
+
+  @override
+  String get profileEstimateDuration => 'Estimated time';
+
+  @override
+  String profileEstimateWeeks(int count) {
+    return 'About $count weeks';
+  }
+
+  @override
+  String profileEstimateDate(String date) {
+    return 'Expected $date';
+  }
 
   @override
   String get profileSaveError =>
@@ -405,6 +548,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayNoMeals => 'No food logged today.';
+
+  @override
+  String get todayMealReadError => 'Could not load today’s food journal.';
 
   @override
   String get todayJournal => 'Food journal';
@@ -530,6 +676,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mealReviewSaveSoon => 'Save meal · Coming soon';
+
+  @override
+  String get mealReviewSave => 'Save meal';
+
+  @override
+  String get mealReviewSaveError =>
+      'Could not save this meal. Please try again.';
 
   @override
   String get mealReviewDiscard => 'Cancel, don’t save';

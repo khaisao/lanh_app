@@ -6,8 +6,7 @@ import 'package:lanh_app/app/app.dart';
 import 'package:material_ui/material_ui.dart';
 
 void main() {
-  final binding = WidgetsFlutterBinding.ensureInitialized();
-  binding.deferFirstFrame();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: Application()));
-  unawaited(AppBackground.preload().whenComplete(binding.allowFirstFrame));
+  unawaited(AppBackground.preload());
 }
