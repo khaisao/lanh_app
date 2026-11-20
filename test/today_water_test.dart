@@ -25,8 +25,11 @@ void main() {
     WidgetTester tester, {
     ProfileSex sex = ProfileSex.male,
     bool reduceMotion = false,
+    Size size = const Size(390, 844),
+    double textScale = 1,
+    Locale locale = const Locale('vi'),
   }) async {
-    tester.view.physicalSize = const Size(390, 844);
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     if (reduceMotion) {
@@ -61,7 +64,12 @@ void main() {
         ],
         child: MaterialApp(
           theme: AppTheme.light(),
-          locale: const Locale('vi'),
+          locale: locale,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: TextScaler.linear(textScale)),
+            child: child!,
+          ),
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: const [
             AppLocalizations.delegate,
@@ -112,6 +120,63 @@ void main() {
     );
     expect(haptics, contains('HapticFeedbackType.lightImpact'));
   });
+
+  testWidgets('the first glass does not shift the card height', (tester) async {
+    await pumpHome(tester);
+    final card = find.byKey(const Key('today-water'));
+    final empty = tester.getSize(card).height;
+    await tapGlass(tester, 0);
+    expect(tester.getSize(card).height, empty);
+    await tapGlass(tester, 0);
+    expect(tester.getSize(card).height, empty);
+  });
+
+  for (final size in [
+    const Size(320, 700),
+    const Size(360, 800),
+    const Size(390, 844),
+    const Size(430, 932),
+  ]) {
+    for (final scale in [1.0, 2.0]) {
+      testWidgets('water bounds stay fixed at $size with text scale $scale', (
+        tester,
+      ) async {
+        await tester.runAsync(() async {
+          final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+          final fonts = manifest.listAssets().where(
+            (asset) =>
+                asset.startsWith('assets/fonts/') && asset.endsWith('.ttf'),
+          );
+          for (final family in [AppFonts.body, AppFonts.heading]) {
+            final loader = FontLoader(family);
+            for (final asset in fonts.where(
+              (asset) => asset.contains(family.replaceAll(' ', '')),
+            )) {
+              loader.addFont(rootBundle.load(asset));
+            }
+            await loader.load();
+          }
+        });
+        await pumpHome(tester, size: size, textScale: scale);
+        final card = find.byKey(const Key('today-water'));
+        await tester.ensureVisible(card);
+        await tester.pumpAndSettle();
+        final bounds = tester.getRect(card);
+        final journal = tester.getRect(find.text('Nhật ký ăn uống'));
+        for (final index in [7, 7, 0, 0, 7, 0]) {
+          await tester.tap(glass(index));
+          await tester.pump();
+          expect(tester.getRect(card), bounds);
+          for (var frame = 0; frame < 45; frame++) {
+            await tester.pump(const Duration(milliseconds: 16));
+            expect(tester.getRect(card), bounds, reason: 'frame $frame');
+            expect(tester.getRect(find.text('Nhật ký ăn uống')), journal);
+          }
+          expect(tester.takeException(), isNull);
+        }
+      });
+    }
+  }
 
   testWidgets('tapping a full glass removes the last one', (tester) async {
     final now = DateTime.now();

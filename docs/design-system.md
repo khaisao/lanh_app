@@ -56,6 +56,8 @@ The maintain range is the target ±10 %, each end on the 50-kcal step (2.100 →
 
 ### Home water card
 
+The amount reserves the width and height of the goal amount using the same typography as its rolling text. Switching between “Chưa ghi” and logged millilitres keeps the card and journal in place, including during the transition and with large text.
+
 `WaterCard` (`lib/features/water/`) follows Sleek Home 01–15. The goal is fixed by the profile's sex: women 6 glasses (1,5 L), men 8 glasses (2,0 L), 250 ml each, from EFSA's drink intake rounded to whole glasses; it is not editable and has no pregnancy, drink-type or exercise adjustment. Tapping any empty glass pours the next one; tapping any full glass removes the latest, so the row always fills left to right. Logging stops at the goal, which shows "Đã đủ nước hôm nay" and one medium haptic. Each glass is drawn (`WaterGlass`): the pour raises the water with a rocking surface, squashes and springs the glass and pops three droplets (`AppMotion.waterPour`); removing drains it with a small shake (`AppMotion.waterDrain`); Reduce Motion shows the end state at once. Glasses are stored one row each in `lanh_water.db` (`water_logs`) and counted per local day; writes run in order, the count updates at once and a failed write restores it with "Chưa lưu được nước". A read error shows a retry instead of zero.
 
 ## Assets

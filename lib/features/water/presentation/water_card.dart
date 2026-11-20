@@ -56,6 +56,10 @@ class _WaterCardState extends State<WaterCard> {
     final goal = widget.goal;
     final ready = glasses != null && goal != null && !widget.failed;
     final reached = ready && glasses >= goal;
+    final amountStyle = AppTypography.fieldLabel.copyWith(
+      fontWeight: FontWeight.w600,
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
     return AppGlassCard(
       key: const Key('today-water'),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -89,26 +93,40 @@ class _WaterCardState extends State<WaterCard> {
                       ),
                     ),
                     if (ready)
-                      glasses == 0
-                          ? Text(
-                              strings.todayNoWater,
-                              key: const Key('today-water-amount'),
-                              style: AppTypography.bodySmall,
-                            )
-                          : AppRollingText(
-                              strings.waterAmount(
-                                format.format(glasses * waterGlassMilliliters),
-                                format.format(goal * waterGlassMilliliters),
-                              ),
-                              key: const Key('today-water-amount'),
-                              alignment: AlignmentDirectional.centerEnd,
-                              style: AppTypography.fieldLabel.copyWith(
-                                fontWeight: FontWeight.w600,
-                                fontFeatures: const [
-                                  FontFeature.tabularFigures(),
-                                ],
+                      Stack(
+                        alignment: AlignmentDirectional.centerEnd,
+                        children: [
+                          ExcludeSemantics(
+                            child: Opacity(
+                              opacity: 0,
+                              child: Text(
+                                strings.waterAmount(
+                                  format.format(goal * waterGlassMilliliters),
+                                  format.format(goal * waterGlassMilliliters),
+                                ),
+                                style: amountStyle,
                               ),
                             ),
+                          ),
+                          Positioned.fill(
+                            child: AppRollingText(
+                              glasses == 0
+                                  ? strings.todayNoWater
+                                  : strings.waterAmount(
+                                      format.format(
+                                        glasses * waterGlassMilliliters,
+                                      ),
+                                      format.format(
+                                        goal * waterGlassMilliliters,
+                                      ),
+                                    ),
+                              key: const Key('today-water-amount'),
+                              alignment: AlignmentDirectional.centerEnd,
+                              style: amountStyle,
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
