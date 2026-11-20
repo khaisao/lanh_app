@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../meal_logging_providers.dart';
 import 'meal_photo_flow.dart';
+import 'meal_voice_access_gate.dart';
 import 'meal_voice_flow.dart';
 
 enum _MealMethod { camera, voice }
@@ -41,31 +44,56 @@ Future<_MealMethod?> _chooseMealMethod(BuildContext context) {
       duration: AppMotion.duration(context),
       reverseDuration: AppMotion.duration(context),
     ),
-    builder: (sheetContext) => SafeArea(
-      top: false,
-      child: MealMethodSheet(
-        onCamera: () => Navigator.of(
-          sheetContext,
-          rootNavigator: true,
-        ).pop(_MealMethod.camera),
-        onVoice: () => Navigator.of(
-          sheetContext,
-          rootNavigator: true,
-        ).pop(_MealMethod.voice),
-      ),
-    ),
+    builder: (sheetContext) =>
+        const SafeArea(top: false, child: _MealMethodSheetHost()),
   );
 }
 
+/// Keeps the picker open while voice access is requested, so the system
+/// prompt appears over the screen that offered voice logging. The voice
+/// task opens only after access is granted.
+class _MealMethodSheetHost extends ConsumerStatefulWidget {
+  const _MealMethodSheetHost();
+
+  @override
+  ConsumerState<_MealMethodSheetHost> createState() =>
+      _MealMethodSheetHostState();
+}
+
+class _MealMethodSheetHostState extends ConsumerState<_MealMethodSheetHost> {
+  bool _requestingVoice = false;
+
+  void _pick(_MealMethod method) =>
+      Navigator.of(context, rootNavigator: true).pop(method);
+
+  Future<void> _voice() async {
+    if (_requestingVoice) return;
+    setState(() => _requestingVoice = true);
+    final granted = await ensureMealVoiceAccess(
+      context,
+      ref.read(mealVoiceRecognizerProvider),
+    );
+    if (!mounted) return;
+    setState(() => _requestingVoice = false);
+    if (granted) _pick(_MealMethod.voice);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MealMethodSheet(
+      onCamera: () => _pick(_MealMethod.camera),
+      onVoice: _requestingVoice ? null : () => unawaited(_voice()),
+    );
+  }
+}
+
 class MealMethodSheet extends StatelessWidget {
-  const MealMethodSheet({
-    super.key,
-    required this.onCamera,
-    required this.onVoice,
-  });
+  const MealMethodSheet({super.key, required this.onCamera, this.onVoice});
 
   final VoidCallback onCamera;
-  final VoidCallback onVoice;
+
+  /// Null while voice access is being requested.
+  final VoidCallback? onVoice;
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +136,7 @@ class MealMethodSheet extends StatelessWidget {
                         header: true,
                         child: Text(
                           strings.chooseMealMethod,
-                          style: AppTypography.pageHeading,
+                          style: AppTypography.title,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xxs),

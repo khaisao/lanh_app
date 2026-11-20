@@ -8,6 +8,9 @@ class TestMealVoiceRecognizer implements MealVoiceRecognizer {
 
   MealVoiceAccess status;
   MealVoiceAccess? statusAfterRequest;
+
+  /// Answers for the next prompts in order, ahead of [statusAfterRequest].
+  final requestAnswers = <MealVoiceAccess>[];
   final languages = <String>[];
   int stops = 0;
   int cancels = 0;
@@ -21,6 +24,9 @@ class TestMealVoiceRecognizer implements MealVoiceRecognizer {
   @override
   Future<MealVoiceAccess> access({bool request = false}) async {
     if (request) requests++;
+    if (request && requestAnswers.isNotEmpty) {
+      return status = requestAnswers.removeAt(0);
+    }
     if (request && statusAfterRequest != null) status = statusAfterRequest!;
     return status;
   }

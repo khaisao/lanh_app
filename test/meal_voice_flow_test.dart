@@ -260,63 +260,84 @@ void main() {
     expect(find.byKey(const Key('meal-method-sheet')), findsNothing);
   });
 
-  testWidgets('refused access is explained on the recording screen', (
+  testWidgets('voice access is requested on the picker before opening', (
     tester,
   ) async {
     await _mount(tester);
     _voice.status = MealVoiceAccess.denied;
     await _openVoice(tester);
-    // Requested in place: no separate permission screen.
+    // Asked in place: the recording screen stays closed until allowed.
     expect(_voice.requests, 1);
+    expect(find.byType(MealVoiceFlow), findsNothing);
+    expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
     expect(find.text('Lành chưa được dùng micro'), findsOneWidget);
     expect(
-      find.text(
-        'Chạm micro để thử lại, bật quyền trong Cài đặt, '
-        'hoặc nhập bằng chữ.',
-      ),
+      find.text('Bật quyền micro trong Cài đặt để ghi bữa ăn bằng giọng nói.'),
       findsOneWidget,
     );
-    expect(find.text('Chạm để cho phép micro'), findsOneWidget);
-    expect(_voice.listening, isFalse);
 
-    await tester.tap(find.byKey(const Key('meal-voice-record')));
-    await tester.pumpAndSettle();
-    expect(_voice.requests, 2);
-
-    await tester.tap(find.byKey(const Key('meal-voice-settings')));
+    await tester.tap(find.byKey(const Key('meal-voice-access-settings')));
     await tester.pumpAndSettle();
     expect(_voice.settingsOpened, 1);
+    expect(find.byKey(const Key('meal-voice-access-dialog')), findsNothing);
+    expect(find.byType(MealVoiceFlow), findsNothing);
 
-    await tester.tap(find.byKey(const Key('meal-voice-type')));
-    await tester.pumpAndSettle();
-    expect(find.text('Mô tả bữa ăn'), findsOneWidget);
-    final send = tester.widget<AppButton>(
-      find.byKey(const Key('meal-voice-send')),
-    );
-    expect(send.onPressed, isNull);
-    expect(find.byKey(const Key('meal-voice-record-again')), findsNothing);
-
-    await tester.enterText(find.byKey(const Key('meal-voice-text')), 'bún chả');
-    await tester.pump();
-    await tester.tap(find.byKey(const Key('meal-voice-send')));
-    await tester.pump();
-    expect(_analysis.descriptions, ['bún chả']);
+    // Allowed in Settings: the next tap opens the recording screen.
+    _voice.status = MealVoiceAccess.granted;
+    await _openVoice(tester);
+    expect(_voice.requests, greaterThanOrEqualTo(2));
+    expect(find.byType(MealVoiceFlow), findsOneWidget);
+    expect(find.byKey(const Key('meal-method-sheet')), findsNothing);
+    expect(_voice.listening, isTrue);
   });
 
-  testWidgets('a device without a recognizer only offers typing', (
+  testWidgets('closing the refusal notice keeps the picker open', (
+    tester,
+  ) async {
+    await _mount(tester);
+    _voice.status = MealVoiceAccess.denied;
+    await _openVoice(tester);
+    await tester.tap(find.byKey(const Key('meal-voice-access-close')));
+    await tester.pumpAndSettle();
+    expect(_voice.settingsOpened, 0);
+    expect(find.byType(MealVoiceFlow), findsNothing);
+    expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
+  });
+
+  testWidgets('a device without a recognizer stays on the picker', (
     tester,
   ) async {
     await _mount(tester);
     _voice.status = MealVoiceAccess.unavailable;
     await _openVoice(tester);
+    expect(find.byType(MealVoiceFlow), findsNothing);
     expect(
-      find.text(
-        'Thiết bị này chưa hỗ trợ ghi giọng nói. Bạn có thể nhập bằng chữ.',
-      ),
+      find.text('Thiết bị này chưa hỗ trợ ghi giọng nói.'),
       findsOneWidget,
     );
-    expect(find.byKey(const Key('meal-voice-settings')), findsNothing);
-    expect(find.byKey(const Key('meal-voice-type')), findsOneWidget);
+    expect(find.byKey(const Key('meal-voice-access-settings')), findsNothing);
+  });
+
+  testWidgets('access refused later is explained on the recording screen', (
+    tester,
+  ) async {
+    await _mount(tester);
+    // Granted on the picker, then withdrawn before the screen asks again.
+    _voice.requestAnswers.addAll([
+      MealVoiceAccess.granted,
+      MealVoiceAccess.denied,
+    ]);
+    await _openVoice(tester);
+    expect(find.byType(MealVoiceFlow), findsOneWidget);
+    expect(find.text('Lành chưa được dùng micro'), findsOneWidget);
+    expect(find.byKey(const Key('meal-voice-settings')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('meal-voice-type')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('meal-voice-text')), 'bún chả');
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('meal-voice-send')));
+    await tester.pump();
+    expect(_analysis.descriptions, ['bún chả']);
   });
 
   for (final size in [
@@ -341,8 +362,9 @@ void main() {
     tester,
   ) async {
     await _mount(tester, size: const Size(428, 926));
-    _voice.status = MealVoiceAccess.denied;
     await _openVoice(tester);
+    await _voice.finish();
+    await tester.pumpAndSettle();
     tester.view.viewInsets = const FakeViewPadding(bottom: 346);
     addTearDown(tester.view.resetViewInsets);
     await tester.tap(find.byKey(const Key('meal-voice-type')));
