@@ -13,7 +13,4 @@ class PreferencesGoalRepository implements GoalRepository {
 
   @override
   Future<void> save(Goal goal) => _preferences.setString(_key, goal.encode());
-
-  @override
-  Future<void> clear() => _preferences.remove(_key);
 }

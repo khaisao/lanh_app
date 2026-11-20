@@ -36,12 +36,6 @@ class MealVoiceController extends ChangeNotifier {
     required this.languageCode,
   });
 
-  /// At most this many trailing words are shown as still changing.
-  static const maxTentativeWords = 3;
-
-  /// Longest description sent for analysis.
-  static const maxDescriptionLength = 500;
-
   final MealVoiceRecognizer _recognizer;
   final MealAnalysisRepository _analysis;
   final String languageCode;
@@ -53,19 +47,12 @@ class MealVoiceController extends ChangeNotifier {
   /// Words heard so far in the current session.
   String transcript = '';
 
-  /// Leading words of [transcript] the recognizer kept between two results;
-  /// the rest may still change and is shown dimmed.
-  int _stableWords = 0;
-
-  String get transcriptStable => _words.take(_stableWords).join(' ');
-
-  String get transcriptTentative => _words.skip(_stableWords).join(' ');
-
-  List<String> get _words => transcript
+  /// [transcript] as shown live: single spaces, no leading/trailing blanks.
+  String get liveText => transcript
       .trim()
       .split(RegExp(r'\s+'))
       .where((w) => w.isNotEmpty)
-      .toList();
+      .join(' ');
 
   /// Why the last session produced no text, shown on the idle screen.
   MealVoiceFailureKind? listenFailure;
@@ -99,7 +86,7 @@ class MealVoiceController extends ChangeNotifier {
 
   bool get canSend {
     final text = draft.trim();
-    return text.isNotEmpty && text.length <= maxDescriptionLength;
+    return text.isNotEmpty && text.length <= maxMealDescriptionLength;
   }
 
   int get wordCount =>
@@ -174,7 +161,6 @@ class MealVoiceController extends ChangeNotifier {
     await _session?.cancel();
     if (_disposed || version != _sessionVersion) return;
     transcript = '';
-    _stableWords = 0;
     listenFailure = null;
     _sessionFailure = null;
     level.value = 0;
@@ -199,19 +185,7 @@ class MealVoiceController extends ChangeNotifier {
     switch (event) {
       case MealVoiceTranscript(:final text, :final isFinal):
         if (text != transcript || isFinal) {
-          final before = _words;
           transcript = text;
-          final after = _words;
-          var same = 0;
-          while (same < before.length &&
-              same < after.length &&
-              before[same] == after[same]) {
-            same++;
-          }
-          // Only the newest few words read as unsettled, as in the export.
-          _stableWords = isFinal
-              ? after.length
-              : math.max(same, after.length - maxTentativeWords);
           _refresh();
         }
       case MealVoiceLevel(:final level):
@@ -229,8 +203,8 @@ class MealVoiceController extends ChangeNotifier {
     final text = transcript.trim();
     if (text.isNotEmpty) {
       // Keep what was heard even if the recognizer reported a late error.
-      draft = text.length > maxDescriptionLength
-          ? text.substring(0, maxDescriptionLength)
+      draft = text.length > maxMealDescriptionLength
+          ? text.substring(0, maxMealDescriptionLength)
           : text;
       typed = false;
       stage = MealVoiceStage.confirm;

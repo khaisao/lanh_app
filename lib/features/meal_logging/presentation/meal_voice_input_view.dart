@@ -459,7 +459,7 @@ class _Fold extends StatelessWidget {
   }
 }
 
-/// The recognized words: left-aligned, unsettled words dimmed, a blinking
+/// The recognized words: left-aligned, one colour throughout, a blinking
 /// caret, and long text keeping its newest line in view.
 class _LiveWords extends StatelessWidget {
   const _LiveWords({
@@ -474,22 +474,11 @@ class _LiveWords extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stable = controller.transcriptStable;
-    final tentative = controller.transcriptTentative;
-    const dim = TextStyle(
-      color: AppColors.mutedForeground,
-      fontWeight: FontWeight.w600,
-    );
     final words = Text.rich(
       key: const Key('meal-voice-live-text'),
       TextSpan(
         children: [
-          TextSpan(text: stable),
-          if (tentative.isNotEmpty)
-            TextSpan(
-              text: stable.isEmpty ? tentative : ' $tentative',
-              style: dim,
-            ),
+          TextSpan(text: controller.liveText),
           if (listening)
             WidgetSpan(
               alignment: PlaceholderAlignment.middle,

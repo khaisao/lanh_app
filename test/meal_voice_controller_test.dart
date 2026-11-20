@@ -90,21 +90,15 @@ void main() {
     expect(controller.typed, isFalse);
   });
 
-  test('only the newest words of a partial result read as unsettled', () async {
+  test('live text follows each result with normalised spacing', () async {
     await controller.start();
     recognizer.hear('Ăn một tô phở bò tái');
     await settle();
-    expect(controller.transcriptStable, 'Ăn một tô');
-    expect(controller.transcriptTentative, 'phở bò tái');
+    expect(controller.liveText, 'Ăn một tô phở bò tái');
 
-    recognizer.hear('Ăn một tô phở bò tái, thêm ly trà');
+    recognizer.hear('  Ăn một tô phở  bò tái, thêm ly trà ');
     await settle();
-    expect(controller.transcriptStable, 'Ăn một tô phở bò tái,');
-    expect(controller.transcriptTentative, 'thêm ly trà');
-
-    recognizer.hear('Ăn một tô phở bò tái, thêm ly trà đá', isFinal: true);
-    await settle();
-    expect(controller.transcriptTentative, isEmpty);
+    expect(controller.liveText, 'Ăn một tô phở bò tái, thêm ly trà');
   });
 
   test('a session with no words returns to idle with a reason', () async {
@@ -225,9 +219,7 @@ void main() {
     await reachConfirm('phở');
     controller.updateDraft('   ');
     expect(controller.canSend, isFalse);
-    controller.updateDraft(
-      'a' * (MealVoiceController.maxDescriptionLength + 1),
-    );
+    controller.updateDraft('a' * (maxMealDescriptionLength + 1));
     expect(controller.canSend, isFalse);
     await controller.startEstimation();
     expect(analysis.requests, isEmpty);

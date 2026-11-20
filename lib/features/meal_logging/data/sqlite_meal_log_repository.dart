@@ -91,35 +91,47 @@ final class SqliteMealLogRepository implements MealLogRepository {
       imagePath: imagePath,
     );
     final db = await _open();
-    final id = await db.transaction<int>((txn) async {
-      final mealId = await txn.insert('meals', {
-        'request_id': log.requestId,
-        'source': log.source.name,
-        'created_at': log.createdAt.millisecondsSinceEpoch,
-        'portion_scale': log.portionScale,
-        'image_path': log.imagePath,
-        'total_calories': log.totalCalories,
-        'total_protein': log.totalProtein,
-        'total_carbohydrate': log.totalCarbohydrate,
-        'total_fat': log.totalFat,
-      });
-      final batch = txn.batch();
-      for (final item in log.items) {
-        batch.insert('meal_items', {
-          'meal_id': mealId,
-          'item_key': item.id,
-          'name': item.name,
-          'portion_amount': item.portion?.amount,
-          'portion_unit': item.portion?.unit.name,
-          'calories': item.nutrition.caloriesKcal,
-          'protein': item.nutrition.proteinGrams,
-          'carbohydrate': item.nutrition.carbohydrateGrams,
-          'fat': item.nutrition.fatGrams,
+    final int id;
+    try {
+      id = await db.transaction<int>((txn) async {
+        final mealId = await txn.insert('meals', {
+          'request_id': log.requestId,
+          'source': log.source.name,
+          'created_at': log.createdAt.millisecondsSinceEpoch,
+          'portion_scale': log.portionScale,
+          'image_path': log.imagePath,
+          'total_calories': log.totalCalories,
+          'total_protein': log.totalProtein,
+          'total_carbohydrate': log.totalCarbohydrate,
+          'total_fat': log.totalFat,
         });
+        final batch = txn.batch();
+        for (final item in log.items) {
+          batch.insert('meal_items', {
+            'meal_id': mealId,
+            'item_key': item.id,
+            'name': item.name,
+            'portion_amount': item.portion?.amount,
+            'portion_unit': item.portion?.unit.name,
+            'calories': item.nutrition.caloriesKcal,
+            'protein': item.nutrition.proteinGrams,
+            'carbohydrate': item.nutrition.carbohydrateGrams,
+            'fat': item.nutrition.fatGrams,
+          });
+        }
+        await batch.commit(noResult: true);
+        return mealId;
+      });
+    } catch (_) {
+      if (imagePath != null) {
+        try {
+          await File(imagePath).delete();
+        } on FileSystemException {
+          // The database error is the failure that callers need to see.
+        }
       }
-      await batch.commit(noResult: true);
-      return mealId;
-    });
+      rethrow;
+    }
     return MealLog(
       id: id,
       requestId: log.requestId,

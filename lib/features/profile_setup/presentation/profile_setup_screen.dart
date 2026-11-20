@@ -278,7 +278,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                       ],
                       AppButton(
                         key: const Key('profile-setup-action'),
-                        animatePress: true,
+                        fullWidth: true,
                         onPressed: enabled ? _advance : null,
                         child: AnimatedSwitcher(
                           duration: AppMotion.of(context, AppMotion.selection),
@@ -294,32 +294,14 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                                 ),
                               ),
                           child: _step == _lastStep
-                              ? Row(
+                              ? AppButtonLabel(
+                                  strings.profileConfirm,
                                   key: const ValueKey('confirm'),
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  spacing: AppSpacing.xs,
-                                  children: [
-                                    ExcludeSemantics(
-                                      child: AppIcon.asset(
-                                        'ph-check-bold',
-                                        size: AppSizes.iconSm,
-                                        color: enabled
-                                            ? AppColors.primaryForeground
-                                            : AppColors.secondaryForeground,
-                                      ),
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        strings.profileConfirm,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
+                                  leadingIcon: 'ph-check-bold',
                                 )
-                              : Text(
+                              : AppButtonLabel(
                                   strings.profileContinue,
                                   key: const ValueKey('continue'),
-                                  textAlign: TextAlign.center,
                                 ),
                         ),
                       ),

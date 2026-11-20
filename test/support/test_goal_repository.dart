@@ -6,6 +6,4 @@ class TestGoalRepository implements GoalRepository {
   Future<Goal?> read() async => value;
   @override
   Future<void> save(Goal goal) async => value = goal;
-  @override
-  Future<void> clear() async => value = null;
 }

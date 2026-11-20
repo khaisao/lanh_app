@@ -117,9 +117,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             title: Text(strings.notFound),
           ),
           body: Center(
-            child: FilledButton(
+            child: AppButton(
               onPressed: () => context.go('/today'),
-              child: Text(strings.backToToday),
+              label: strings.backToToday,
             ),
           ),
         ),

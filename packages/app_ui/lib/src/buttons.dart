@@ -1,35 +1,100 @@
 part of '../app_ui.dart';
 
-enum _AppButtonKind { primary, secondary, surface }
+enum _AppButtonKind { primary, card, secondary, surface }
 
+/// The app's single action button. Pass [label] (with optional [leadingIcon],
+/// [trailingIcon] or [loading]) for the standard text/icon layouts so a design
+/// change here reaches every button; use [child] only for content a label and
+/// icons cannot express. Set [fullWidth] for Sleek's `w-full` actions.
+///
+/// Default (primary) follows Sleek Profile Setup / Plan Ready:
+/// `min-h-14 py-4 rounded-full bg-primary font-semibold shadow-lg
+/// shadow-primary/25 gap-2 active:scale-[0.97]`, 18 px icons.
 class AppButton extends StatefulWidget {
   const AppButton({
     super.key,
     required this.onPressed,
-    required this.child,
-    this.roundedRectangle = false,
-    this.animatePress = false,
-  }) : _kind = _AppButtonKind.primary;
+    this.child,
+    this.label,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.loading = false,
+    this.fullWidth = false,
+    this.animatePress = true,
+  }) : assert(
+         (child == null) != (label == null),
+         'Pass exactly one of child or label.',
+       ),
+       _kind = _AppButtonKind.primary;
+
+  /// Primary action inside a Today card (Sleek Today First Run / Today Empty):
+  /// `rounded-2xl`, no shadow, 20 px icons, `active:scale-[0.98]`.
+  const AppButton.card({
+    super.key,
+    required this.onPressed,
+    this.child,
+    this.label,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.loading = false,
+    this.fullWidth = false,
+    this.animatePress = true,
+  }) : assert(
+         (child == null) != (label == null),
+         'Pass exactly one of child or label.',
+       ),
+       _kind = _AppButtonKind.card;
   const AppButton.secondary({
     super.key,
     required this.onPressed,
-    required this.child,
-  }) : _kind = _AppButtonKind.secondary,
-       roundedRectangle = false,
-       animatePress = false;
+    this.child,
+    this.label,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.loading = false,
+    this.fullWidth = false,
+    this.animatePress = true,
+  }) : assert(
+         (child == null) != (label == null),
+         'Pass exactly one of child or label.',
+       ),
+       _kind = _AppButtonKind.secondary;
 
   /// The translucent card action in photo-meal-flow.html.
   const AppButton.surface({
     super.key,
     required this.onPressed,
-    required this.child,
-  }) : _kind = _AppButtonKind.surface,
-       roundedRectangle = false,
-       animatePress = false;
+    this.child,
+    this.label,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.loading = false,
+    this.fullWidth = false,
+    this.animatePress = true,
+  }) : assert(
+         (child == null) != (label == null),
+         'Pass exactly one of child or label.',
+       ),
+       _kind = _AppButtonKind.surface;
   final VoidCallback? onPressed;
-  final Widget child;
+
+  /// Custom content. Prefer [label]; see [AppButtonLabel] for switching labels.
+  final Widget? child;
+  final String? label;
+
+  /// Asset name from the design icon set, e.g. `ph-check-bold`.
+  final String? leadingIcon;
+  final String? trailingIcon;
+
+  /// Replaces [leadingIcon] with a spinner. Does not disable the button.
+  final bool loading;
+
+  /// Stretches to the available width (Sleek `w-full`). Leave false inside
+  /// unbounded parents such as [Wrap] or a [Row] without [Expanded].
+  final bool fullWidth;
   final _AppButtonKind _kind;
-  final bool roundedRectangle;
+
+  /// Scales down while pressed; skipped under Reduce Motion.
   final bool animatePress;
 
   @override
@@ -44,7 +109,13 @@ class _AppButtonState extends State<AppButton> {
     final duration = widget.animatePress
         ? AppMotion.feedbackDuration(context)
         : Duration.zero;
-    final button = FilledButton(
+    final card = widget._kind == _AppButtonKind.card;
+    final OutlinedBorder shape = card
+        ? const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppRadii.md)),
+          )
+        : const StadiumBorder();
+    Widget button = FilledButton(
       onPressed: widget.onPressed,
       style: ButtonStyle(
         minimumSize: const WidgetStatePropertyAll(Size(0, AppSizes.action)),
@@ -72,34 +143,100 @@ class _AppButtonState extends State<AppButton> {
               )
             : null,
         textStyle: const WidgetStatePropertyAll(AppTypography.cardTitle),
-        shape: WidgetStatePropertyAll(
-          widget.roundedRectangle
-              ? const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(AppRadii.md)),
-                )
-              : const StadiumBorder(),
-        ),
+        shape: WidgetStatePropertyAll(shape),
         elevation: const WidgetStatePropertyAll(0),
         padding: const WidgetStatePropertyAll(
           EdgeInsets.symmetric(
             horizontal: AppSpacing.card,
-            vertical: AppSpacing.sm,
+            vertical: AppSpacing.md,
           ),
         ),
       ),
-      child: widget.child,
+      child:
+          widget.child ??
+          AppButtonLabel(
+            widget.label!,
+            leadingIcon: widget.leadingIcon,
+            trailingIcon: widget.trailingIcon,
+            loading: widget.loading,
+            iconSize: card ? AppSizes.buttonIconCard : AppSizes.buttonIcon,
+          ),
     );
+    if (widget._kind == _AppButtonKind.primary && widget.onPressed != null) {
+      button = DecoratedBox(
+        decoration: ShapeDecoration(
+          shape: shape,
+          shadows: AppShadows.primaryAction,
+        ),
+        child: button,
+      );
+    }
+    if (widget.fullWidth) {
+      button = SizedBox(width: double.infinity, child: button);
+    }
     if (duration == Duration.zero || widget.onPressed == null) return button;
     return Listener(
       onPointerDown: (_) => setState(() => _pressed = true),
       onPointerUp: (_) => setState(() => _pressed = false),
       onPointerCancel: (_) => setState(() => _pressed = false),
       child: AnimatedScale(
-        scale: _pressed ? AppScales.pressed : 1,
+        scale: _pressed
+            ? (card ? AppScales.pressedCard : AppScales.pressed)
+            : 1,
         duration: duration,
         curve: Curves.fastOutSlowIn,
         child: button,
       ),
+    );
+  }
+}
+
+/// Text with an optional leading and trailing icon, tinted with the enclosing
+/// button's foreground (including its disabled colour).
+class AppButtonLabel extends StatelessWidget {
+  const AppButtonLabel(
+    this.label, {
+    super.key,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.loading = false,
+    this.iconSize = AppSizes.buttonIcon,
+  });
+
+  final String label;
+  final double iconSize;
+  final String? leadingIcon;
+  final String? trailingIcon;
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = DefaultTextStyle.of(context).style.color;
+    Widget icon(String name) => ExcludeSemantics(
+      child: AppIcon.asset(name, size: iconSize, color: color),
+    );
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: AppSpacing.xs,
+      children: [
+        if (loading)
+          SizedBox.square(
+            dimension: iconSize,
+            child: CircularProgressIndicator(strokeWidth: 2, color: color),
+          )
+        else if (leadingIcon case final name?)
+          icon(name),
+        Flexible(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              leadingDistribution: TextLeadingDistribution.even,
+            ),
+          ),
+        ),
+        if (trailingIcon case final name?) icon(name),
+      ],
     );
   }
 }

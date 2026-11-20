@@ -134,26 +134,16 @@ class ProfilePlanSheet extends StatelessWidget {
               const SizedBox(height: AppSpacing.lg),
               AppEntrance(
                 index: 6,
-                child: _ShineOnce(
+                child: AppShineOnce(
                   child: AppButton(
                     key: const Key('profile-plan-start'),
-                    animatePress: true,
+                    fullWidth: true,
                     onPressed: () {
                       HapticFeedback.mediumImpact();
                       Navigator.pop(context, true);
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: AppSpacing.xs,
-                      children: [
-                        Flexible(child: Text(strings.planStart)),
-                        const AppIcon.asset(
-                          'ph-arrow-right-bold',
-                          size: AppSizes.iconMd,
-                          color: AppColors.primaryForeground,
-                        ),
-                      ],
-                    ),
+                    label: strings.planStart,
+                    trailingIcon: 'ph-arrow-right-bold',
                   ),
                 ),
               ),
@@ -846,74 +836,4 @@ class _Tile extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Sweeps a soft light band across its child once, after the sheet settles.
-class _ShineOnce extends StatefulWidget {
-  const _ShineOnce({required this.child});
-
-  final Widget child;
-
-  @override
-  State<_ShineOnce> createState() => _ShineOnceState();
-}
-
-class _ShineOnceState extends State<_ShineOnce>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: AppMotion.planShine,
-  );
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!MediaQuery.disableAnimationsOf(context) && _controller.isDismissed) {
-      _controller.forward();
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => Stack(
-    children: [
-      widget.child,
-      Positioned.fill(
-        child: IgnorePointer(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadii.pill),
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (context, _) {
-                // Waits for the first 60% of the run, then crosses.
-                final t = ((_controller.value - 0.6) / 0.4).clamp(0.0, 1.0);
-                if (t == 0 || t == 1) return const SizedBox.shrink();
-                return FractionalTranslation(
-                  translation: Offset(-1 + 2 * t, 0),
-                  child: const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Color(0x00FFFFFF),
-                          Color(0x40FFFFFF),
-                          Color(0x00FFFFFF),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ),
-    ],
-  );
 }

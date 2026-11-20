@@ -101,6 +101,14 @@ abstract final class AppMotion {
   static const entranceStagger = Duration(milliseconds: 55);
   static const entranceRise = 18.0;
   static const progressFill = Duration(milliseconds: 420);
+  // Home kcal meter: grows to its value with the design's ease-out.
+  static const todayMeter = Duration(milliseconds: 700);
+  static const todayMeterCurve = Cubic(0.22, 1, 0.36, 1);
+  // Water glass: pour (fill, bounce, droplets) and drain (shake).
+  static const waterPour = Duration(milliseconds: 700);
+  static const waterDrain = Duration(milliseconds: 450);
+  // A just-saved meal row fades from the highlight back to the card.
+  static const todayHighlight = Duration(milliseconds: 1600);
 
   static Duration of(BuildContext context, Duration duration) =>
       MediaQuery.disableAnimationsOf(context) ? Duration.zero : duration;

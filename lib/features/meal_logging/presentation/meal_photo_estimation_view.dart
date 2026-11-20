@@ -138,32 +138,15 @@ class _MealPhotoEstimationView extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: AppSpacing.lg),
                           child: failed
-                              ? DecoratedBox(
-                                  decoration: const ShapeDecoration(
-                                    shape: StadiumBorder(),
-                                    shadows: AppShadows.estimationAction,
-                                  ),
-                                  child: AppButton(
-                                    onPressed: onRetry,
-                                    animatePress: true,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      spacing: AppSpacing.xs,
-                                      children: [
-                                        const AppIcon.asset(
-                                          'ph-arrow-clockwise-bold',
-                                          size: AppSizes.iconSm,
-                                          color: AppColors.primaryForeground,
-                                        ),
-                                        Flexible(child: Text(strings.retry)),
-                                      ],
-                                    ),
-                                  ),
+                              ? AppButton(
+                                  onPressed: onRetry,
+                                  fullWidth: true,
+                                  leadingIcon: 'ph-arrow-clockwise-bold',
+                                  label: strings.retry,
                                 )
                               : AppButton.surface(
                                   onPressed: onBack,
-                                  child: Text(strings.mealEstimationCancel),
+                                  label: strings.mealEstimationCancel,
                                 ),
                         ),
                       ],

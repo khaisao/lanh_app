@@ -232,7 +232,7 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
     if (analysis == null || photo == null || !mounted) return;
     setState(() => _savingMeal = true);
     try {
-      await ref
+      final saved = await ref
           .read(mealLogRepositoryProvider)
           .save(
             analysis: analysis,
@@ -240,6 +240,7 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
             portionScale: _controller.portionScale,
             photo: photo,
           );
+      ref.read(lastSavedMealProvider.notifier).record(saved);
       ref.invalidate(todayMealLogsProvider);
       if (mounted) Navigator.of(context).pop();
     } catch (_) {

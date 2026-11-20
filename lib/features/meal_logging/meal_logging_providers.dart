@@ -50,6 +50,21 @@ final todayMealLogsProvider = FutureProvider<List<MealLog>>((ref) {
   return ref.watch(mealLogRepositoryProvider).readForDate(DateTime.now());
 });
 
+/// The meal the user saved most recently in this session, so Home can
+/// confirm it and highlight its row once. Home clears it after showing.
+final lastSavedMealProvider = NotifierProvider<LastSavedMeal, MealLog?>(
+  LastSavedMeal.new,
+);
+
+class LastSavedMeal extends Notifier<MealLog?> {
+  @override
+  MealLog? build() => null;
+
+  void record(MealLog meal) => state = meal;
+
+  void clear() => state = null;
+}
+
 final mealVoiceRecognizerProvider = Provider<MealVoiceRecognizer>(
   (ref) => DeviceMealVoiceRecognizer(),
 );

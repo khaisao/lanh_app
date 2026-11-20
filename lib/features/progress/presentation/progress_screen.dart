@@ -352,10 +352,7 @@ class _WeightEmptyCard extends StatelessWidget {
           style: AppTypography.bodySmall,
         ),
         const SizedBox(height: AppSpacing.md),
-        AppButton.secondary(
-          onPressed: null,
-          child: const Text('Thêm cân nặng'),
-        ),
+        AppButton.secondary(onPressed: null, label: 'Thêm cân nặng'),
       ],
     ),
   );

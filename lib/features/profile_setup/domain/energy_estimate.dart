@@ -29,9 +29,6 @@ abstract final class EnergyPolicy {
   /// Below this the deficit is too small to plan a loss at all.
   static const minimumLossKgPerWeek = 0.1;
   static const displayStepKcal = 50;
-
-  /// Bounds for a budget the user types in.
-  static const maximumBudgetKcal = 5000;
 }
 
 /// Physical activity level used for each answer on "Một ngày thường".

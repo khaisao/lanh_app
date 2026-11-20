@@ -89,7 +89,7 @@ class ProfileTargetStep extends StatelessWidget {
                         AppButton.secondary(
                           key: const Key('profile-target-switch-maintain'),
                           onPressed: onSwitch,
-                          child: Text(strings.profileSwitchToMaintain),
+                          label: strings.profileSwitchToMaintain,
                         ),
                     ],
                   ),

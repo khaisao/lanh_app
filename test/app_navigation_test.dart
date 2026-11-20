@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:ui' show PointerDeviceKind;
 
-import 'package:app_ui/app_ui.dart' show AppBottomBar, AppRollingText;
+import 'package:app_ui/app_ui.dart'
+    show AppBottomBar, AppIcon, AppRollingText, AppSizes;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lanh_app/features/water/water.dart';
 import 'package:lanh_app/app/app_router.dart';
 import 'package:lanh_app/app/app.dart';
 import 'package:lanh_app/features/goal/goal.dart';
@@ -20,6 +22,7 @@ import 'support/test_goal_repository.dart';
 import 'support/test_meal_log_repository.dart';
 import 'support/test_onboarding_repository.dart';
 import 'support/test_profile_repository.dart';
+import 'support/test_water_log_repository.dart';
 
 void main() {
   void reduceMotion(WidgetTester tester) {
@@ -126,6 +129,9 @@ void main() {
           onboardingRepositoryProvider.overrideWithValue(repository),
           goalRepositoryProvider.overrideWithValue(TestGoalRepository()),
           mealLogRepositoryProvider.overrideWithValue(TestMealLogRepository()),
+          waterLogRepositoryProvider.overrideWithValue(
+            TestWaterLogRepository(),
+          ),
           profileRepositoryProvider.overrideWithValue(
             profiles ?? TestProfileRepository(),
           ),
@@ -582,15 +588,40 @@ void main() {
       tester.widget<Text>(find.byKey(const Key('profile-plan-kcal'))).data,
       '1.850',
     );
+    // Sleek Plan Ready: "Bắt đầu" is `w-full`, as wide as "Chỉnh lại".
+    expect(
+      tester.getSize(find.byKey(const Key('profile-plan-start'))).width,
+      tester.getSize(find.byKey(const Key('profile-plan-edit'))).width,
+    );
     await tapText(tester, 'Bắt đầu');
     expect(profiles.profile?.dailyEnergyKcal, 1850);
     expect(profiles.profile?.goal.type, GoalType.maintain);
-    // Today: "0 / 1.850 kcal", what is left, and the first-meal guide.
+    // Today (Sleek Home 08): 0 kcal, the maintenance range of ±10 % around
+    // 1.850 on the 50-kcal step, and the first-meal guide.
     expect(find.text('0'), findsOneWidget);
-    expect(find.text('/ 1.850 kcal'), findsOneWidget);
-    expect(find.text('Còn 1.850 kcal'), findsOneWidget);
+    expect(find.text('Dải duy trì 1.650–2.050'), findsOneWidget);
+    expect(
+      find.text('Thêm 1.650\u2060–\u20602.050 kcal là vào dải'),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('today-first-meal')), findsOneWidget);
     expect(find.text('Ghi bữa đầu tiên hôm nay'), findsOneWidget);
+    // Sleek Today First Run: the card action spans the card (`w-full`).
+    final card = tester.getRect(find.byKey(const Key('today-first-meal')));
+    final action = tester.getRect(
+      find.byKey(const Key('today-first-meal-action')),
+    );
+    expect(action.width, greaterThan(card.width * 0.8));
+    expect(action.center.dx, closeTo(card.center.dx, 1));
+    expect(
+      tester.getSize(
+        find.descendant(
+          of: find.byKey(const Key('today-first-meal-action')),
+          matching: find.byType(AppIcon),
+        ),
+      ),
+      const Size.square(AppSizes.buttonIconCard),
+    );
     expect(
       tester.widget<AppBottomBar>(find.byType(AppBottomBar)).highlightAction,
       isTrue,

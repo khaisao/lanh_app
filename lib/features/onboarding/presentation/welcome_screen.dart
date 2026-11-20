@@ -72,15 +72,11 @@ class WelcomeScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             AppButton(
-                              animatePress: true,
+                              fullWidth: true,
                               onPressed: status == null || status.isSaving
                                   ? null
                                   : () => context.push('/profile-setup'),
-                              child: Text(
-                                strings.welcomeGoalAction,
-                                textAlign: TextAlign.center,
-                                style: AppTypography.welcomeAction,
-                              ),
+                              label: strings.welcomeGoalAction,
                             ),
                             const SizedBox(height: AppSpacing.md),
                             Row(

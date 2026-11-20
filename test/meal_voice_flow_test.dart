@@ -99,8 +99,7 @@ void main() {
     _voice.hear('Ăn một tô phở bò tái');
     await tester.pump();
     await tester.pump();
-    // A first partial result is still tentative (dimmed); words repeated by
-    // the next result become stable.
+    // Every live word uses one colour; no word is dimmed.
     String live() => tester
         .widget<RichText>(
           find.descendant(
@@ -117,7 +116,7 @@ void main() {
     _voice.hear('Ăn một tô phở bò tái, thêm ly trà');
     await tester.pump();
     await tester.pump();
-    final spans = <String>[];
+    final colors = <Color?>{};
     tester
         .widget<RichText>(
           find.descendant(
@@ -127,12 +126,27 @@ void main() {
         )
         .text
         .visitChildren((span) {
-          if (span is TextSpan && span.text != null) spans.add(span.text!);
+          if (span is TextSpan && (span.text ?? '').isNotEmpty) {
+            colors.add(span.style?.color);
+          }
           return true;
         });
-    // The repeated prefix is stable; at most three new words stay dimmed.
-    expect(spans.first, 'Ăn một tô phở bò tái,');
-    expect(spans[1], ' thêm ly trà');
+    expect(live(), contains('Ăn một tô phở bò tái, thêm ly trà'));
+    // Only the inherited voiceLiveText colour: no span overrides it.
+    expect(colors, {null});
+    expect(
+      tester
+          .widget<RichText>(
+            find.descendant(
+              of: find.byKey(const Key('meal-voice-live-text')),
+              matching: find.byType(RichText),
+            ),
+          )
+          .text
+          .style
+          ?.color,
+      AppColors.foreground,
+    );
     await tester.pump(const Duration(seconds: 2));
     expect(find.text('00:02'), findsOneWidget);
 

@@ -10,15 +10,4 @@ final goalControllerProvider = AsyncNotifierProvider<GoalController, Goal?>(
 class GoalController extends AsyncNotifier<Goal?> {
   @override
   Future<Goal?> build() => ref.read(goalRepositoryProvider).read();
-
-  Future<void> save(Goal goal) async {
-    state = const AsyncLoading();
-    try {
-      await ref.read(goalRepositoryProvider).save(goal);
-      state = AsyncData(goal);
-    } catch (error, stack) {
-      state = AsyncError(error, stack);
-      rethrow;
-    }
-  }
 }

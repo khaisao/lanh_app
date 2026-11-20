@@ -14,10 +14,11 @@ The HTML export in `C:/Users/Kirito/Desktop/export-html` is the visual source of
 - Primary actions have a 56 logical pixel minimum height and 20 logical pixels of horizontal padding. Long labels can wrap and increase the height.
 
 - The Today HTML exports use chart blue at 20% opacity for filled water indicators. Use `AppColors.waterTint` for that surface and `AppSizes.waterIndicator` and `AppSizes.energyMarkerHeight` for the dashboard indicators.
+- Today water indicators are quick-add controls: each unfilled indicator adds 250 ml and becomes chart-blue; the card displays the running total for the current session.
 
 ## Typography
 
-The web export uses Be Vietnam Pro for body text, Nunito for headings, Playfair Display for editorial serif text, and JetBrains Mono for numeric or technical text. The same font files are bundled in `assets/fonts` and declared once in the root `pubspec.yaml`. `AppFonts` maps the family names and `AppTypography` maps semantic text roles. Keep semantic text roles instead of setting ad hoc sizes in feature screens.
+The app uses Be Vietnam Pro for body text and Nunito for headings and numbers. The font files are bundled in `assets/fonts` and declared once in the root `pubspec.yaml`. `AppFonts` maps the family names and `AppTypography` maps semantic text roles. Keep semantic text roles instead of setting ad hoc sizes in feature screens.
 
 Use `AppFonts.body` for interface copy, `AppFonts.heading` for headings, `AppFonts.serif` for editorial content, and `AppFonts.mono` for numeric or technical content. Font files are sourced from the official Google Fonts repository and are distributed under the SIL Open Font License. The license is stored beside the font assets.
 
@@ -25,13 +26,37 @@ Use `AppFonts.body` for interface copy, `AppFonts.heading` for headings, `AppFon
 
 `AppBackground` displays the cream base, gradient, and three blurred color accents from the `TodayGradientMầmXanh` HTML design as [one bundled JPEG](../packages/app_ui/assets/backgrounds/lanh-gradient.jpg). The app preloads the image before showing its first Flutter frame. Each page route owns an `AppBackground`, so its surface covers earlier pages throughout native transitions. The decoded image is reused through Flutter's image cache. Page scaffolds can stay transparent inside that route surface. Cards, dialogs, and bottom sheets use their own surface tokens.
 
-Use `AppButton` for primary and secondary actions, `AppOptionCard` for the icon, label, description, and caret pattern of the meal method picker, `AppSelectionTile` for every single-choice card (see Choice cards), `AppEmptyState` for empty screens, and `AppTheme.light()` for the app theme. New shared primitives belong in `packages/app_ui/lib/src` and must be exported through the package barrel.
+Use `AppButton` for primary and secondary actions, `AppOptionCard` for the icon, label, description, and caret pattern of the meal method picker, `AppSelectionTile` for every single-choice card (see Choice cards), and `AppTheme.light()` for the app theme. New shared primitives belong in `packages/app_ui/lib/src` and must be exported through the package barrel.
+
+### Buttons
+
+Every pill action goes through `AppButton` so a design change happens in one place (`packages/app_ui/lib/src/buttons.dart`). Pass `label` plus optional `leadingIcon` (e.g. Xác nhận ✓), `trailingIcon` (e.g. Ước lượng bữa ăn →) or `loading` (spinner in the leading slot). Icons are design asset names, sized `AppSizes.buttonIcon` (18 px) with an 8 px gap, and take the button's foreground colour, including disabled. Use `child` only for content a label and icons cannot express; to animate between labels, put `AppButtonLabel` widgets inside the switcher (Profile Setup does this). Set `fullWidth: true` for Sleek `w-full` actions (bottom CTAs, Plan Ready, card actions). The label hugs its content, so without it the button only stretches when its parent forces a tight width (a stretched `Column` or `Expanded`); leave it off inside `Wrap` or a `Row` without `Expanded`.
+
+The primary style matches the Sleek Profile Setup buttons: `min-h-14 py-4 rounded-full bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25 active:scale-[0.97]`. The shadow is `AppShadows.primaryAction` and is shown only while enabled. `AppButton.card` is the primary action inside a Today card (Sleek Today First Run / Today Empty): `rounded-2xl`, no shadow, 20 px icons (`AppSizes.buttonIconCard`), `active:scale-[0.98]`. Press scaling is on by default (`animatePress`) and is skipped under Reduce Motion. `AppButton.secondary` and `AppButton.surface` take the same label and icon parameters.
 
 Feature screens consume semantic roles from `AppTypography` and aliases from `AppFonts`. Define additional export treatments in `AppTypography`. Keep component state, loading, error, disabled, and pressed styling in the shared component when the pattern repeats.
 
 The package is presentation-only. Feature modules keep their own domain contracts, repositories, controllers, and route behavior. Shared UI must not import a feature package.
 
 `AppBottomBar` follows the nav in `today-no-goal.html`. The capsule is 64 dp high and up to 448 dp wide, with a 16 dp outer margin above the device safe area and an 8 dp inner inset inside the border. The 64 dp meal action rises 16 dp above the capsule and keeps that width when the four tab columns shrink. Tab presses scale the icon and label together. The active icon crossfades, and the meal action briefly scales to 95%. Reduced motion skips these transitions.
+
+### Home kcal card
+
+`TodayEnergyCard` (`lib/features/today/presentation/today_energy_card.dart`) follows Sleek Home 01–11. `TodayEnergyStatus` (`lib/features/today/domain/`) decides the state from goal, saved kcal target and logged kcal, compared as whole kcal:
+
+| Goal | States and sentence |
+|---|---|
+| Gain | below: "Còn X kcal nữa là đạt mục tiêu"; reached: "Đã đạt mục tiêu hôm nay" |
+| Lose | within: "Còn X kcal trong kế hoạch"; at plan: "Vừa đủ kế hoạch hôm nay"; over: "Hơn kế hoạch X kcal hôm nay" |
+| Maintain | below: "Thêm A–B kcal là vào dải"; within: "Đang trong dải duy trì"; above: "Hơn dải X kcal hôm nay" |
+
+The maintain range is the target ±10 %, each end on the 50-kcal step (2.100 → 1.900–2.300). The meter is read-only: a flat `AppSizes.energyMeter` track, a `primary → meterFillEnd` fill, a flat `accent` segment for the overrun, and the range painted on the track (striped below, solid once inside) with "Dải duy trì A–B" under it. Nothing sticks out of the track, so it never reads as a slider. The fill grows over `AppMotion.todayMeter`, the number rolls with `AppRollingText`, and a plan that becomes met plays `AppShineOnce` and one medium haptic; Reduce Motion draws the final state at once. Status glyphs come from the asset set: `ph-target` (still to go), `ph-check-bold` (on plan or met, filled circle when met), `ph-info-bold` (over). The design's `ph:arrow-circle-up` and `ph:check-circle` have no exported asset, so these are the documented substitutes.
+
+`today_loading_and_error.dart` holds Home 12 (placeholders shaped like the card and journal, breathing unless Reduce Motion) and Home 13 (calm read-error cards with "Thử lại"; the journal card also offers "Ghi bữa ăn"). Home 14: after a photo or voice save, `lastSavedMealProvider` names the meal; Home shows a glass pill above the dock and tints its row once (`AppMotion.todayHighlight`). Home 15's "Bạn nhập" chip is not built because meals are only saved from photo or voice.
+
+### Home water card
+
+`WaterCard` (`lib/features/water/`) follows Sleek Home 01–15. The goal is fixed by the profile's sex: women 6 glasses (1,5 L), men 8 glasses (2,0 L), 250 ml each, from EFSA's drink intake rounded to whole glasses; it is not editable and has no pregnancy, drink-type or exercise adjustment. Tapping any empty glass pours the next one; tapping any full glass removes the latest, so the row always fills left to right. Logging stops at the goal, which shows "Đã đủ nước hôm nay" and one medium haptic. Each glass is drawn (`WaterGlass`): the pour raises the water with a rocking surface, squashes and springs the glass and pops three droplets (`AppMotion.waterPour`); removing drains it with a small shake (`AppMotion.waterDrain`); Reduce Motion shows the end state at once. Glasses are stored one row each in `lanh_water.db` (`water_logs`) and counted per local day; writes run in order, the count updates at once and a failed write restores it with "Chưa lưu được nước". A read error shows a retry instead of zero.
 
 ## Assets
 

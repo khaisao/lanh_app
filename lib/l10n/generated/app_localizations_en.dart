@@ -39,10 +39,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeDisclaimer => 'All calorie counts in Lành are estimates.';
 
   @override
-  String get saveIntroductionError =>
-      'Your choice could not be saved. Please try again.';
-
-  @override
   String get startupError =>
       'Your settings could not be loaded. Try again to continue.';
 
@@ -65,28 +61,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logMeal => 'Log meal';
 
   @override
-  String get todayHeading => 'Your day';
-
-  @override
-  String get todayEmptyTitle => 'Start with one meal';
-
-  @override
   String get todayEmptyBody =>
       'Your journal is empty. Logged meals and calorie totals will appear here.';
-
-  @override
-  String get progressEmptyTitle => 'Progress begins with you';
-
-  @override
-  String get progressEmptyBody =>
-      'There is no data to summarize yet. Days without meal logs will not count as zero calories.';
-
-  @override
-  String get achievementsEmptyTitle => 'Small steps matter';
-
-  @override
-  String get achievementsEmptyBody =>
-      'Milestones will celebrate self-care habits without judging how little or how much you eat.';
 
   @override
   String get baseNotice =>
@@ -115,15 +91,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gallery => 'Choose a photo';
-
-  @override
-  String get search => 'Search foods';
-
-  @override
-  String get manual => 'Enter manually';
-
-  @override
-  String get templates => 'Saved meals';
 
   @override
   String get mealPhotoBack => 'Back';
@@ -215,10 +182,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Lành supports mindful eating and self-care. Your intention may be to lose, gain or maintain weight, or simply understand your meals.';
 
   @override
-  String get privacyBase =>
-      'This foundation build stores your goal choice and introduction status on this device. Meal photos and health data are not synced yet.';
-
-  @override
   String get notFound => 'Page not found';
 
   @override
@@ -244,9 +207,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileAge => 'Age';
-
-  @override
-  String get profileYears => 'years';
 
   @override
   String get profileHeight => 'Height';
@@ -341,13 +301,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileMissingSex => 'Choose an option to continue.';
 
   @override
-  String get profileReview => 'Review your information';
-
-  @override
-  String get profileReviewNotice =>
-      'This information will be saved on your device.';
-
-  @override
   String get profileTeenGuidanceTitle => 'A safer goal while you grow';
 
   @override
@@ -396,15 +349,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayGreeting => 'Hello';
-
-  @override
-  String get todayGainGoal => 'Weight gain goal';
-
-  @override
-  String get todayLosePlan => 'Today’s plan';
-
-  @override
-  String get todayMaintainRange => 'Maintenance range';
 
   @override
   String get todayEnergy => 'Today’s energy';
@@ -559,9 +503,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'These numbers are estimated from the photo and may differ from what you actually ate.';
 
   @override
-  String get mealReviewSaveSoon => 'Save meal · Coming soon';
-
-  @override
   String get mealReviewSave => 'Save meal';
 
   @override
@@ -683,15 +624,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mealVoiceConfirmHeading => 'Lành heard you';
 
   @override
-  String get mealVoiceConfirmBody => 'Fix any words before sending.';
-
-  @override
   String get mealVoiceConfirmHint =>
       'This is an estimate. Check it before saving.';
-
-  @override
-  String get mealVoiceTypedBody =>
-      'Write the dishes and how much you ate for Lành to estimate.';
 
   @override
   String get mealVoiceTranscriptLabel => 'Text from your voice';
@@ -1059,19 +993,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String todayLeftKcal(String kcal) {
-    return '$kcal kcal left';
-  }
-
-  @override
-  String todayOverKcal(String kcal) {
-    return '$kcal kcal over';
-  }
-
-  @override
-  String get todayReachedKcal => 'Target reached';
-
-  @override
   String get todayFirstMealTitle => 'Log today\'s first meal';
 
   @override
@@ -1080,4 +1001,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileSwitchToMaintain => 'Switch to Maintain';
+
+  @override
+  String get todayGoalGain => 'Gain weight';
+
+  @override
+  String get todayGoalLose => 'Lose weight';
+
+  @override
+  String get todayGoalMaintain => 'Maintain weight';
+
+  @override
+  String get todayKcal => 'kcal';
+
+  @override
+  String todayGainLeft(String kcal) {
+    return '$kcal kcal more to reach your goal';
+  }
+
+  @override
+  String get todayGainReached => 'Goal reached today';
+
+  @override
+  String todayLoseLeft(String kcal) {
+    return '$kcal kcal left in your plan';
+  }
+
+  @override
+  String get todayLoseAtPlan => 'Right on plan today';
+
+  @override
+  String todayLoseOver(String kcal) {
+    return '$kcal kcal over plan today';
+  }
+
+  @override
+  String todayMaintainBelow(String range) {
+    return '$range kcal more to reach your range';
+  }
+
+  @override
+  String get todayMaintainWithin => 'Within your maintenance range';
+
+  @override
+  String todayMaintainAbove(String kcal) {
+    return '$kcal kcal above your range today';
+  }
+
+  @override
+  String todayMaintainRangeLabel(String range) {
+    return 'Maintenance range $range';
+  }
+
+  @override
+  String todaySavedMeal(String meal, String kcal) {
+    return 'Saved $meal · $kcal kcal';
+  }
+
+  @override
+  String todaySavedMealNoKcal(String meal) {
+    return 'Saved $meal';
+  }
+
+  @override
+  String waterAmount(String amount, String goal) {
+    return '$amount / $goal ml';
+  }
+
+  @override
+  String get waterReached => 'Water goal reached today';
+
+  @override
+  String waterGlassEmpty(String number) {
+    return 'Glass $number, not yet. Tap to add 250 ml';
+  }
+
+  @override
+  String waterGlassFull(String number) {
+    return 'Glass $number, done. Tap to remove';
+  }
+
+  @override
+  String get waterReadError => 'Couldn’t read today’s water.';
+
+  @override
+  String get waterSaveError => 'Couldn’t save water. Please try again.';
 }

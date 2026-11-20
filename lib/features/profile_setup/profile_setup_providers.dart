@@ -21,6 +21,11 @@ final profileGoalProvider = Provider<AsyncValue<Goal?>>((ref) {
   return profile.whenData((value) => value?.goal);
 });
 
+/// The saved profile's sex, or null before a profile is read.
+final profileSexProvider = Provider<ProfileSex?>(
+  (ref) => ref.watch(savedProfileProvider).value?.sex,
+);
+
 /// The confirmed daily kcal target, or null when none was chosen.
 final profileEnergyTargetProvider = Provider<int?>(
   (ref) => ref.watch(savedProfileProvider).value?.dailyEnergyKcal,

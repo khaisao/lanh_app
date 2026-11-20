@@ -12,15 +12,18 @@ abstract final class AppColors {
   static const accent = Color(0xFFF2C4A8);
   static const welcomeHalo = Color(0x66F2C4A8);
   static const accentForeground = Color(0xFF4A2E1F);
+  // End of the Home kcal meter gradient (`from-primary to-[#4f8a5b]`).
+  static const meterFillEnd = Color(0xFF4F8A5B);
   static const destructive = Color(0xFF8A4B2E);
   static const card = Color(0xFFFFFDF7);
   static const input = Color(0xFFFFFCF5);
   static const border = Color(0xFFE7DDCB);
   static const chartBlue = Color(0xFF7FA8B5);
-  static const waterTint = Color(0x337FA8B5);
+  // Water glass on the Home card (Sleek Home 01–15): fill gradient ends.
+  static const waterLight = Color(0xFF9CC4DC);
+  static const waterDeep = Color(0xFF6B9BB8);
   static const chartGold = Color(0xFFE0B54A);
   static const chartPeach = Color(0xFFEFB99A);
-  static const chartStone = Color(0xFFB8A890);
   static const navSelection = Color(0xB8D9E8D5);
   static const navActionHighlight = Color(0xFF578561);
   static const navActionRim = Color(0xBB9CC09A);
@@ -178,6 +181,12 @@ abstract final class AppSizes {
   static const iconMd = 20.0;
   static const iconLg = 24.0;
   static const iconXl = 28.0;
+
+  /// Leading/trailing icon and loading spinner inside [AppButton].
+  static const buttonIcon = iconSm;
+
+  /// Icon inside [AppButton.card] (Sleek Today First Run `ph:plus-bold` 20).
+  static const buttonIconCard = iconMd;
   static const hero = 224.0;
   static const welcomeOuterHalo = 288.0;
   static const welcomeInnerHalo = 208.0;
@@ -197,8 +206,15 @@ abstract final class AppSizes {
   static const nav = 60.0;
   static const navFab = 56.0;
   static const navSelection = 42.0;
-  static const energyMarkerHeight = 24.0;
-  static const waterIndicator = 32.0;
+  // Home kcal card (Sleek Home 01–15): `h-3` meter, `size-10` goal icon
+  // well, `size-7` status circle with a 16 px glyph.
+  static const energyMeter = 12.0;
+  static const energyIconWell = 40.0;
+  static const energyStatusIcon = 28.0;
+  // Drawn tumbler glass and its touch target on the Home water card.
+  static const waterGlassWidth = 26.0;
+  static const waterGlassHeight = 32.0;
+  static const waterGlassTarget = 48.0;
   static const chart = 128.0;
   static const contentMax = 448.0;
   static const readableWidth = 320.0;
@@ -298,12 +314,19 @@ abstract final class AppShadows {
       offset: Offset(0, 24),
     ),
   ];
-  static const estimationAction = [
+  // Sleek primary action: `shadow-lg shadow-primary/25`.
+  static const primaryAction = [
     BoxShadow(
-      color: Color(0xB32F5D3A),
-      blurRadius: 28,
-      spreadRadius: -10,
-      offset: Offset(0, 12),
+      color: Color(0x402F5D3A),
+      blurRadius: 15,
+      spreadRadius: -3,
+      offset: Offset(0, 10),
+    ),
+    BoxShadow(
+      color: Color(0x402F5D3A),
+      blurRadius: 6,
+      spreadRadius: -4,
+      offset: Offset(0, 4),
     ),
   ];
   // MealReview glass shadows.
@@ -415,8 +438,6 @@ abstract final class AppShadows {
 abstract final class AppFonts {
   static const body = 'Be Vietnam Pro';
   static const heading = 'Nunito';
-  static const serif = 'Playfair Display';
-  static const mono = 'JetBrains Mono';
 }
 
 abstract final class AppTypography {
@@ -568,9 +589,6 @@ abstract final class AppTypography {
     letterSpacing: 0,
     fontWeight: FontWeight.w600,
     height: 20 / 14,
-  );
-  static const welcomeAction = TextStyle(
-    leadingDistribution: TextLeadingDistribution.even,
   );
   static final setupHeading = screenTitle.copyWith(height: 1.25);
   static final setupCaption = bodySmall.copyWith(height: 20 / 14);

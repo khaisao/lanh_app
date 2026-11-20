@@ -489,28 +489,10 @@ class _ResultDock extends StatelessWidget {
                   AppButton(
                     key: const Key('meal-analysis-save'),
                     onPressed: onSave,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: AppSpacing.xs,
-                      children: [
-                        if (saving)
-                          const SizedBox.square(
-                            dimension: AppSizes.iconSm,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        else
-                          const AppIcon.asset(
-                            'ph-check-bold',
-                            size: AppSizes.iconSm,
-                            color: AppColors.secondaryForeground,
-                          ),
-                        Flexible(
-                          child: Text(
-                            saving ? strings.saving : strings.mealReviewSave,
-                          ),
-                        ),
-                      ],
-                    ),
+                    fullWidth: true,
+                    loading: saving,
+                    leadingIcon: 'ph-check-bold',
+                    label: saving ? strings.saving : strings.mealReviewSave,
                   ),
                   TextButton(
                     key: const Key('meal-analysis-discard'),

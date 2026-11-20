@@ -107,7 +107,7 @@ void main() {
     );
     await expectLater(
       repository.analyzeText(
-        'a' * (HttpMealAnalysisRepository.maxDescriptionLength + 1),
+        'a' * (maxMealDescriptionLength + 1),
         requestId: 'r',
       ),
       throwsArgumentError,

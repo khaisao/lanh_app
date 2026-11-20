@@ -24,7 +24,7 @@ class StartupScreen extends ConsumerWidget {
                       AppButton(
                         onPressed: () =>
                             ref.invalidate(onboardingControllerProvider),
-                        child: Text(strings.retry),
+                        label: strings.retry,
                       ),
                     ],
                   )

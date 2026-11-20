@@ -132,19 +132,16 @@ class _MealPhotoPermissionView extends StatelessWidget {
                                   : access == MealCameraAccess.blocked
                                   ? onSettings
                                   : onRequest,
-                              child: Text(switch (access) {
+                              label: switch (access) {
                                 MealCameraAccess.blocked =>
                                   strings.mealPhotoOpenSettings,
                                 MealCameraAccess.unavailable => strings.retry,
                                 _ => strings.mealPhotoAllowCamera,
-                              }, textAlign: TextAlign.center),
+                              },
                             ),
                           AppButton.surface(
                             onPressed: onChoose,
-                            child: Text(
-                              strings.mealPhotoChoose,
-                              textAlign: TextAlign.center,
-                            ),
+                            label: strings.mealPhotoChoose,
                           ),
                         ],
                       ),
@@ -502,24 +499,9 @@ class _MealPhotoReviewView extends StatelessWidget {
                             child: AppButton(
                               key: const Key('meal-photo-estimate'),
                               onPressed: onEstimate,
-                              animatePress: true,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                spacing: AppSpacing.xs,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      strings.mealPhotoEstimate,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  const AppIcon.asset(
-                                    'ph-arrow-right-bold',
-                                    size: AppSizes.iconSm,
-                                    color: AppColors.primaryForeground,
-                                  ),
-                                ],
-                              ),
+                              fullWidth: true,
+                              label: strings.mealPhotoEstimate,
+                              trailingIcon: 'ph-arrow-right-bold',
                             ),
                           ),
                         ],

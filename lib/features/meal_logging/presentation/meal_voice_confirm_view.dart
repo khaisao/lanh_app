@@ -38,9 +38,7 @@ class _MealVoiceConfirmViewState extends State<_MealVoiceConfirmView> {
     final strings = AppLocalizations.of(context);
     final controller = widget.controller;
     final typed = controller.typed;
-    final tooLong =
-        controller.draft.trim().length >
-        MealVoiceController.maxDescriptionLength;
+    final tooLong = controller.draft.trim().length > maxMealDescriptionLength;
 
     return _VoiceConfirmScaffold(
       header: _VoiceHeader(
@@ -115,9 +113,7 @@ class _MealVoiceConfirmViewState extends State<_MealVoiceConfirmView> {
                 hintText: typed ? strings.mealVoiceExample : null,
                 hintStyle: AppTypography.bodySmall,
                 errorText: tooLong
-                    ? strings.mealVoiceTooLong(
-                        MealVoiceController.maxDescriptionLength,
-                      )
+                    ? strings.mealVoiceTooLong(maxMealDescriptionLength)
                     : null,
                 filled: true,
                 fillColor: AppColors.input,
@@ -140,18 +136,9 @@ class _MealVoiceConfirmViewState extends State<_MealVoiceConfirmView> {
             AppButton(
               key: const Key('meal-voice-send'),
               onPressed: controller.canSend ? _send : null,
-              animatePress: true,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: AppSpacing.xs,
-                children: [
-                  AppIcon.asset(
-                    'ph-paper-plane-tilt-bold',
-                    size: AppSizes.iconSm,
-                  ),
-                  Flexible(child: Text(strings.mealVoiceSend)),
-                ],
-              ),
+              fullWidth: true,
+              leadingIcon: 'ph-paper-plane-tilt-bold',
+              label: strings.mealVoiceSend,
             ),
             if (controller.access == MealVoiceAccess.granted)
               _DockTextButton(

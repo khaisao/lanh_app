@@ -28,7 +28,6 @@ class HttpMealAnalysisRepository implements MealAnalysisRepository {
   final Duration timeout;
 
   /// Longest description the app sends; the voice screen enforces it too.
-  static const maxDescriptionLength = 500;
 
   @override
   Future<MealAnalysis> analyzePhoto(
@@ -63,7 +62,7 @@ class HttpMealAnalysisRepository implements MealAnalysisRepository {
     Future<void>? cancel,
   }) async {
     final text = description.trim();
-    if (text.isEmpty || text.length > maxDescriptionLength) {
+    if (text.isEmpty || text.length > maxMealDescriptionLength) {
       throw ArgumentError.value(description, 'description');
     }
     return _send(

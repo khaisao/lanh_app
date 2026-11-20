@@ -4,6 +4,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lanh_app/features/meal_logging/meal_logging.dart';
+import 'package:lanh_app/features/water/water.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -28,16 +29,28 @@ class _AppShellState extends ConsumerState<AppShell> {
   bool _barVisible = true;
   double _dragDistance = 0;
   late final AppLifecycleListener _photoRecoveryLifecycle;
+  DateTime _resumeDay = _day(DateTime.now());
+
+  static DateTime _day(DateTime date) =>
+      DateTime(date.year, date.month, date.day);
 
   @override
   void initState() {
     super.initState();
-    _photoRecoveryLifecycle = AppLifecycleListener(
-      onResume: _restorePendingPhoto,
-    );
+    _photoRecoveryLifecycle = AppLifecycleListener(onResume: _onResume);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _restorePendingPhoto();
     });
+  }
+
+  void _onResume() {
+    final day = _day(DateTime.now());
+    if (day != _resumeDay) {
+      _resumeDay = day;
+      ref.invalidate(todayWaterProvider);
+      ref.invalidate(todayMealLogsProvider);
+    }
+    _restorePendingPhoto();
   }
 
   void _restorePendingPhoto() {

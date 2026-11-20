@@ -1,5 +1,4 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -75,257 +74,6 @@ class TodayCard extends StatelessWidget {
   );
 }
 
-class TodayEnergyCard extends StatelessWidget {
-  const TodayEnergyCard({
-    super.key,
-    required this.mode,
-    required this.heading,
-    required this.value,
-    required this.footer,
-    this.progress,
-    this.range,
-    this.estimated = false,
-    this.action,
-    this.unit,
-  });
-
-  final GoalType? mode;
-  final String heading;
-  final String value;
-  final String footer;
-  final double? progress;
-  final (double, double)? range;
-  final bool estimated;
-  final Widget? action;
-
-  /// Text after the number; defaults to "kcal đã ghi".
-  final String? unit;
-
-  @override
-  Widget build(BuildContext context) => TodayCard(
-    key: ValueKey('today-energy-${mode?.name ?? 'none'}'),
-    padding: const EdgeInsets.all(AppSpacing.lg),
-    radius: AppRadii.glassCard,
-    raised: true,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: AppSpacing.md,
-      children: [
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.xs,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text(heading, style: AppTypography.label),
-            if (estimated)
-              DecoratedBox(
-                decoration: const BoxDecoration(
-                  color: AppColors.accent,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(AppRadii.pill),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xs,
-                    vertical: AppSpacing.xxs,
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context).todayEstimated,
-                    style: AppTypography.micro.copyWith(
-                      color: AppColors.accentForeground,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-        Wrap(
-          spacing: AppSpacing.xs,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text(value, style: AppTypography.numericLarge),
-            Text(
-              unit ?? AppLocalizations.of(context).todayLoggedKcal,
-              style: AppTypography.bodySmall,
-            ),
-          ],
-        ),
-        if (mode == GoalType.gain ||
-            mode == GoalType.lose ||
-            mode == GoalType.maintain)
-          ExcludeSemantics(
-            child: _EnergyTrack(mode: mode!, progress: progress, range: range),
-          ),
-        Text(footer, style: AppTypography.fieldLabel),
-        ?action,
-      ],
-    ),
-  );
-}
-
-class _EnergyTrack extends StatelessWidget {
-  const _EnergyTrack({
-    required this.mode,
-    required this.progress,
-    required this.range,
-  });
-
-  final GoalType mode;
-  final double? progress;
-  final (double, double)? range;
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-    height: AppSizes.energyMarkerHeight,
-    child: LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        final fraction = progress?.clamp(0.0, 1.0);
-        final maintain = mode == GoalType.maintain;
-        final band = range;
-        return Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            _bar(
-              width,
-              mode == GoalType.lose ? AppColors.secondary : AppColors.muted,
-            ),
-            if (maintain && band != null)
-              Positioned(
-                left: width * band.$1,
-                child: Container(
-                  width: width * (band.$2 - band.$1),
-                  height: AppSizes.iconMd,
-                  decoration: BoxDecoration(
-                    color: AppColors.secondary,
-                    border: Border.all(color: AppColors.border),
-                    borderRadius: BorderRadius.circular(AppRadii.pill),
-                  ),
-                ),
-              ),
-            if (maintain && fraction != null)
-              Positioned(
-                left: (width - AppSizes.iconXs) * fraction,
-                child: const SizedBox.square(
-                  dimension: AppSizes.iconXs,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ),
-            if (!maintain && fraction != null) ...[
-              _bar(width * fraction, AppColors.primary),
-              Positioned(
-                right: 0,
-                child: Container(
-                  width: AppBorders.selected,
-                  height: AppSizes.energyMarkerHeight,
-                  color: AppColors.foreground,
-                ),
-              ),
-            ],
-          ],
-        );
-      },
-    ),
-  );
-
-  Widget _bar(double width, Color color) => Container(
-    width: width,
-    height: AppSpacing.xs,
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(AppRadii.pill),
-    ),
-  );
-}
-
-class TodayWaterCard extends StatelessWidget {
-  const TodayWaterCard({super.key, required this.value, this.filled});
-
-  final String value;
-  final int? filled;
-
-  @override
-  Widget build(BuildContext context) => TodayCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: AppSpacing.sm,
-      children: [
-        Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          spacing: AppSpacing.xs,
-          runSpacing: AppSpacing.xs,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: AppSpacing.xs,
-              children: [
-                const AppIcon.asset('ph-drop-fill', color: AppColors.chartBlue),
-                Text(
-                  AppLocalizations.of(context).todayWater,
-                  style: AppTypography.fieldLabel,
-                ),
-              ],
-            ),
-            Text(value, style: AppTypography.bodySmall),
-          ],
-        ),
-        ExcludeSemantics(
-          child: LayoutBuilder(
-            builder: (context, constraints) => Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              runSpacing: AppSpacing.xs,
-              children: [
-                for (var index = 0; index < 6; index++)
-                  SizedBox(
-                    width: constraints.maxWidth / 6 - AppSpacing.xxs,
-                    child: Center(
-                      child: _WaterIndicator(
-                        filled: filled != null && index < filled!,
-                        hasReading: filled != null,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _WaterIndicator extends StatelessWidget {
-  const _WaterIndicator({required this.filled, required this.hasReading});
-
-  final bool filled;
-  final bool hasReading;
-
-  @override
-  Widget build(BuildContext context) => SizedBox.square(
-    dimension: AppSizes.waterIndicator,
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: filled ? AppColors.waterTint : AppColors.card,
-        border: filled ? null : Border.all(color: AppColors.border),
-      ),
-      child: Center(
-        child: AppIcon.asset(
-          hasReading && !filled ? 'ph-plus-bold' : 'ph-drop-fill',
-          color: filled ? AppColors.chartBlue : AppColors.mutedForeground,
-          size: AppSizes.iconXs,
-        ),
-      ),
-    ),
-  );
-}
-
 class TodayJournal extends StatelessWidget {
   const TodayJournal({super.key, required this.entries, this.onDetails});
 
@@ -365,6 +113,7 @@ class TodayMealRow extends StatelessWidget {
     required this.energy,
     this.photo,
     this.onTap,
+    this.highlighted = false,
   });
 
   final String name;
@@ -373,8 +122,25 @@ class TodayMealRow extends StatelessWidget {
   final ImageProvider? photo;
   final VoidCallback? onTap;
 
+  /// The meal was just saved: the row starts tinted and fades back once
+  /// (Sleek Home 14). Reduce Motion skips the tint.
+  final bool highlighted;
+
   @override
-  Widget build(BuildContext context) => InkWell(
+  Widget build(BuildContext context) => TweenAnimationBuilder<Color?>(
+    tween: ColorTween(
+      begin: highlighted && !MediaQuery.disableAnimationsOf(context)
+          ? AppColors.secondary
+          : AppColors.secondary.withValues(alpha: 0),
+      end: AppColors.secondary.withValues(alpha: 0),
+    ),
+    duration: AppMotion.todayHighlight,
+    curve: Curves.easeInCubic,
+    builder: (context, color, child) => ColoredBox(color: color!, child: child),
+    child: _content(),
+  );
+
+  Widget _content() => InkWell(
     onTap: onTap,
     child: Padding(
       padding: const EdgeInsets.all(AppSpacing.sm),
@@ -467,22 +233,12 @@ class TodayFirstMealCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           SizedBox(
             width: double.infinity,
-            child: AppButton(
+            child: AppButton.card(
               key: const Key('today-first-meal-action'),
-              animatePress: true,
+              fullWidth: true,
               onPressed: onLog,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: AppSpacing.xs,
-                children: [
-                  const AppIcon.asset(
-                    'ph-plus-bold',
-                    size: AppSizes.iconMd,
-                    color: AppColors.primaryForeground,
-                  ),
-                  Flexible(child: Text(strings.logMeal)),
-                ],
-              ),
+              leadingIcon: 'ph-plus-bold',
+              label: strings.logMeal,
             ),
           ),
         ],

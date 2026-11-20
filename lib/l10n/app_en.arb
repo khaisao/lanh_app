@@ -9,7 +9,6 @@
   "welcomeGoalAction": "Set my goal",
   "saving": "Saving…",
   "welcomeDisclaimer": "All calorie counts in Lành are estimates.",
-  "saveIntroductionError": "Your choice could not be saved. Please try again.",
   "startupError": "Your settings could not be loaded. Try again to continue.",
   "retry": "Try again",
   "today": "Today",
@@ -17,13 +16,7 @@
   "achievements": "Achievements",
   "menu": "Menu",
   "logMeal": "Log meal",
-  "todayHeading": "Your day",
-  "todayEmptyTitle": "Start with one meal",
   "todayEmptyBody": "Your journal is empty. Logged meals and calorie totals will appear here.",
-  "progressEmptyTitle": "Progress begins with you",
-  "progressEmptyBody": "There is no data to summarize yet. Days without meal logs will not count as zero calories.",
-  "achievementsEmptyTitle": "Small steps matter",
-  "achievementsEmptyBody": "Milestones will celebrate self-care habits without judging how little or how much you eat.",
   "baseNotice": "This is the foundation build. Meal logging and health tracking are not implemented yet.",
   "chooseMealMethod": "Log a meal",
   "mealMethodSubtitle": "Choose how to start",
@@ -33,9 +26,6 @@
   "close": "Close",
   "camera": "Take a photo",
   "gallery": "Choose a photo",
-  "search": "Search foods",
-  "manual": "Enter manually",
-  "templates": "Saved meals",
   "mealPhotoBack": "Back",
   "mealPhotoPermissionTitle": "Allow Lành to use your camera?",
   "mealPhotoPermissionBody": "Lành uses the camera to take a meal photo. You can also choose a photo from your library.",
@@ -62,7 +52,6 @@
   "mealPhotoSettingsError": "Lành couldn’t open Settings. You can open Settings on your device.",
   "about": "About Lành",
   "aboutBody": "Lành supports mindful eating and self-care. Your intention may be to lose, gain or maintain weight, or simply understand your meals.",
-  "privacyBase": "This foundation build stores your goal choice and introduction status on this device. Meal photos and health data are not synced yet.",
   "notFound": "Page not found",
   "backToToday": "Go to Today",
   "profileGoal": "Goal",
@@ -72,7 +61,6 @@
   "profileMaintain": "Maintain weight",
   "profileBody": "About you",
   "profileAge": "Age",
-  "profileYears": "years",
   "profileHeight": "Height",
   "profileCurrentWeight": "Current weight",
   "profileSex": "Sex",
@@ -102,8 +90,6 @@
   "profileInvalidAge": "That age doesn't look right",
   "profileAgeTooYoung": "Lành is for ages 13 and up",
   "profileMissingSex": "Choose an option to continue.",
-  "profileReview": "Review your information",
-  "profileReviewNotice": "This information will be saved on your device.",
   "profileTeenGuidanceTitle": "A safer goal while you grow",
   "profileTeenUnderweightGain": "Your age-based measure is below the reference range. Prioritize enough food and talk with a trusted adult or health professional; Lành will not set an automatic gain rate for a growing body.",
   "profileTeenUnderweightLose": "Lành does not recommend setting a weight-loss goal when the age-based measure is below the reference range. Talk with a trusted adult or health professional.",
@@ -138,9 +124,6 @@
   },
   "profileSaveError": "Could not finish saving your profile. Try again.",
   "todayGreeting": "Hello",
-  "todayGainGoal": "Weight gain goal",
-  "todayLosePlan": "Today’s plan",
-  "todayMaintainRange": "Maintenance range",
   "todayEnergy": "Today’s energy",
   "todayTargetUnavailable": "No calorie target yet.",
   "todayRangeUnavailable": "No maintenance range yet.",
@@ -184,7 +167,6 @@
   "mealReviewItemsTitle": "Items",
   "mealReviewMissingCalories": "{count, plural, one{1 item has no calories and isn’t in the total.} other{{count} items have no calories and aren’t in the total.}}",
   "mealReviewDisclaimer": "These numbers are estimated from the photo and may differ from what you actually ate.",
-  "mealReviewSaveSoon": "Save meal · Coming soon",
   "mealReviewSave": "Save meal",
   "mealReviewSaveError": "Could not save this meal. Please try again.",
   "mealReviewDiscard": "Cancel, don’t save",
@@ -220,9 +202,7 @@
   "mealVoiceTypedTitle": "Describe your meal",
   "mealVoiceBackToRecording": "Back to recording",
   "mealVoiceConfirmHeading": "Lành heard you",
-  "mealVoiceConfirmBody": "Fix any words before sending.",
   "mealVoiceConfirmHint": "This is an estimate. Check it before saving.",
-  "mealVoiceTypedBody": "Write the dishes and how much you ate for Lành to estimate.",
   "mealVoiceTranscriptLabel": "Text from your voice",
   "mealVoiceTypedLabel": "Your description",
   "mealVoiceWordCount": "{count, plural, one{1 word} other{{count} words}}",
@@ -409,24 +389,111 @@
       }
     }
   },
-  "todayLeftKcal": "{kcal} kcal left",
-  "@todayLeftKcal": {
-    "placeholders": {
-      "kcal": {
-        "type": "String"
-      }
-    }
-  },
-  "todayOverKcal": "{kcal} kcal over",
-  "@todayOverKcal": {
-    "placeholders": {
-      "kcal": {
-        "type": "String"
-      }
-    }
-  },
-  "todayReachedKcal": "Target reached",
   "todayFirstMealTitle": "Log today's first meal",
   "todayFirstMealBody": "Snap, speak or search — Lành estimates the kcal.",
-  "profileSwitchToMaintain": "Switch to Maintain"
+  "profileSwitchToMaintain": "Switch to Maintain",
+  "todayGoalGain": "Gain weight",
+  "todayGoalLose": "Lose weight",
+  "todayGoalMaintain": "Maintain weight",
+  "todayKcal": "kcal",
+  "todayGainLeft": "{kcal} kcal more to reach your goal",
+  "@todayGainLeft": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todayGainReached": "Goal reached today",
+  "todayLoseLeft": "{kcal} kcal left in your plan",
+  "@todayLoseLeft": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todayLoseAtPlan": "Right on plan today",
+  "todayLoseOver": "{kcal} kcal over plan today",
+  "@todayLoseOver": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMaintainBelow": "{range} kcal more to reach your range",
+  "@todayMaintainBelow": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMaintainWithin": "Within your maintenance range",
+  "todayMaintainAbove": "{kcal} kcal above your range today",
+  "@todayMaintainAbove": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMaintainRangeLabel": "Maintenance range {range}",
+  "@todayMaintainRangeLabel": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "todaySavedMeal": "Saved {meal} · {kcal} kcal",
+  "@todaySavedMeal": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todaySavedMealNoKcal": "Saved {meal}",
+  "@todaySavedMealNoKcal": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "waterAmount": "{amount} / {goal} ml",
+  "@waterAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "waterReached": "Water goal reached today",
+  "waterGlassEmpty": "Glass {number}, not yet. Tap to add 250 ml",
+  "@waterGlassEmpty": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "waterGlassFull": "Glass {number}, done. Tap to remove",
+  "@waterGlassFull": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "waterReadError": "Couldn’t read today’s water.",
+  "waterSaveError": "Couldn’t save water. Please try again."
 }

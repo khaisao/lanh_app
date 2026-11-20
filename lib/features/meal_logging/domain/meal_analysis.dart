@@ -83,16 +83,6 @@ final class MealAnalysis {
   double? totalFat([double scale = 1]) =>
       _sum((item) => item.nutrition.fatGrams, scale);
 
-  /// Total weight only when every component is measured in grams.
-  double? totalGrams([double scale = 1]) {
-    final portions = items.map((item) => item.portion);
-    if (portions.any((portion) => portion?.unit != MealPortionUnit.gram)) {
-      return null;
-    }
-    return portions.fold<double>(0, (sum, portion) => sum + portion!.amount) *
-        scale;
-  }
-
   /// Components whose calories the service could not estimate.
   int get itemsMissingCalories =>
       items.where((item) => item.nutrition.caloriesKcal == null).length;
@@ -152,3 +142,6 @@ abstract interface class MealAnalysisRepository {
     Future<void>? cancel,
   });
 }
+
+/// Longest meal description sent for analysis (voice or typed).
+const maxMealDescriptionLength = 500;

@@ -9,7 +9,6 @@
   "welcomeGoalAction": "Đặt mục tiêu của tôi",
   "saving": "Đang lưu…",
   "welcomeDisclaimer": "Mọi con số calo trong Lành là ước tính.",
-  "saveIntroductionError": "Chưa lưu được lựa chọn. Vui lòng thử lại.",
   "startupError": "Chưa đọc được thiết lập của bạn. Thử lại để tiếp tục.",
   "retry": "Thử lại",
   "today": "Hôm nay",
@@ -17,13 +16,7 @@
   "achievements": "Thành tựu",
   "menu": "Menu",
   "logMeal": "Ghi bữa ăn",
-  "todayHeading": "Hôm nay của bạn",
-  "todayEmptyTitle": "Bắt đầu từ một bữa ăn",
   "todayEmptyBody": "Nhật ký của bạn đang trống. Sau khi ghi bữa, tổng calo và các món sẽ xuất hiện ở đây.",
-  "progressEmptyTitle": "Tiến trình bắt đầu từ bạn",
-  "progressEmptyBody": "Chưa có dữ liệu để tổng hợp. Ngày chưa ghi bữa sẽ không được tính là 0 calo.",
-  "achievementsEmptyTitle": "Mỗi bước nhỏ đều đáng nhớ",
-  "achievementsEmptyBody": "Các cột mốc sẽ ghi nhận thói quen chăm sóc bản thân, không đánh giá việc ăn ít hay nhiều.",
   "baseNotice": "Đây là bản nền tảng. Ghi bữa và theo dõi sức khỏe chưa được triển khai.",
   "chooseMealMethod": "Ghi bữa ăn",
   "mealMethodSubtitle": "Chọn cách bắt đầu",
@@ -33,9 +26,6 @@
   "close": "Đóng",
   "camera": "Chụp ảnh",
   "gallery": "Chọn ảnh",
-  "search": "Tìm món ăn",
-  "manual": "Nhập tay",
-  "templates": "Bữa quen",
   "mealPhotoBack": "Quay lại",
   "mealPhotoPermissionTitle": "Cho Lành dùng camera?",
   "mealPhotoPermissionBody": "Lành dùng camera để bạn chụp ảnh bữa ăn. Bạn cũng có thể chọn ảnh có sẵn trong thư viện.",
@@ -62,7 +52,6 @@
   "mealPhotoSettingsError": "Lành chưa mở được Cài đặt. Bạn có thể mở Cài đặt trên thiết bị.",
   "about": "Về Lành",
   "aboutBody": "Lành đồng hành cùng bạn trong việc ăn uống có ý thức và chăm sóc bản thân. Bạn có thể muốn giảm cân, tăng cân, giữ cân hoặc đơn giản là hiểu bữa ăn của mình.",
-  "privacyBase": "Bản nền tảng lưu lựa chọn mục tiêu và việc bạn đã xem phần giới thiệu trên thiết bị. Ảnh bữa ăn và dữ liệu sức khỏe chưa được đồng bộ.",
   "notFound": "Không tìm thấy trang",
   "backToToday": "Về Hôm nay",
   "profileGoal": "Mục tiêu",
@@ -72,7 +61,6 @@
   "profileMaintain": "Giữ cân",
   "profileBody": "Về bạn",
   "profileAge": "Tuổi",
-  "profileYears": "năm",
   "profileHeight": "Chiều cao",
   "profileCurrentWeight": "Cân nặng hiện tại",
   "profileSex": "Giới tính",
@@ -102,8 +90,6 @@
   "profileInvalidAge": "Tuổi chưa hợp lệ",
   "profileAgeTooYoung": "Lành dành cho người từ 13 tuổi",
   "profileMissingSex": "Chọn giới tính để tiếp tục.",
-  "profileReview": "Xem lại thông tin",
-  "profileReviewNotice": "Thông tin này sẽ được lưu trên thiết bị.",
   "profileTeenGuidanceTitle": "Mục tiêu an toàn trong giai đoạn lớn",
   "profileTeenUnderweightGain": "Cơ thể bạn đang ở dưới vùng tham chiếu theo tuổi. Hãy ưu tiên ăn đủ và trao đổi với người lớn hoặc chuyên gia; Lành không tự đặt tốc độ tăng cân cho tuổi đang lớn.",
   "profileTeenUnderweightLose": "Lành không khuyến nghị đặt mục tiêu giảm cân khi chỉ số theo tuổi đang dưới vùng tham chiếu. Hãy trao đổi với người lớn hoặc chuyên gia.",
@@ -138,9 +124,6 @@
   },
   "profileSaveError": "Chưa lưu xong hồ sơ. Vui lòng thử lại.",
   "todayGreeting": "Chào bạn",
-  "todayGainGoal": "Mục tiêu tăng cân",
-  "todayLosePlan": "Kế hoạch hôm nay",
-  "todayMaintainRange": "Dải duy trì",
   "todayEnergy": "Năng lượng hôm nay",
   "todayTargetUnavailable": "Chưa có mục tiêu kcal.",
   "todayRangeUnavailable": "Chưa có dải kcal duy trì.",
@@ -198,7 +181,6 @@
     }
   },
   "mealReviewDisclaimer": "Số liệu là ước tính từ ảnh, có thể lệch so với phần bạn thực ăn.",
-  "mealReviewSaveSoon": "Lưu bữa ăn · Sắp có",
   "mealReviewSave": "Lưu bữa ăn",
   "mealReviewSaveError": "Chưa lưu được bữa ăn. Vui lòng thử lại.",
   "mealReviewDiscard": "Hủy, không lưu",
@@ -267,9 +249,7 @@
   "mealVoiceTypedTitle": "Mô tả bữa ăn",
   "mealVoiceBackToRecording": "Quay lại ghi âm",
   "mealVoiceConfirmHeading": "Lành nghe xong rồi",
-  "mealVoiceConfirmBody": "Sửa chữ nếu chưa đúng trước khi gửi.",
   "mealVoiceConfirmHint": "Kết quả chỉ là ước lượng, bạn kiểm tra trước khi lưu.",
-  "mealVoiceTypedBody": "Ghi tên món và lượng ăn để Lành ước lượng.",
   "mealVoiceTranscriptLabel": "Chữ chuyển từ giọng nói",
   "mealVoiceTypedLabel": "Mô tả của bạn",
   "mealVoiceWordCount": "{count, plural, other{{count} từ}}",
@@ -498,24 +478,111 @@
       }
     }
   },
-  "todayLeftKcal": "Còn {kcal} kcal",
-  "@todayLeftKcal": {
-    "placeholders": {
-      "kcal": {
-        "type": "String"
-      }
-    }
-  },
-  "todayOverKcal": "Đã quá {kcal} kcal",
-  "@todayOverKcal": {
-    "placeholders": {
-      "kcal": {
-        "type": "String"
-      }
-    }
-  },
-  "todayReachedKcal": "Đã đạt mục tiêu",
   "todayFirstMealTitle": "Ghi bữa đầu tiên hôm nay",
   "todayFirstMealBody": "Chụp ảnh, nói hoặc tìm món — Lành ước tính kcal cho bạn.",
-  "profileSwitchToMaintain": "Chuyển sang Giữ cân"
+  "profileSwitchToMaintain": "Chuyển sang Giữ cân",
+  "todayGoalGain": "Tăng cân",
+  "todayGoalLose": "Giảm cân",
+  "todayGoalMaintain": "Giữ cân",
+  "todayKcal": "kcal",
+  "todayGainLeft": "Còn {kcal} kcal nữa là đạt mục tiêu",
+  "@todayGainLeft": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todayGainReached": "Đã đạt mục tiêu hôm nay",
+  "todayLoseLeft": "Còn {kcal} kcal trong kế hoạch",
+  "@todayLoseLeft": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todayLoseAtPlan": "Vừa đủ kế hoạch hôm nay",
+  "todayLoseOver": "Hơn kế hoạch {kcal} kcal hôm nay",
+  "@todayLoseOver": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMaintainBelow": "Thêm {range} kcal là vào dải",
+  "@todayMaintainBelow": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMaintainWithin": "Đang trong dải duy trì",
+  "todayMaintainAbove": "Hơn dải {kcal} kcal hôm nay",
+  "@todayMaintainAbove": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMaintainRangeLabel": "Dải duy trì {range}",
+  "@todayMaintainRangeLabel": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "todaySavedMeal": "Đã lưu {meal} · {kcal} kcal",
+  "@todaySavedMeal": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "todaySavedMealNoKcal": "Đã lưu {meal}",
+  "@todaySavedMealNoKcal": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "waterAmount": "{amount} / {goal} ml",
+  "@waterAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "waterReached": "Đã đủ nước hôm nay",
+  "waterGlassEmpty": "Cốc {number}, chưa uống. Chạm để thêm 250 ml",
+  "@waterGlassEmpty": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "waterGlassFull": "Cốc {number}, đã uống. Chạm để bỏ",
+  "@waterGlassFull": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "waterReadError": "Chưa đọc được nước hôm nay.",
+  "waterSaveError": "Chưa lưu được nước. Thử lại nhé."
 }

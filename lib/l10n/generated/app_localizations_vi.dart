@@ -38,10 +38,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get welcomeDisclaimer => 'Mọi con số calo trong Lành là ước tính.';
 
   @override
-  String get saveIntroductionError =>
-      'Chưa lưu được lựa chọn. Vui lòng thử lại.';
-
-  @override
   String get startupError =>
       'Chưa đọc được thiết lập của bạn. Thử lại để tiếp tục.';
 
@@ -64,28 +60,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get logMeal => 'Ghi bữa ăn';
 
   @override
-  String get todayHeading => 'Hôm nay của bạn';
-
-  @override
-  String get todayEmptyTitle => 'Bắt đầu từ một bữa ăn';
-
-  @override
   String get todayEmptyBody =>
       'Nhật ký của bạn đang trống. Sau khi ghi bữa, tổng calo và các món sẽ xuất hiện ở đây.';
-
-  @override
-  String get progressEmptyTitle => 'Tiến trình bắt đầu từ bạn';
-
-  @override
-  String get progressEmptyBody =>
-      'Chưa có dữ liệu để tổng hợp. Ngày chưa ghi bữa sẽ không được tính là 0 calo.';
-
-  @override
-  String get achievementsEmptyTitle => 'Mỗi bước nhỏ đều đáng nhớ';
-
-  @override
-  String get achievementsEmptyBody =>
-      'Các cột mốc sẽ ghi nhận thói quen chăm sóc bản thân, không đánh giá việc ăn ít hay nhiều.';
 
   @override
   String get baseNotice =>
@@ -114,15 +90,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get gallery => 'Chọn ảnh';
-
-  @override
-  String get search => 'Tìm món ăn';
-
-  @override
-  String get manual => 'Nhập tay';
-
-  @override
-  String get templates => 'Bữa quen';
 
   @override
   String get mealPhotoBack => 'Quay lại';
@@ -214,10 +181,6 @@ class AppLocalizationsVi extends AppLocalizations {
       'Lành đồng hành cùng bạn trong việc ăn uống có ý thức và chăm sóc bản thân. Bạn có thể muốn giảm cân, tăng cân, giữ cân hoặc đơn giản là hiểu bữa ăn của mình.';
 
   @override
-  String get privacyBase =>
-      'Bản nền tảng lưu lựa chọn mục tiêu và việc bạn đã xem phần giới thiệu trên thiết bị. Ảnh bữa ăn và dữ liệu sức khỏe chưa được đồng bộ.';
-
-  @override
   String get notFound => 'Không tìm thấy trang';
 
   @override
@@ -243,9 +206,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get profileAge => 'Tuổi';
-
-  @override
-  String get profileYears => 'năm';
 
   @override
   String get profileHeight => 'Chiều cao';
@@ -340,12 +300,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get profileMissingSex => 'Chọn giới tính để tiếp tục.';
 
   @override
-  String get profileReview => 'Xem lại thông tin';
-
-  @override
-  String get profileReviewNotice => 'Thông tin này sẽ được lưu trên thiết bị.';
-
-  @override
   String get profileTeenGuidanceTitle => 'Mục tiêu an toàn trong giai đoạn lớn';
 
   @override
@@ -392,15 +346,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get todayGreeting => 'Chào bạn';
-
-  @override
-  String get todayGainGoal => 'Mục tiêu tăng cân';
-
-  @override
-  String get todayLosePlan => 'Kế hoạch hôm nay';
-
-  @override
-  String get todayMaintainRange => 'Dải duy trì';
 
   @override
   String get todayEnergy => 'Năng lượng hôm nay';
@@ -553,9 +498,6 @@ class AppLocalizationsVi extends AppLocalizations {
       'Số liệu là ước tính từ ảnh, có thể lệch so với phần bạn thực ăn.';
 
   @override
-  String get mealReviewSaveSoon => 'Lưu bữa ăn · Sắp có';
-
-  @override
   String get mealReviewSave => 'Lưu bữa ăn';
 
   @override
@@ -676,14 +618,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mealVoiceConfirmHeading => 'Lành nghe xong rồi';
 
   @override
-  String get mealVoiceConfirmBody => 'Sửa chữ nếu chưa đúng trước khi gửi.';
-
-  @override
   String get mealVoiceConfirmHint =>
       'Kết quả chỉ là ước lượng, bạn kiểm tra trước khi lưu.';
-
-  @override
-  String get mealVoiceTypedBody => 'Ghi tên món và lượng ăn để Lành ước lượng.';
 
   @override
   String get mealVoiceTranscriptLabel => 'Chữ chuyển từ giọng nói';
@@ -1047,19 +983,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String todayLeftKcal(String kcal) {
-    return 'Còn $kcal kcal';
-  }
-
-  @override
-  String todayOverKcal(String kcal) {
-    return 'Đã quá $kcal kcal';
-  }
-
-  @override
-  String get todayReachedKcal => 'Đã đạt mục tiêu';
-
-  @override
   String get todayFirstMealTitle => 'Ghi bữa đầu tiên hôm nay';
 
   @override
@@ -1068,4 +991,89 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get profileSwitchToMaintain => 'Chuyển sang Giữ cân';
+
+  @override
+  String get todayGoalGain => 'Tăng cân';
+
+  @override
+  String get todayGoalLose => 'Giảm cân';
+
+  @override
+  String get todayGoalMaintain => 'Giữ cân';
+
+  @override
+  String get todayKcal => 'kcal';
+
+  @override
+  String todayGainLeft(String kcal) {
+    return 'Còn $kcal kcal nữa là đạt mục tiêu';
+  }
+
+  @override
+  String get todayGainReached => 'Đã đạt mục tiêu hôm nay';
+
+  @override
+  String todayLoseLeft(String kcal) {
+    return 'Còn $kcal kcal trong kế hoạch';
+  }
+
+  @override
+  String get todayLoseAtPlan => 'Vừa đủ kế hoạch hôm nay';
+
+  @override
+  String todayLoseOver(String kcal) {
+    return 'Hơn kế hoạch $kcal kcal hôm nay';
+  }
+
+  @override
+  String todayMaintainBelow(String range) {
+    return 'Thêm $range kcal là vào dải';
+  }
+
+  @override
+  String get todayMaintainWithin => 'Đang trong dải duy trì';
+
+  @override
+  String todayMaintainAbove(String kcal) {
+    return 'Hơn dải $kcal kcal hôm nay';
+  }
+
+  @override
+  String todayMaintainRangeLabel(String range) {
+    return 'Dải duy trì $range';
+  }
+
+  @override
+  String todaySavedMeal(String meal, String kcal) {
+    return 'Đã lưu $meal · $kcal kcal';
+  }
+
+  @override
+  String todaySavedMealNoKcal(String meal) {
+    return 'Đã lưu $meal';
+  }
+
+  @override
+  String waterAmount(String amount, String goal) {
+    return '$amount / $goal ml';
+  }
+
+  @override
+  String get waterReached => 'Đã đủ nước hôm nay';
+
+  @override
+  String waterGlassEmpty(String number) {
+    return 'Cốc $number, chưa uống. Chạm để thêm 250 ml';
+  }
+
+  @override
+  String waterGlassFull(String number) {
+    return 'Cốc $number, đã uống. Chạm để bỏ';
+  }
+
+  @override
+  String get waterReadError => 'Chưa đọc được nước hôm nay.';
+
+  @override
+  String get waterSaveError => 'Chưa lưu được nước. Thử lại nhé.';
 }

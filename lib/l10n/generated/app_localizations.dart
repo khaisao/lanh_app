@@ -152,12 +152,6 @@ abstract class AppLocalizations {
   /// **'Mọi con số calo trong Lành là ước tính.'**
   String get welcomeDisclaimer;
 
-  /// No description provided for @saveIntroductionError.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chưa lưu được lựa chọn. Vui lòng thử lại.'**
-  String get saveIntroductionError;
-
   /// No description provided for @startupError.
   ///
   /// In vi, this message translates to:
@@ -200,47 +194,11 @@ abstract class AppLocalizations {
   /// **'Ghi bữa ăn'**
   String get logMeal;
 
-  /// No description provided for @todayHeading.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hôm nay của bạn'**
-  String get todayHeading;
-
-  /// No description provided for @todayEmptyTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bắt đầu từ một bữa ăn'**
-  String get todayEmptyTitle;
-
   /// No description provided for @todayEmptyBody.
   ///
   /// In vi, this message translates to:
   /// **'Nhật ký của bạn đang trống. Sau khi ghi bữa, tổng calo và các món sẽ xuất hiện ở đây.'**
   String get todayEmptyBody;
-
-  /// No description provided for @progressEmptyTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiến trình bắt đầu từ bạn'**
-  String get progressEmptyTitle;
-
-  /// No description provided for @progressEmptyBody.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chưa có dữ liệu để tổng hợp. Ngày chưa ghi bữa sẽ không được tính là 0 calo.'**
-  String get progressEmptyBody;
-
-  /// No description provided for @achievementsEmptyTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Mỗi bước nhỏ đều đáng nhớ'**
-  String get achievementsEmptyTitle;
-
-  /// No description provided for @achievementsEmptyBody.
-  ///
-  /// In vi, this message translates to:
-  /// **'Các cột mốc sẽ ghi nhận thói quen chăm sóc bản thân, không đánh giá việc ăn ít hay nhiều.'**
-  String get achievementsEmptyBody;
 
   /// No description provided for @baseNotice.
   ///
@@ -295,24 +253,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chọn ảnh'**
   String get gallery;
-
-  /// No description provided for @search.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tìm món ăn'**
-  String get search;
-
-  /// No description provided for @manual.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhập tay'**
-  String get manual;
-
-  /// No description provided for @templates.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bữa quen'**
-  String get templates;
 
   /// No description provided for @mealPhotoBack.
   ///
@@ -470,12 +410,6 @@ abstract class AppLocalizations {
   /// **'Lành đồng hành cùng bạn trong việc ăn uống có ý thức và chăm sóc bản thân. Bạn có thể muốn giảm cân, tăng cân, giữ cân hoặc đơn giản là hiểu bữa ăn của mình.'**
   String get aboutBody;
 
-  /// No description provided for @privacyBase.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bản nền tảng lưu lựa chọn mục tiêu và việc bạn đã xem phần giới thiệu trên thiết bị. Ảnh bữa ăn và dữ liệu sức khỏe chưa được đồng bộ.'**
-  String get privacyBase;
-
   /// No description provided for @notFound.
   ///
   /// In vi, this message translates to:
@@ -529,12 +463,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tuổi'**
   String get profileAge;
-
-  /// No description provided for @profileYears.
-  ///
-  /// In vi, this message translates to:
-  /// **'năm'**
-  String get profileYears;
 
   /// No description provided for @profileHeight.
   ///
@@ -710,18 +638,6 @@ abstract class AppLocalizations {
   /// **'Chọn giới tính để tiếp tục.'**
   String get profileMissingSex;
 
-  /// No description provided for @profileReview.
-  ///
-  /// In vi, this message translates to:
-  /// **'Xem lại thông tin'**
-  String get profileReview;
-
-  /// No description provided for @profileReviewNotice.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thông tin này sẽ được lưu trên thiết bị.'**
-  String get profileReviewNotice;
-
   /// No description provided for @profileTeenGuidanceTitle.
   ///
   /// In vi, this message translates to:
@@ -799,24 +715,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chào bạn'**
   String get todayGreeting;
-
-  /// No description provided for @todayGainGoal.
-  ///
-  /// In vi, this message translates to:
-  /// **'Mục tiêu tăng cân'**
-  String get todayGainGoal;
-
-  /// No description provided for @todayLosePlan.
-  ///
-  /// In vi, this message translates to:
-  /// **'Kế hoạch hôm nay'**
-  String get todayLosePlan;
-
-  /// No description provided for @todayMaintainRange.
-  ///
-  /// In vi, this message translates to:
-  /// **'Dải duy trì'**
-  String get todayMaintainRange;
 
   /// No description provided for @todayEnergy.
   ///
@@ -1076,12 +974,6 @@ abstract class AppLocalizations {
   /// **'Số liệu là ước tính từ ảnh, có thể lệch so với phần bạn thực ăn.'**
   String get mealReviewDisclaimer;
 
-  /// No description provided for @mealReviewSaveSoon.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lưu bữa ăn · Sắp có'**
-  String get mealReviewSaveSoon;
-
   /// No description provided for @mealReviewSave.
   ///
   /// In vi, this message translates to:
@@ -1292,23 +1184,11 @@ abstract class AppLocalizations {
   /// **'Lành nghe xong rồi'**
   String get mealVoiceConfirmHeading;
 
-  /// No description provided for @mealVoiceConfirmBody.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sửa chữ nếu chưa đúng trước khi gửi.'**
-  String get mealVoiceConfirmBody;
-
   /// No description provided for @mealVoiceConfirmHint.
   ///
   /// In vi, this message translates to:
   /// **'Kết quả chỉ là ước lượng, bạn kiểm tra trước khi lưu.'**
   String get mealVoiceConfirmHint;
-
-  /// No description provided for @mealVoiceTypedBody.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ghi tên món và lượng ăn để Lành ước lượng.'**
-  String get mealVoiceTypedBody;
 
   /// No description provided for @mealVoiceTranscriptLabel.
   ///
@@ -1922,24 +1802,6 @@ abstract class AppLocalizations {
   /// **'/ {target} kcal'**
   String todayOfTarget(String target);
 
-  /// No description provided for @todayLeftKcal.
-  ///
-  /// In vi, this message translates to:
-  /// **'Còn {kcal} kcal'**
-  String todayLeftKcal(String kcal);
-
-  /// No description provided for @todayOverKcal.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã quá {kcal} kcal'**
-  String todayOverKcal(String kcal);
-
-  /// No description provided for @todayReachedKcal.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã đạt mục tiêu'**
-  String get todayReachedKcal;
-
   /// No description provided for @todayFirstMealTitle.
   ///
   /// In vi, this message translates to:
@@ -1957,6 +1819,132 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chuyển sang Giữ cân'**
   String get profileSwitchToMaintain;
+
+  /// No description provided for @todayGoalGain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng cân'**
+  String get todayGoalGain;
+
+  /// No description provided for @todayGoalLose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giảm cân'**
+  String get todayGoalLose;
+
+  /// No description provided for @todayGoalMaintain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ cân'**
+  String get todayGoalMaintain;
+
+  /// No description provided for @todayKcal.
+  ///
+  /// In vi, this message translates to:
+  /// **'kcal'**
+  String get todayKcal;
+
+  /// No description provided for @todayGainLeft.
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {kcal} kcal nữa là đạt mục tiêu'**
+  String todayGainLeft(String kcal);
+
+  /// No description provided for @todayGainReached.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đạt mục tiêu hôm nay'**
+  String get todayGainReached;
+
+  /// No description provided for @todayLoseLeft.
+  ///
+  /// In vi, this message translates to:
+  /// **'Còn {kcal} kcal trong kế hoạch'**
+  String todayLoseLeft(String kcal);
+
+  /// No description provided for @todayLoseAtPlan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa đủ kế hoạch hôm nay'**
+  String get todayLoseAtPlan;
+
+  /// No description provided for @todayLoseOver.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hơn kế hoạch {kcal} kcal hôm nay'**
+  String todayLoseOver(String kcal);
+
+  /// No description provided for @todayMaintainBelow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm {range} kcal là vào dải'**
+  String todayMaintainBelow(String range);
+
+  /// No description provided for @todayMaintainWithin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang trong dải duy trì'**
+  String get todayMaintainWithin;
+
+  /// No description provided for @todayMaintainAbove.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hơn dải {kcal} kcal hôm nay'**
+  String todayMaintainAbove(String kcal);
+
+  /// No description provided for @todayMaintainRangeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dải duy trì {range}'**
+  String todayMaintainRangeLabel(String range);
+
+  /// No description provided for @todaySavedMeal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu {meal} · {kcal} kcal'**
+  String todaySavedMeal(String meal, String kcal);
+
+  /// No description provided for @todaySavedMealNoKcal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu {meal}'**
+  String todaySavedMealNoKcal(String meal);
+
+  /// No description provided for @waterAmount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{amount} / {goal} ml'**
+  String waterAmount(String amount, String goal);
+
+  /// No description provided for @waterReached.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đủ nước hôm nay'**
+  String get waterReached;
+
+  /// No description provided for @waterGlassEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cốc {number}, chưa uống. Chạm để thêm 250 ml'**
+  String waterGlassEmpty(String number);
+
+  /// No description provided for @waterGlassFull.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cốc {number}, đã uống. Chạm để bỏ'**
+  String waterGlassFull(String number);
+
+  /// No description provided for @waterReadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đọc được nước hôm nay.'**
+  String get waterReadError;
+
+  /// No description provided for @waterSaveError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được nước. Thử lại nhé.'**
+  String get waterSaveError;
 }
 
 class _AppLocalizationsDelegate

@@ -12,6 +12,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../domain/meal_voice_recognizer.dart';
 import '../domain/meal_log.dart';
+import '../domain/meal_analysis.dart' show maxMealDescriptionLength;
 import '../meal_logging_providers.dart';
 import 'meal_photo_flow.dart'
     show MealAnalysisResultScreen, MealEstimationScreen;
@@ -128,13 +129,14 @@ class _MealVoiceFlowState extends ConsumerState<MealVoiceFlow> {
     if (analysis == null || !mounted) return;
     setState(() => _savingMeal = true);
     try {
-      await ref
+      final saved = await ref
           .read(mealLogRepositoryProvider)
           .save(
             analysis: analysis,
             source: MealLogSource.voice,
             portionScale: _controller.portionScale,
           );
+      ref.read(lastSavedMealProvider.notifier).record(saved);
       ref.invalidate(todayMealLogsProvider);
       if (mounted) Navigator.of(context).pop();
     } catch (_) {
