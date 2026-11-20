@@ -1,6 +1,7 @@
 part of '../app_ui.dart';
 
-/// The icon, label and caret row in the goal and meal picker exports.
+/// The icon, label and caret row of the meal method picker: a glass card, or
+/// a solid [primary] card for the recommended method.
 class AppOptionCard extends StatelessWidget {
   const AppOptionCard({
     super.key,
@@ -8,7 +9,6 @@ class AppOptionCard extends StatelessWidget {
     required this.title,
     required this.description,
     this.onPressed,
-    this.selected = false,
     this.primary = false,
     this.caretSize = AppSizes.iconSm,
   });
@@ -17,7 +17,6 @@ class AppOptionCard extends StatelessWidget {
   final String title;
   final String description;
   final VoidCallback? onPressed;
-  final bool selected;
   final bool primary;
   final double caretSize;
 
@@ -32,36 +31,26 @@ class AppOptionCard extends StatelessWidget {
     return Semantics(
       button: true,
       enabled: onPressed != null,
-      selected: selected,
       child: AppGlassCard(
-        tone: primary
-            ? AppGlassTone.primary
-            : selected
-            ? AppGlassTone.selected
-            : AppGlassTone.glass,
+        tone: primary ? AppGlassTone.primary : AppGlassTone.glass,
         onPressed: onPressed,
         padding: const EdgeInsets.all(AppSpacing.md + AppBorders.hairline),
         child: Row(
           children: [
+            // `size-12 rounded-2xl` well, larger than a choice card's.
             SizedBox.square(
-              dimension: AppChoice.well,
+              dimension: AppSizes.choiceIcon,
               child: DecoratedBox(
                 decoration: ShapeDecoration(
                   color: primary
                       ? AppColors.primaryForeground.withValues(alpha: 0.15)
-                      : selected
-                      ? AppChoice.wellSelected
                       : AppChoice.wellIdle,
                   shape: const AppSquircleBorder(radius: AppRadii.glassInner),
                 ),
                 child: Center(
                   child: AppIcon.asset(
                     icon,
-                    color: primary
-                        ? foreground
-                        : selected
-                        ? AppChoice.iconSelected
-                        : AppChoice.iconIdle,
+                    color: primary ? foreground : AppChoice.iconIdle,
                   ),
                 ),
               ),

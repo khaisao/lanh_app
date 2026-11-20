@@ -51,7 +51,7 @@ void main() {
     // Ages 13–19 skip the numeric target and read guidance on Activity.
     expect(find.byKey(const Key('profile-setup-activity')), findsOneWidget);
     expect(find.text('Mục tiêu an toàn trong giai đoạn lớn'), findsOneWidget);
-    expect(find.byKey(const Key('profile-target-kg-picker')), findsNothing);
+    expect(find.byKey(const Key('profile-target-slider')), findsNothing);
     expect(find.textContaining('vùng tham chiếu theo tuổi'), findsNWidgets(2));
   });
 

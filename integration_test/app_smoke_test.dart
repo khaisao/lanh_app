@@ -48,7 +48,8 @@ void main() {
       await tap(action);
       await tap(find.text('Chủ yếu ngồi'));
       await tap(action);
-      await tap(find.text('Về Hôm nay'));
+      // The plan sheet starts the plan and opens Today.
+      await tap(find.byKey(const Key('profile-plan-start')));
       for (
         var attempt = 0;
         attempt < 30 &&

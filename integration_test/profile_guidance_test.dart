@@ -179,31 +179,58 @@ void main() {
     // Activity now comes first: 1,325 kcal resting × PAL 1.40 ≈ 1,855.
     expect(find.byKey(const Key('profile-setup-activity')), findsOneWidget);
     await tap(tester, find.byKey(const Key('profile-activity-sitting')));
-    expect(find.text('1.850 kcal/ngày'), findsOneWidget);
+    expect(find.text('1.850'), findsOneWidget);
     await screenshot(tester, '3-activity');
     await tap(tester, action);
 
     // 5% → 58 kg, 7% → 57 kg, 10% → 55 kg, all above BMI 18.5 (50.4 kg).
-    expect(find.text('58'), findsOneWidget);
-    expect(find.text('55'), findsOneWidget);
-    expect(find.text('57'), findsOneWidget);
-    // Gentle pace 0.24 kg/week: 1,855 − 260 ≈ 1,595 kcal/day.
-    expect(find.text('≈ 1.600 kcal/ngày'), findsNWidgets(3));
+    expect(find.text('58 kg'), findsOneWidget);
+    expect(find.text('55 kg'), findsOneWidget);
+    expect(find.text('57 kg'), findsOneWidget);
+    // Gentle pace 0.24 kg/week: 1,855 − 260 ≈ 1,595 kcal/day, spoken with
+    // the plan.
+    expect(
+      tester.getSemantics(find.byKey(const Key('profile-target-plan-0'))).label,
+      contains('≈ 1.600 kcal/ngày'),
+    );
     await screenshot(tester, '4-target-suggested');
 
+    // Custom: starts at the chosen 58 kg plan, gentle pace, no date.
     await tap(tester, find.text('Tự chọn'));
-    await tap(tester, find.text('Chọn ngày'));
-    await tap(tester, action);
-    expect(find.text('Chọn ngày muốn đạt.'), findsOneWidget);
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, 600));
-    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('profile-target-slider')), findsOneWidget);
     await screenshot(tester, '5-target-custom');
 
-    await tap(tester, find.text('Không đặt ngày'));
+    // The switch opens the picker at the earliest safe date.
+    final toggle = find.byKey(const Key('profile-target-date-switch'));
+    await tap(tester, toggle);
+    final labels = MaterialLocalizations.of(
+      tester.element(find.byType(DatePickerDialog)),
+    );
+    await screenshot(tester, '5a-date-picker');
+    await tap(tester, find.text(labels.okButtonLabel));
+    expect(find.byKey(const Key('profile-target-date')), findsOneWidget);
+    await screenshot(tester, '5b-target-custom-date');
+
+    // A lower target needs longer: the date moves and Lành says so.
+    for (var step = 0; step < 6; step++) {
+      await tap(tester, find.byKey(const Key('profile-target-decrease')));
+    }
+    expect(find.byKey(const Key('profile-target-date-moved')), findsOneWidget);
+    await screenshot(tester, '5c-target-date-moved');
+
+    // Back to 58 kg without a date for the plan sheet below.
+    for (var step = 0; step < 6; step++) {
+      await tap(tester, find.byKey(const Key('profile-target-increase')));
+    }
+    await tap(tester, toggle);
+    expect(find.byKey(const Key('profile-target-date')), findsNothing);
     await tap(tester, action);
     // Plan sheet: 1,855 − 260 ≈ 1.600 kcal; body ~1.850; cut 250.
     expect(find.byKey(const Key('profile-plan-sheet')), findsOneWidget);
-    expect(find.text('1.600'), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.byKey(const Key('profile-plan-kcal'))).data,
+      '1.600',
+    );
     expect(find.text('Bớt 250'), findsOneWidget);
     await screenshot(tester, '6-plan-lose');
     expect(tester.takeException(), isNull);
@@ -225,7 +252,7 @@ void main() {
     // Teens: review without a kcal number or a numeric target.
     expect(find.byKey(const Key('profile-plan-no-kcal')), findsOneWidget);
     expect(find.byKey(const Key('profile-plan-budget')), findsNothing);
-    expect(find.byKey(const Key('profile-target-kg-picker')), findsNothing);
+    expect(find.byKey(const Key('profile-target-slider')), findsNothing);
     await screenshot(tester, '8-teen-plan');
     expect(tester.takeException(), isNull);
   });
@@ -292,7 +319,7 @@ void main() {
     await tester.tap(find.byKey(const Key('profile-activity-sitting')));
     await frames('11-select-activity', count: 3, ms: 110);
     await tester.pump(const Duration(seconds: 1));
-    expect(find.text('1.850 kcal/ngày'), findsOneWidget);
+    expect(find.text('1.850'), findsOneWidget);
     await tester.tap(action);
     await tester.pump(const Duration(seconds: 2));
 

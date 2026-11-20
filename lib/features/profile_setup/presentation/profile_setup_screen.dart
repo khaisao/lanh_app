@@ -27,8 +27,8 @@ const _weightGoals = [GoalType.gain, GoalType.lose, GoalType.maintain];
 
 /// Four-step Profile Setup: goal → body → activity → target → review.
 /// Activity comes before the target so plans can show a daily kcal budget
-/// and respect the energy floor. Maintain, ages 13–19 and pregnancy skip the
-/// numeric target step. Nothing is written until the user confirms the
+/// and respect the energy floor. Maintain and ages 13–19 skip the numeric
+/// target step. Nothing is written until the user confirms the
 /// review.
 class ProfileSetupScreen extends ConsumerStatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -47,7 +47,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   // Male is preselected; the user can switch with one tap.
   ProfileSex? _sex = ProfileSex.male;
   ActivityLevel? _activity;
-  bool _pregnant = false;
   bool _stepForward = true;
   ProfileTargetDraft _target = const ProfileTargetDraft();
   Map<ProfileBodyField, String> _bodyErrors = const {};
@@ -62,10 +61,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   bool get _isTeen =>
       (_ageValue ?? BodyLimits.adultAge) >= BodyLimits.minAge &&
       (_ageValue ?? BodyLimits.adultAge) < BodyLimits.adultAge;
-  bool get _skipsTarget =>
-      _goal == GoalType.maintain || _isTeen || _pregnantApplies;
-  bool get _pregnantApplies =>
-      _pregnant && _sex == ProfileSex.female && !_isTeen;
+  bool get _skipsTarget => _goal == GoalType.maintain || _isTeen;
   _Step get _lastStep => _skipsTarget ? _Step.activity : _Step.target;
 
   EnergyEstimate? get _energy => estimateEnergy(
@@ -74,8 +70,11 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     weightKg: _weightValue,
     sex: _sex,
     activity: _activity,
-    pregnantOrBreastfeeding: _pregnantApplies,
   );
+
+  /// The custom deadline, kept reachable for the current target and body.
+  DateTime? get _deadline =>
+      _target.deadline(goal: _goal!, currentKg: _weightValue!, energy: _energy);
 
   @override
   void dispose() {
@@ -122,7 +121,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.pageHorizontal,
+                      horizontal: AppSpacing.gutter,
                     ),
                     child: ProfileStepBar(
                       step: _step.index,
@@ -133,7 +132,15 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                         strings.profileTarget,
                       ],
                       onBack: () {
-                        if (!_reviewing) _back();
+                        if (_reviewing) return;
+                        if (_step != _Step.goal) return _back();
+                        // The first step leaves setup, back to where it was
+                        // opened from (Welcome on a first run).
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go('/welcome');
+                        }
                       },
                       onStep: (index) {
                         if (_reviewing || index >= _step.index) return;
@@ -149,18 +156,15 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                         child: ListView(
                           keyboardDismissBehavior:
                               ScrollViewKeyboardDismissBehavior.onDrag,
+                          // `pb-3` under the header plus the content's
+                          // `pt-4`, then `px-5 pb-6`.
                           padding: const EdgeInsets.fromLTRB(
-                            AppSpacing.pageHorizontal,
-                            0,
-                            AppSpacing.pageHorizontal,
-                            AppSpacing.xl,
+                            AppSpacing.gutter,
+                            AppSpacing.sm + AppSpacing.md,
+                            AppSpacing.gutter,
+                            AppSpacing.lg,
                           ),
                           children: [
-                            SizedBox(
-                              height: _step == _Step.goal
-                                  ? AppSpacing.pageTop
-                                  : AppSpacing.lg,
-                            ),
                             switch (_step) {
                               _Step.goal => _goalPage(),
                               _Step.body => ProfileBodyStep(
@@ -177,13 +181,9 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                                   _bodyErrors = {..._bodyErrors}
                                     ..remove(ProfileBodyField.sex);
                                 }),
-                                pregnant: _pregnant,
-                                onPregnant: (value) =>
-                                    setState(() => _pregnant = value),
                               ),
                               _Step.target => ProfileTargetStep(
                                 goal: _goal!,
-                                goalLabel: _goalLabel(_goal!),
                                 currentKg: _weightValue!,
                                 heightCm: _heightValue!,
                                 draft: _target,
@@ -205,11 +205,9 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                                 onSelected: (level) =>
                                     setState(() => _activity = level),
                                 energy: _energy,
-                                showsEnergy: !_isTeen && !_pregnantApplies,
+                                showsEnergy: !_isTeen,
                                 notice: _isTeen
                                     ? _teenGuidanceCard(_goal!)
-                                    : _pregnantApplies
-                                    ? _pregnancyNote()
                                     : null,
                               ),
                             },
@@ -238,95 +236,103 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     final enabled = _actionEnabled;
     return Center(
       heightFactor: 1,
-      child: SizedBox(
-        width: AppSizes.contentMax,
-        child: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: AppGlass.blurStrong,
-              sigmaY: AppGlass.blurStrong,
-            ),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: MediaQuery.highContrastOf(context)
-                    ? AppColors.background
-                    : AppGlass.track,
-                border: const Border(top: BorderSide(color: AppGlass.edge)),
+      // `bg-card/40 backdrop-blur-2xl border-t border-white/60` with the
+      // upward dock shadow, `px-5 pt-3 pb-5`.
+      child: DecoratedBox(
+        decoration: const BoxDecoration(boxShadow: AppShadows.dock),
+        child: SizedBox(
+          width: AppSizes.contentMax,
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: AppGlass.blurStrong,
+                sigmaY: AppGlass.blurStrong,
               ),
-              child: SafeArea(
-                top: false,
-                minimum: const EdgeInsets.fromLTRB(
-                  AppSpacing.pageHorizontal,
-                  AppSpacing.sm,
-                  AppSpacing.pageHorizontal,
-                  AppSpacing.card,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: MediaQuery.highContrastOf(context)
+                      ? AppColors.background
+                      : AppGlass.dock,
+                  border: const Border(
+                    top: BorderSide(color: AppColors.glassEdge),
+                  ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (_saveFailed) ...[
-                      ProfileFieldError(
-                        strings.profileSaveError,
-                        key: const Key('onboarding-save-error'),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                    ],
-                    AppButton(
-                      key: const Key('profile-setup-action'),
-                      animatePress: true,
-                      onPressed: enabled ? _advance : null,
-                      child: AnimatedSwitcher(
-                        duration: AppMotion.of(context, AppMotion.selection),
-                        transitionBuilder: (label, animation) => FadeTransition(
-                          opacity: animation,
-                          child: ScaleTransition(
-                            scale: Tween(
-                              begin: 0.92,
-                              end: 1.0,
-                            ).animate(animation),
-                            child: label,
-                          ),
+                child: SafeArea(
+                  top: false,
+                  minimum: const EdgeInsets.fromLTRB(
+                    AppSpacing.gutter,
+                    AppSpacing.sm,
+                    AppSpacing.gutter,
+                    AppSpacing.card,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (_saveFailed) ...[
+                        ProfileFieldError(
+                          strings.profileSaveError,
+                          key: const Key('onboarding-save-error'),
                         ),
-                        child: _step == _lastStep
-                            ? Row(
-                                key: const ValueKey('confirm'),
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                spacing: AppSpacing.xs,
-                                children: [
-                                  ExcludeSemantics(
-                                    child: AppIcon.asset(
-                                      'ph-check-circle-fill',
-                                      size: AppSizes.iconMd,
-                                      color: enabled
-                                          ? AppColors.primaryForeground
-                                          : AppColors.secondaryForeground,
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      strings.profileConfirm,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Text(
-                                strings.profileContinue,
-                                key: const ValueKey('continue'),
-                                textAlign: TextAlign.center,
+                        const SizedBox(height: AppSpacing.xs),
+                      ],
+                      AppButton(
+                        key: const Key('profile-setup-action'),
+                        animatePress: true,
+                        onPressed: enabled ? _advance : null,
+                        child: AnimatedSwitcher(
+                          duration: AppMotion.of(context, AppMotion.selection),
+                          transitionBuilder: (label, animation) =>
+                              FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(
+                                  scale: Tween(
+                                    begin: 0.92,
+                                    end: 1.0,
+                                  ).animate(animation),
+                                  child: label,
+                                ),
                               ),
+                          child: _step == _lastStep
+                              ? Row(
+                                  key: const ValueKey('confirm'),
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: AppSpacing.xs,
+                                  children: [
+                                    ExcludeSemantics(
+                                      child: AppIcon.asset(
+                                        'ph-check-bold',
+                                        size: AppSizes.iconSm,
+                                        color: enabled
+                                            ? AppColors.primaryForeground
+                                            : AppColors.secondaryForeground,
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        strings.profileConfirm,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  strings.profileContinue,
+                                  key: const ValueKey('continue'),
+                                  textAlign: TextAlign.center,
+                                ),
+                        ),
                       ),
-                    ),
-                    if (showPreviousNote) ...[
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        strings.profileTargetPreviousKept,
-                        textAlign: TextAlign.center,
-                        style: AppTypography.micro,
-                      ),
+                      if (showPreviousNote) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          strings.profileTargetPreviousKept,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.micro,
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -338,18 +344,17 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
 
   Widget _goalPage() => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
+    spacing: AppSpacing.card,
     children: [
-      ProfileStepHeading(
-        hero: true,
-        title: _strings.profileGoalHeading,
-        subtitle: _strings.profileGoalCaption,
+      AppEntrance(
+        index: 0,
+        child: ProfileStepHeading(title: _strings.profileGoalHeading),
       ),
-      const SizedBox(height: AppSpacing.xl),
       Semantics(
         label: _strings.profileGoal,
         explicitChildNodes: true,
         child: Column(
-          spacing: AppSpacing.sm,
+          spacing: AppSpacing.denseGap,
           children: [
             for (final (index, goal) in _weightGoals.indexed)
               AppEntrance(
@@ -438,30 +443,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     );
   }
 
-  Widget _pregnancyNote() => AppGlassCard(
-    key: const Key('profile-pregnancy-note'),
-    padding: const EdgeInsets.all(AppSpacing.card),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: AppSpacing.sm,
-      children: [
-        const AppIcon.asset(
-          'ph-info',
-          size: AppSizes.iconMd,
-          color: AppColors.primary,
-        ),
-        Expanded(
-          child: Text(
-            _strings.profilePregnancyNote,
-            style: AppTypography.bodySmall.copyWith(
-              color: AppColors.foreground,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-
   String _goalLabel(GoalType goal) => switch (goal) {
     GoalType.gain => _strings.profileGain,
     GoalType.lose => _strings.profileLose,
@@ -508,16 +489,11 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   String? _validateTarget() {
     final target = _target.targetKg;
     if (target == null) return _strings.profileTargetCustomEmpty;
-    if (_target.mode == ProfileTargetMode.custom &&
-        _target.timing == ProfileTargetTiming.date &&
-        _target.date == null) {
-      return _strings.profileTargetDateRequired;
-    }
     final estimate = estimateAdultGoal(
       goal: _goal!,
       currentWeight: _weightValue!,
       targetWeight: target,
-      targetDate: _target.targetDate,
+      targetDate: _deadline,
       energy: _energy,
     );
     if (estimate == null) return _strings.profileTargetCustomEmpty;
@@ -616,7 +592,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
             goal: goal,
             currentWeight: current,
             targetWeight: targetKg,
-            targetDate: _target.targetDate,
+            targetDate: _deadline,
             energy: energy,
           );
     final body = energy == null ? null : roundKcal(energy.totalKcal);
@@ -646,14 +622,13 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
       rateKgPerWeek: estimate?.rateKgPerWeek,
       projectedDate: estimate?.projectedDate,
       bmi: bodyMassIndex(weightKg: current, heightCm: _heightValue),
-      pregnant: _pregnantApplies,
     );
   }
 
   Future<void> _review() async {
     final savesTarget = !_skipsTarget;
     final targetKg = savesTarget ? _target.targetKg : null;
-    final targetDate = savesTarget ? _target.targetDate : null;
+    final targetDate = savesTarget ? _deadline : null;
     final summary = _planSummary();
     setState(() {
       _reviewing = true;

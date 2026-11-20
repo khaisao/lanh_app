@@ -487,9 +487,7 @@ class _ItemCard extends StatelessWidget {
                     height: AppSizes.choiceIcon,
                     decoration: const ShapeDecoration(
                       color: AppColors.secondary,
-                      shape: AppSquircleBorder(
-                        radius: AppRadii.exportCardSquircle,
-                      ),
+                      shape: AppSquircleBorder(radius: AppRadii.glassInner),
                     ),
                     alignment: Alignment.center,
                     child: AppIcon.asset(

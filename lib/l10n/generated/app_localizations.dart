@@ -500,12 +500,6 @@ abstract class AppLocalizations {
   /// **'Bạn muốn gì?'**
   String get profileGoalHeading;
 
-  /// No description provided for @profileGoalCaption.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đổi được bất cứ lúc nào.'**
-  String get profileGoalCaption;
-
   /// No description provided for @profileGain.
   ///
   /// In vi, this message translates to:
@@ -620,23 +614,11 @@ abstract class AppLocalizations {
   /// **'Ngày muốn đạt'**
   String get profileTargetDate;
 
-  /// No description provided for @profilePickDate.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn ngày'**
-  String get profilePickDate;
-
   /// No description provided for @profileEstimate.
   ///
   /// In vi, this message translates to:
   /// **'Ước tính'**
   String get profileEstimate;
-
-  /// No description provided for @profileEstimateCaption.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chỉ để lên kế hoạch, không phải chỉ dẫn y tế.'**
-  String get profileEstimateCaption;
 
   /// No description provided for @profileActivity.
   ///
@@ -649,12 +631,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Một ngày thường'**
   String get profileActivityHeading;
-
-  /// No description provided for @profileActivityCaption.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn mức gần nhất để Lành ước tính năng lượng mỗi ngày.'**
-  String get profileActivityCaption;
 
   /// No description provided for @profileSitting.
   ///
@@ -1280,6 +1256,18 @@ abstract class AppLocalizations {
   /// **'Thiết bị này chưa hỗ trợ ghi giọng nói. Bạn có thể nhập bằng chữ.'**
   String get mealVoiceUnavailable;
 
+  /// No description provided for @mealVoiceAccessDeniedBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật quyền micro trong Cài đặt để ghi bữa ăn bằng giọng nói.'**
+  String get mealVoiceAccessDeniedBody;
+
+  /// No description provided for @mealVoiceDeviceUnavailable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiết bị này chưa hỗ trợ ghi giọng nói.'**
+  String get mealVoiceDeviceUnavailable;
+
   /// No description provided for @mealVoiceConfirmTitle.
   ///
   /// In vi, this message translates to:
@@ -1484,12 +1472,6 @@ abstract class AppLocalizations {
   /// **'Chạm để cho phép micro'**
   String get mealVoiceAllowCaption;
 
-  /// No description provided for @profileBodyTapCaption.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chạm vào từng thẻ để nhập.'**
-  String get profileBodyTapCaption;
-
   /// No description provided for @profileBmiEstimateTitle.
   ///
   /// In vi, this message translates to:
@@ -1526,12 +1508,6 @@ abstract class AppLocalizations {
   /// **'Cân nặng trong khoảng 25–350 kg'**
   String get profileWeightRange;
 
-  /// No description provided for @profileTargetSubtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'{goal} · hiện tại {weight} kg'**
-  String profileTargetSubtitle(String goal, String weight);
-
   /// No description provided for @profileTargetModeLabel.
   ///
   /// In vi, this message translates to:
@@ -1541,7 +1517,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileTargetModeSuggested.
   ///
   /// In vi, this message translates to:
-  /// **'Theo gợi ý của Lành'**
+  /// **'Gợi ý'**
   String get profileTargetModeSuggested;
 
   /// No description provided for @profileTargetModeCustom.
@@ -1553,7 +1529,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileTargetSuggestedFrom.
   ///
   /// In vi, this message translates to:
-  /// **'Lành tính sẵn từ cân nặng hiện tại {weight} kg'**
+  /// **'Tính từ cân nặng hiện tại {weight} kg'**
   String profileTargetSuggestedFrom(String weight);
 
   /// No description provided for @profileTargetPlanGentle.
@@ -1586,83 +1562,11 @@ abstract class AppLocalizations {
   /// **'{count} tuần'**
   String profileTargetWeeksShort(int count);
 
-  /// No description provided for @profileTargetCustomTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Mốc bạn đang chọn'**
-  String get profileTargetCustomTitle;
-
-  /// No description provided for @profileTargetCustomDeltaLose.
-  ///
-  /// In vi, this message translates to:
-  /// **'Giảm {delta} kg so với {current} kg hiện tại'**
-  String profileTargetCustomDeltaLose(String delta, String current);
-
-  /// No description provided for @profileTargetCustomDeltaGain.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tăng {delta} kg so với {current} kg hiện tại'**
-  String profileTargetCustomDeltaGain(String delta, String current);
-
   /// No description provided for @profileTargetCustomEmpty.
   ///
   /// In vi, this message translates to:
   /// **'Chọn một mốc bên dưới.'**
   String get profileTargetCustomEmpty;
-
-  /// No description provided for @profileTargetPickerLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn cân nặng mong muốn (kg)'**
-  String get profileTargetPickerLabel;
-
-  /// No description provided for @profileTargetPickerRangeLose.
-  ///
-  /// In vi, this message translates to:
-  /// **'Từ {min} kg (BMI 18,5 theo chiều cao) đến dưới cân hiện tại.'**
-  String profileTargetPickerRangeLose(String min);
-
-  /// No description provided for @profileTargetPickerRangeGain.
-  ///
-  /// In vi, this message translates to:
-  /// **'Từ trên cân hiện tại đến {max} kg (BMI 24,9 theo chiều cao).'**
-  String profileTargetPickerRangeGain(String max);
-
-  /// No description provided for @profileTargetWhenTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Khi nào muốn đạt?'**
-  String get profileTargetWhenTitle;
-
-  /// No description provided for @profileTargetWhenLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thời gian'**
-  String get profileTargetWhenLabel;
-
-  /// No description provided for @profileTargetNoDate.
-  ///
-  /// In vi, this message translates to:
-  /// **'Không đặt ngày'**
-  String get profileTargetNoDate;
-
-  /// No description provided for @profileTargetNoDateNote.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lành chỉ theo dõi xu hướng, không đặt ngày cụ thể.'**
-  String get profileTargetNoDateNote;
-
-  /// No description provided for @profileTargetDateRequired.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn ngày muốn đạt.'**
-  String get profileTargetDateRequired;
-
-  /// No description provided for @profileTargetEarliestDate.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sớm nhất trong nhịp an toàn: {date}'**
-  String profileTargetEarliestDate(String date);
 
   /// No description provided for @profilePlanEstimateTitle.
   ///
@@ -1670,41 +1574,53 @@ abstract class AppLocalizations {
   /// **'Ước tính kế hoạch'**
   String get profilePlanEstimateTitle;
 
-  /// No description provided for @profilePlanRate.
+  /// No description provided for @profileTargetSetDate.
   ///
   /// In vi, this message translates to:
-  /// **'Tốc độ'**
-  String get profilePlanRate;
+  /// **'Hẹn ngày đạt mục tiêu'**
+  String get profileTargetSetDate;
 
-  /// No description provided for @profilePlanDuration.
+  /// No description provided for @profileTargetDateMoved.
   ///
   /// In vi, this message translates to:
-  /// **'Thời gian'**
-  String get profilePlanDuration;
+  /// **'Lành đã lùi ngày để vừa sức hơn'**
+  String get profileTargetDateMoved;
 
-  /// No description provided for @profilePlanDurationValue.
+  /// No description provided for @profileTargetDecrease.
   ///
   /// In vi, this message translates to:
-  /// **'khoảng {count} tuần'**
-  String profilePlanDurationValue(int count);
+  /// **'Giảm 0,5 kg'**
+  String get profileTargetDecrease;
 
-  /// No description provided for @profilePaceGentle.
+  /// No description provided for @profileTargetIncrease.
   ///
   /// In vi, this message translates to:
-  /// **'Nhịp nhẹ nhàng, dễ duy trì'**
-  String get profilePaceGentle;
+  /// **'Tăng 0,5 kg'**
+  String get profileTargetIncrease;
 
-  /// No description provided for @profilePaceCommonLose.
+  /// No description provided for @profileTargetPerWeek.
   ///
   /// In vi, this message translates to:
-  /// **'Trong khoảng 0,5–1 kg/tuần mà NHS và CDC mô tả là an toàn'**
-  String get profilePaceCommonLose;
+  /// **'Mỗi tuần'**
+  String get profileTargetPerWeek;
 
-  /// No description provided for @profilePaceCommonGain.
+  /// No description provided for @profileTargetNeeds.
   ///
   /// In vi, this message translates to:
-  /// **'Trong khoảng tăng từ từ 0,25–0,5% cân nặng mỗi tuần'**
-  String get profilePaceCommonGain;
+  /// **'Cần khoảng'**
+  String get profileTargetNeeds;
+
+  /// No description provided for @profileTargetEatPerDay.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn mỗi ngày'**
+  String get profileTargetEatPerDay;
+
+  /// No description provided for @profileUnitWeeks.
+  ///
+  /// In vi, this message translates to:
+  /// **'tuần'**
+  String get profileUnitWeeks;
 
   /// No description provided for @profilePaceTooFast.
   ///
@@ -1766,22 +1682,16 @@ abstract class AppLocalizations {
   /// **'Cơ thể bạn dùng khoảng'**
   String get profileEnergyTitle;
 
-  /// No description provided for @profileEnergyValue.
+  /// No description provided for @profileEnergyUnit.
   ///
   /// In vi, this message translates to:
-  /// **'{kcal} kcal/ngày'**
-  String profileEnergyValue(String kcal);
-
-  /// No description provided for @profileEnergyRange.
-  ///
-  /// In vi, this message translates to:
-  /// **'{low}–{high} kcal/ngày'**
-  String profileEnergyRange(String low, String high);
+  /// **'kcal/ngày'**
+  String get profileEnergyUnit;
 
   /// No description provided for @profileEnergyCaption.
   ///
   /// In vi, this message translates to:
-  /// **'Ước tính từ tuổi, giới, chiều cao, cân nặng và mức vận động (Mifflin‑St Jeor × hệ số vận động FAO/WHO). Không thay thế tư vấn dinh dưỡng.'**
+  /// **'Ước tính, không thay thế tư vấn dinh dưỡng.'**
   String get profileEnergyCaption;
 
   /// No description provided for @profileEnergyPickActivity.
@@ -1789,24 +1699,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chọn một mức để xem năng lượng ước tính.'**
   String get profileEnergyPickActivity;
-
-  /// No description provided for @profilePregnancyLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đang mang thai hoặc cho con bú'**
-  String get profilePregnancyLabel;
-
-  /// No description provided for @profilePregnancyHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lành sẽ không tự tính kcal hay mục tiêu cân nặng.'**
-  String get profilePregnancyHint;
-
-  /// No description provided for @profilePregnancyNote.
-  ///
-  /// In vi, this message translates to:
-  /// **'Khi mang thai hoặc cho con bú, nhu cầu thay đổi theo từng giai đoạn. Lành không tự lập kế hoạch cân nặng hay kcal; hãy hỏi bác sĩ hoặc chuyên gia dinh dưỡng.'**
-  String get profilePregnancyNote;
 
   /// No description provided for @profileTargetDailyKcal.
   ///
@@ -1825,12 +1717,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Với mức vận động này, giảm cân sẽ cần ăn dưới mức an toàn (khoảng {kcal} kcal/ngày). Hãy cân nhắc Giữ cân, vận động nhiều hơn hoặc hỏi chuyên gia.'**
   String profileTargetUnavailableEnergy(String kcal);
-
-  /// No description provided for @profilePlanDailyKcal.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ăn khoảng'**
-  String get profilePlanDailyKcal;
 
   /// No description provided for @profileTargetPlanModerate.
   ///
@@ -1946,6 +1832,36 @@ abstract class AppLocalizations {
   /// **'Hiện tại'**
   String get planTileNow;
 
+  /// No description provided for @planTileBmi.
+  ///
+  /// In vi, this message translates to:
+  /// **'BMI'**
+  String get planTileBmi;
+
+  /// No description provided for @planBmiShortUnderweight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dưới vùng khỏe'**
+  String get planBmiShortUnderweight;
+
+  /// No description provided for @planBmiShortHealthy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thường gặp'**
+  String get planBmiShortHealthy;
+
+  /// No description provided for @planBmiShortOverweight.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao hơn'**
+  String get planBmiShortOverweight;
+
+  /// No description provided for @planBmiShortObesity.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần đánh giá'**
+  String get planBmiShortObesity;
+
   /// No description provided for @planNoKcalTitle.
   ///
   /// In vi, this message translates to:
@@ -1957,12 +1873,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Giai đoạn này cần đủ năng lượng. Hỏi chuyên gia khi cần.'**
   String get planNoKcalTeen;
-
-  /// No description provided for @planNoKcalPregnant.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhu cầu thay đổi theo từng giai đoạn. Hỏi bác sĩ khi cần.'**
-  String get planNoKcalPregnant;
 
   /// No description provided for @planStart.
   ///

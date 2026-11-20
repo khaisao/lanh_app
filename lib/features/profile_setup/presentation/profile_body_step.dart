@@ -23,8 +23,6 @@ class ProfileBodyStep extends StatelessWidget {
     required this.errors,
     required this.onEdited,
     required this.onSex,
-    required this.pregnant,
-    required this.onPregnant,
   });
 
   final TextEditingController age;
@@ -34,11 +32,6 @@ class ProfileBodyStep extends StatelessWidget {
   final Map<ProfileBodyField, String> errors;
   final ValueChanged<ProfileBodyField> onEdited;
   final ValueChanged<ProfileSex> onSex;
-
-  /// Pregnancy or breastfeeding: asked only of adult women, never saved, and
-  /// turns off Lành's automatic kcal and weight targets.
-  final bool pregnant;
-  final ValueChanged<bool> onPregnant;
 
   @override
   Widget build(BuildContext context) {
@@ -70,20 +63,14 @@ class ProfileBodyStep extends StatelessWidget {
         ageValue < BodyLimits.adultAge;
     var order = 0;
     // Cards rise in one after another; keys keep a card's entrance from
-    // replaying when the pregnancy card appears or disappears above it.
+    // replaying when the layout switches between rows and stacked cards.
     Widget enter(String id, Widget child) =>
         AppEntrance(key: ValueKey(id), index: order++, child: child);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppSpacing.card,
       children: [
-        enter(
-          'heading',
-          ProfileStepHeading(
-            title: strings.profileBody,
-            subtitle: strings.profileBodyTapCaption,
-          ),
-        ),
+        enter('heading', ProfileStepHeading(title: strings.profileBody)),
         enter(
           'age',
           ProfileMeasureCard(
@@ -122,34 +109,6 @@ class ProfileBodyStep extends StatelessWidget {
             error: errors[ProfileBodyField.sex],
           ),
         ),
-        if (sex == ProfileSex.female && !teen)
-          enter(
-            'pregnancy',
-            AppGlassCard(
-              key: const Key('profile-pregnancy'),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.xs,
-              ),
-              // Own Material so the tile's ink shows above the glass fill.
-              child: Material(
-                type: MaterialType.transparency,
-                child: SwitchListTile.adaptive(
-                  contentPadding: EdgeInsets.zero,
-                  value: pregnant,
-                  onChanged: onPregnant,
-                  title: Text(
-                    strings.profilePregnancyLabel,
-                    style: AppTypography.cardTitle,
-                  ),
-                  subtitle: Text(
-                    strings.profilePregnancyHint,
-                    style: AppTypography.caption,
-                  ),
-                ),
-              ),
-            ),
-          ),
         // Appears once every value is in, below the inputs, so nothing the
         // user is editing moves.
         ProfileBmiReveal(
@@ -356,8 +315,8 @@ class _SexTileState extends State<_SexTile> {
                   child: AnimatedContainer(
                     duration: duration,
                     curve: AppMotion.selectionCurve,
-                    width: AppSizes.sexChoiceCircle,
-                    height: AppSizes.sexChoiceCircle,
+                    width: AppSizes.avatarLarge,
+                    height: AppSizes.avatarLarge,
                     decoration: ShapeDecoration(
                       color: accent.withValues(alpha: selected ? 1 : 0.3),
                       shape: const CircleBorder(

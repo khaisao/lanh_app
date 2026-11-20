@@ -69,9 +69,8 @@ void main() {
     expect(small.floorKcal, 1200);
   });
 
-  test('no estimate for teens, pregnancy or missing values', () {
+  test('no estimate for teens or missing values', () {
     expect(_estimate(age: 19), isNull);
-    expect(_estimate(pregnant: true), isNull);
     expect(_estimate(activity: null), isNull);
     expect(_estimate(height: 90), isNull);
     expect(_estimate(), isNotNull);
@@ -182,12 +181,10 @@ EnergyEstimate? _estimate({
   int age = 32,
   double height = 165,
   ActivityLevel? activity = ActivityLevel.sitting,
-  bool pregnant = false,
 }) => estimateEnergy(
   ageYears: age,
   heightCm: height,
   weightKg: 61.5,
   sex: ProfileSex.female,
   activity: activity,
-  pregnantOrBreastfeeding: pregnant,
 );

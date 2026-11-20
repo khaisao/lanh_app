@@ -4,8 +4,7 @@ import 'body_metrics.dart';
 import 'profile.dart';
 
 /// Adult daily energy estimate for Profile Setup. A planning estimate, not a
-/// measurement or medical advice; teens, pregnancy and breastfeeding get no
-/// number.
+/// measurement or medical advice; teens get no number.
 ///
 /// Sources:
 /// - Resting energy: Mifflin‑St Jeor (Am J Clin Nutr 1990). It tends to
@@ -111,22 +110,19 @@ final class EnergyEstimate {
 }
 
 /// Energy estimate for an adult, or null when Lành should not compute one:
-/// missing or implausible values, ages under [BodyLimits.adultAge], or
-/// pregnancy/breastfeeding.
+/// missing or implausible values or ages under [BodyLimits.adultAge].
 EnergyEstimate? estimateEnergy({
   required int? ageYears,
   required double? heightCm,
   required double? weightKg,
   required ProfileSex? sex,
   required ActivityLevel? activity,
-  bool pregnantOrBreastfeeding = false,
 }) {
   if (ageYears == null ||
       heightCm == null ||
       weightKg == null ||
       sex == null ||
-      activity == null ||
-      pregnantOrBreastfeeding) {
+      activity == null) {
     return null;
   }
   if (ageYears < BodyLimits.adultAge ||

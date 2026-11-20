@@ -26,13 +26,23 @@ void main() {
     );
 
     test('never goes below WHO BMI 18.5 and collapses duplicates', () {
-      // 18.5 x 1.65² = 50.37 kg, so the floor is 51 kg.
+      // 18.5 x 1.65² = 50.37 kg, so custom targets start at 50.5 kg and
+      // stay under the current 53 kg in half-kilogram steps.
       final options = selectableTargets(
         goal: GoalType.lose,
         currentKg: 53,
         heightCm: 165,
       );
-      expect(options, [51, 52]);
+      expect(options, [50.5, 51, 51.5, 52, 52.5]);
+      // A current weight between steps keeps the nearest step below it.
+      expect(
+        selectableTargets(
+          goal: GoalType.lose,
+          currentKg: 61.7,
+          heightCm: 165,
+        ).last,
+        61.5,
+      );
       final suggestions = suggestTargets(
         goal: GoalType.lose,
         currentKg: 53,

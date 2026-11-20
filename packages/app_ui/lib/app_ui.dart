@@ -20,6 +20,7 @@ part 'src/motion.dart';
 part 'src/option_card.dart';
 part 'src/page_list.dart';
 part 'src/selection_tile.dart';
+part 'src/slider_thumb_shape.dart';
 part 'src/squircle_border.dart';
 part 'src/mascot.dart';
 part 'src/theme.dart';

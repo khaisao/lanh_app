@@ -41,6 +41,9 @@ abstract final class WeightPlanPolicy {
   static const gainMaxFractionPerWeek = 0.005;
   static const minimumPlanDays = 7;
   static const maximumPlanWeeks = 520;
+
+  /// Custom targets move in half-kilogram steps; suggestions stay whole.
+  static const targetStepKg = 0.5;
 }
 
 enum GoalPace {
@@ -211,10 +214,11 @@ GoalEstimate? estimateAdultGoal({
   );
 }
 
-/// Whole-kilogram targets a user may pick, in ascending order. Loss stops at
-/// BMI 18.5 and gain at BMI 22.9; the list is empty when the current weight
-/// already sits at that bound.
-List<int> selectableTargets({
+/// Targets a user may pick, in ascending [WeightPlanPolicy.targetStepKg]
+/// steps. Loss stops at BMI 18.5 and gain at BMI 22.9, and both stay on the
+/// goal's side of the current weight; the list is empty when the current
+/// weight already sits at that bound.
+List<double> selectableTargets({
   required GoalType goal,
   required double currentKg,
   required double heightCm,
@@ -224,20 +228,22 @@ List<int> selectableTargets({
       !_validWeight(heightCm)) {
     return const [];
   }
-  if (goal == GoalType.lose) {
-    final floor = weightAtBmi(
-      bmi: BmiThresholds.underweight,
-      heightCm: heightCm,
-    ).ceil();
-    final top = currentKg.ceil() - 1;
-    return [for (var kg = floor; kg <= top; kg++) kg];
-  }
-  final ceiling = weightAtBmi(
-    bmi: BmiThresholds.healthyMax,
-    heightCm: heightCm,
-  ).floor();
-  final bottom = currentKg.floor() + 1;
-  return [for (var kg = bottom; kg <= ceiling; kg++) kg];
+  const step = WeightPlanPolicy.targetStepKg;
+  // Work in whole steps so every value is an exact multiple of 0.5 kg.
+  final (int first, int last) = goal == GoalType.lose
+      ? (
+          (weightAtBmi(bmi: BmiThresholds.underweight, heightCm: heightCm) /
+                  step)
+              .ceil(),
+          (currentKg / step).ceil() - 1,
+        )
+      : (
+          (currentKg / step).floor() + 1,
+          (weightAtBmi(bmi: BmiThresholds.healthyMax, heightCm: heightCm) /
+                  step)
+              .floor(),
+        );
+  return [for (var index = first; index <= last; index++) index * step];
 }
 
 /// Lành's 5%, 7% and 10% suggestions, rounded to whole kilograms and clamped to
@@ -255,13 +261,19 @@ List<TargetSuggestion> suggestTargets({
     heightCm: heightCm,
   );
   if (options.isEmpty || !lossPlanAllowed(goal, energy)) return const [];
+  // Suggestions stay on whole kilograms inside the selectable range.
+  final low = options.first.ceilToDouble();
+  final high = options.last.floorToDouble();
   final suggestions = <TargetSuggestion>[];
   for (final fraction in WeightPlanPolicy.suggestionFractions) {
     final raw = goal == GoalType.lose
         ? currentKg * (1 - fraction)
         : currentKg * (1 + fraction);
-    final rounded = raw.round();
-    final target = rounded.clamp(options.first, options.last).toDouble();
+    final rounded = raw.roundToDouble();
+    // A range narrower than one kilogram has no whole value; use its edge.
+    final target = low > high
+        ? options.first
+        : rounded.clamp(low, high).toDouble();
     if (suggestions.any((item) => item.targetKg == target)) continue;
     final estimate = estimateAdultGoal(
       goal: goal,

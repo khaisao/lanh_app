@@ -1,6 +1,10 @@
+import 'dart:ui' show CheckedState, SemanticsAction;
+
 import 'package:app_ui/app_ui.dart';
+import 'package:flutter/semantics.dart' show SemanticsNode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:lanh_app/features/profile_setup/presentation/profile_setup_screen.dart';
 import 'package:lanh_app/features/profile_setup/profile_setup_providers.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
@@ -66,44 +70,116 @@ void main() {
     await _continue(tester);
     await _sitting(tester);
 
-    expect(find.text('Giảm cân · hiện tại 62,5 kg'), findsOneWidget);
-    expect(find.text('NHẸ NHÀNG · 5%'), findsOneWidget);
-    expect(find.text('VỪA PHẢI · 7%'), findsOneWidget);
-    expect(find.text('MỐC DÀI HƠN · 10%'), findsOneWidget);
-    expect(find.text('59'), findsOneWidget);
-    expect(find.text('58'), findsOneWidget);
-    expect(find.text('56'), findsOneWidget);
+    // The target heading has no "goal · now weight" subtitle.
+    expect(find.text('Giảm cân · hiện tại 62,5 kg'), findsNothing);
+    expect(find.text('Tính từ cân nặng hiện tại 62,5 kg'), findsOneWidget);
+    // Each plan card shows the target, its weeks and the expected date.
+    expect(find.text('59 kg'), findsOneWidget);
+    expect(find.text('58 kg'), findsOneWidget);
+    expect(find.text('56 kg'), findsOneWidget);
+    expect(find.textContaining(RegExp(r'^\d+ tuần$')), findsNWidgets(3));
     // The "Đang chọn · Chỉnh" row between plans is gone.
     expect(find.textContaining('Đang chọn'), findsNothing);
-    // 10% of 62.5 kg over 26 weeks ≈ 0.24 kg/week.
-    expect(find.text('~0,24 kg/tuần'), findsNWidgets(3));
-    // 1,825.6 kcal used − 0.24 × 1,100 ≈ 1,561 kcal.
-    expect(find.text('≈ 1.550 kcal/ngày'), findsNWidgets(3));
+    // Name, pace and kcal stay in each card's spoken label: 10% of 62.5 kg
+    // over 26 weeks ≈ 0.24 kg/week; 1,825.6 − 0.24 × 1,100 ≈ 1,561 kcal.
+    final gentle = tester.getSemantics(
+      find.byKey(const Key('profile-target-plan-0')),
+    );
+    expect(gentle.label, startsWith('Nhẹ nhàng · 5%, 59 kg'));
+    expect(gentle.label, contains('~0,24 kg/tuần'));
+    expect(gentle.label, contains('≈ 1.550 kcal/ngày'));
+    expect(gentle.flagsCollection.isChecked, CheckedState.isTrue);
 
     // Custom mode starts from the selected plan.
     await tester.ensureVisible(find.text('Tự chọn'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Tự chọn'));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('profile-target-kg-picker')), findsOneWidget);
-    expect(find.text('59 kg'), findsOneWidget);
-    expect(find.text('Nhịp nhẹ nhàng, dễ duy trì'), findsOneWidget);
-
-    final chip = find.byKey(const Key('profile-target-kg-50'));
-    await tester.scrollUntilVisible(
-      chip,
-      -100,
-      scrollable: find.descendant(
-        of: find.byKey(const Key('profile-target-kg-picker')),
-        matching: find.byType(Scrollable),
-      ),
+    expect(_customValue(tester), '59');
+    // The slider covers the healthy loss range in half kilograms:
+    // 18.5 × 1.60² = 47.36 → 47.5 kg, up to 62 kg (under 62.5 kg).
+    final slider = tester.widget<Slider>(
+      find.byKey(const Key('profile-target-slider')),
     );
-    await tester.ensureVisible(chip);
+    expect(slider.min, 47.5);
+    expect(slider.max, 62);
+    expect(slider.divisions, 29);
+    // No date: the gentle pace, 3.5 kg at ~0.24 kg/week.
+    _expectEstimate('rate', '−0,24');
+    _expectEstimate('weeks', '15');
+    _expectEstimate('kcal', '1.550');
+
+    // − and + move by half a kilogram.
+    await tester.tap(find.byKey(const Key('profile-target-decrease')));
     await tester.pumpAndSettle();
-    await tester.tap(chip);
+    expect(_customValue(tester), '58,5');
+    await tester.tap(find.byKey(const Key('profile-target-increase')));
     await tester.pumpAndSettle();
-    expect(find.text('50 kg'), findsOneWidget);
-    expect(find.text('Giảm 12,5 kg so với 62,5 kg hiện tại'), findsOneWidget);
+    expect(_customValue(tester), '59');
+  });
+
+  testWidgets('custom date only offers safe dates and moves with the target', (
+    tester,
+  ) async {
+    await _pump(tester);
+    await _chooseGoal(tester, 'Giảm cân');
+    await _fillBody(tester, weight: '62,5');
+    await _continue(tester);
+    await _sitting(tester);
+    await tester.ensureVisible(find.text('Tự chọn'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Tự chọn'));
+    await tester.pumpAndSettle();
+
+    // The switch opens the picker; cancelling leaves the date off.
+    final dateSwitch = find.byKey(const Key('profile-target-date-switch'));
+    await tester.ensureVisible(dateSwitch);
+    await tester.tap(dateSwitch);
+    await tester.pumpAndSettle();
+    final picker = tester.widget<DatePickerDialog>(
+      find.byType(DatePickerDialog),
+    );
+    // The earliest day keeps 3.5 kg within the safest weekly pace.
+    final earliest = picker.firstDate;
+    expect(picker.initialDate, earliest);
+    final labels = MaterialLocalizations.of(
+      tester.element(find.byType(DatePickerDialog)),
+    );
+    await tester.tap(find.text(labels.cancelButtonLabel));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('profile-target-date')), findsNothing);
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isFalse);
+
+    // Confirming the picker turns the deadline on at the earliest date.
+    await tester.tap(dateSwitch);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(labels.okButtonLabel));
+    await tester.pumpAndSettle();
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isTrue);
+    expect(find.byKey(const Key('profile-target-date')), findsOneWidget);
+    expect(find.byKey(const Key('profile-target-date-moved')), findsNothing);
+
+    // A lower target needs more time: the date moves and Lành says so.
+    tester
+        .widget<Slider>(find.byKey(const Key('profile-target-slider')))
+        .onChanged!(55);
+    await tester.pumpAndSettle();
+    expect(_customValue(tester), '55');
+    expect(find.byKey(const Key('profile-target-date-moved')), findsOneWidget);
+    final picked = DateFormat.yMd('vi').format(earliest);
+    SemanticsNode dateRow() =>
+        tester.getSemantics(find.byKey(const Key('profile-target-date')));
+    expect(dateRow().label, isNot(contains(picked)));
+
+    // Back at 59 kg the picked day fits again and comes back.
+    tester
+        .widget<Slider>(find.byKey(const Key('profile-target-slider')))
+        .onChanged!(59);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('profile-target-date-moved')), findsNothing);
+    expect(dateRow().label, contains(picked));
+    // Screen readers can open the picker from the date row.
+    expect(dateRow().getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
   });
 
   testWidgets('target explains when no healthy loss target exists', (
@@ -144,7 +220,8 @@ void main() {
     await tester.tap(tile);
     await tester.pumpAndSettle();
     // Mifflin-St Jeor 1,304 × PAL 1.40 = 1,825.6 kcal.
-    expect(find.text('1.850 kcal/ngày'), findsOneWidget);
+    expect(find.text('1.850'), findsOneWidget);
+    expect(find.text('kcal/ngày'), findsOneWidget);
 
     final variable = find.byKey(const Key('profile-activity-variable'));
     await tester.ensureVisible(variable);
@@ -152,7 +229,7 @@ void main() {
     await tester.tap(variable);
     await tester.pumpAndSettle();
     // Unknown schedules show the PAL 1.40–1.75 range.
-    expect(find.text('1.850–2.300 kcal/ngày'), findsOneWidget);
+    expect(find.text('1.850–2.300'), findsOneWidget);
   });
 
   testWidgets('target refuses a loss that needs eating below the floor', (
@@ -173,35 +250,6 @@ void main() {
       matching: find.byType(FilledButton),
     );
     expect(tester.widget<FilledButton>(button).onPressed, isNull);
-  });
-
-  testWidgets('pregnancy: plan sheet tracks without a kcal number', (
-    tester,
-  ) async {
-    await _pump(tester);
-    await _chooseGoal(tester, 'Giảm cân');
-    await _fillBody(tester, weight: '62,5');
-    final toggle = find.byKey(const Key('profile-pregnancy'));
-    await tester.ensureVisible(toggle);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Đang mang thai hoặc cho con bú'));
-    await tester.pumpAndSettle();
-    await _continue(tester);
-
-    expect(find.byKey(const Key('profile-pregnancy-note')), findsOneWidget);
-    expect(find.byKey(const Key('profile-energy-estimate')), findsNothing);
-    // Activity is the last step: confirm opens the plan, no target step.
-    await _sitting(tester);
-    expect(find.byKey(const Key('profile-plan-sheet')), findsOneWidget);
-    expect(find.byKey(const Key('profile-plan-no-kcal')), findsOneWidget);
-    expect(
-      find.text('Nhu cầu thay đổi theo từng giai đoạn. Hỏi bác sĩ khi cần.'),
-      findsOneWidget,
-    );
-    expect(find.byKey(const Key('profile-plan-budget')), findsNothing);
-    _expectTile(0, 'Giảm cân');
-    _expectTile(1, '62,5 kg');
-    _expectTile(2, 'Chủ yếu ngồi');
   });
 
   testWidgets('teen (19): plan sheet without kcal; adult (20) gets kcal', (
@@ -243,12 +291,17 @@ void main() {
     await _sitting(tester);
 
     // Mifflin-St Jeor 1,304 × PAL 1.40 = 1,825.6 → 1.850.
-    expect(find.text('1.850'), findsOneWidget);
+    expect(find.byKey(const Key('profile-plan-kcal')), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.byKey(const Key('profile-plan-kcal'))).data,
+      '1.850',
+    );
     expect(find.text('Bằng mức cơ thể dùng'), findsOneWidget);
     _expectTile(0, '62,5 kg');
     _expectTile(1, 'Chủ yếu ngồi');
-    // 62.5 / 1.60² = 24.4.
-    _expectTile(2, '24,4');
+    // 62.5 / 1.60² = 24.4: above the Asian healthy range.
+    _expectTile(2, 'BMI 24,4');
+    _expectTile(2, 'Cao hơn');
   });
 
   testWidgets('lose: eat + cut add up to the body\'s use', (tester) async {
@@ -438,3 +491,18 @@ Future<void> _enter(WidgetTester tester, String key, String value) async {
   await tester.enterText(field, value);
   await tester.pumpAndSettle();
 }
+
+/// The custom target shown on the weight card ("58,5").
+String _customValue(WidgetTester tester) => tester
+    .widget<AppRollingText>(
+      find.byKey(const Key('profile-target-custom-value')),
+    )
+    .text;
+
+void _expectEstimate(String row, String value) => expect(
+  find.descendant(
+    of: find.byKey(Key('profile-estimate-$row')),
+    matching: find.text(value),
+  ),
+  findsOneWidget,
+);

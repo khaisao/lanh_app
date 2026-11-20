@@ -6,7 +6,7 @@ void main() {
   test('the exported squircle keeps the card interior continuous', () {
     const rect = Rect.fromLTWH(0, 0, 342, 82);
     const border = AppSquircleBorder(
-      radius: AppRadii.exportCardSquircle,
+      radius: AppRadii.glassInner,
       side: BorderSide(width: AppBorders.selected),
     );
     final outline = border.getOuterPath(rect);

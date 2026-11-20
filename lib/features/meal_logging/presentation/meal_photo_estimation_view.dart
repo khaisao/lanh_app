@@ -455,9 +455,7 @@ class _EstimationSteps extends StatelessWidget {
                     color: index == 1
                         ? AppColors.secondary.withValues(alpha: 0.6)
                         : Colors.transparent,
-                    shape: const AppSquircleBorder(
-                      radius: AppRadii.exportCardSquircle,
-                    ),
+                    shape: const AppSquircleBorder(radius: AppRadii.glassInner),
                   ),
                   child: Row(
                     spacing: AppSpacing.denseVertical,

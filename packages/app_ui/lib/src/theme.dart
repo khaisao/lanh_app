@@ -44,6 +44,37 @@ abstract final class AppTheme {
         borderSide: const BorderSide(color: AppColors.border),
       ),
     ),
+    // Target Custom export: `h-2` secondary track filled with primary and a
+    // ringed card thumb; no ticks or value bubble.
+    sliderTheme: SliderThemeData(
+      trackHeight: AppSizes.sliderTrack,
+      activeTrackColor: AppColors.primary,
+      inactiveTrackColor: AppColors.secondary,
+      disabledActiveTrackColor: AppColors.border,
+      disabledInactiveTrackColor: AppColors.muted,
+      overlayColor: AppColors.primary.withValues(alpha: 0.12),
+      thumbShape: const AppSliderThumbShape(),
+      trackShape: const RoundedRectSliderTrackShape(),
+      tickMarkShape: SliderTickMarkShape.noTickMark,
+      showValueIndicator: ShowValueIndicator.never,
+    ),
+    // `w-[52px] h-8` switch: primary when on, muted with a border when off,
+    // and the same card-coloured 24 px knob in both states.
+    switchTheme: SwitchThemeData(
+      thumbColor: const WidgetStatePropertyAll(AppColors.card),
+      // An (empty) icon keeps the knob at full size when the switch is off.
+      thumbIcon: const WidgetStatePropertyAll(Icon(null)),
+      trackColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? AppColors.primary
+            : AppColors.muted,
+      ),
+      trackOutlineColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? AppColors.primary
+            : AppColors.border,
+      ),
+    ),
   );
 }
 

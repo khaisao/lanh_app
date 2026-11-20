@@ -67,7 +67,6 @@
   "backToToday": "Về Hôm nay",
   "profileGoal": "Mục tiêu",
   "profileGoalHeading": "Bạn muốn gì?",
-  "profileGoalCaption": "Đổi được bất cứ lúc nào.",
   "profileGain": "Tăng cân",
   "profileLose": "Giảm cân",
   "profileMaintain": "Giữ cân",
@@ -87,12 +86,9 @@
   "profileTarget": "Mong muốn",
   "profileTargetWeight": "Cân nặng mong muốn",
   "profileTargetDate": "Ngày muốn đạt",
-  "profilePickDate": "Chọn ngày",
   "profileEstimate": "Ước tính",
-  "profileEstimateCaption": "Chỉ để lên kế hoạch, không phải chỉ dẫn y tế.",
   "profileActivity": "Vận động thường ngày",
   "profileActivityHeading": "Một ngày thường",
-  "profileActivityCaption": "Chọn mức gần nhất để Lành ước tính năng lượng mỗi ngày.",
   "profileSitting": "Chủ yếu ngồi",
   "profileLight": "Đứng và đi lại xen kẽ",
   "profileModerate": "Đứng hoặc đi lại phần lớn ngày",
@@ -265,6 +261,8 @@
   "mealVoiceRecognitionError": "Lành chưa nhận được giọng nói. Kiểm tra mạng rồi thử lại, hoặc nhập bằng chữ.",
   "mealVoiceTypeInstead": "Nhập bằng chữ",
   "mealVoiceUnavailable": "Thiết bị này chưa hỗ trợ ghi giọng nói. Bạn có thể nhập bằng chữ.",
+  "mealVoiceAccessDeniedBody": "Bật quyền micro trong Cài đặt để ghi bữa ăn bằng giọng nói.",
+  "mealVoiceDeviceUnavailable": "Thiết bị này chưa hỗ trợ ghi giọng nói.",
   "mealVoiceConfirmTitle": "Kiểm tra lời nói",
   "mealVoiceTypedTitle": "Mô tả bữa ăn",
   "mealVoiceBackToRecording": "Quay lại ghi âm",
@@ -313,28 +311,16 @@
   "mealVoiceStopCaption": "Chạm để dừng và kiểm tra chữ",
   "mealVoiceStartCaption": "Chạm để bắt đầu nói",
   "mealVoiceAllowCaption": "Chạm để cho phép micro",
-  "profileBodyTapCaption": "Chạm vào từng thẻ để nhập.",
   "profileBmiEstimateTitle": "BMI ước tính",
   "profileBmiDisclaimer": "Ước tính, không thay thế khám sức khỏe.",
   "profileBmiAsianNote": "Theo ngưỡng WHO cho người châu Á: bình thường 18,5–22,9.",
   "profileReadingAdult": "Lành đọc theo người lớn.",
   "profileHeightRange": "Chiều cao trong khoảng 100–250 cm",
   "profileWeightRange": "Cân nặng trong khoảng 25–350 kg",
-  "profileTargetSubtitle": "{goal} · hiện tại {weight} kg",
-  "@profileTargetSubtitle": {
-    "placeholders": {
-      "goal": {
-        "type": "String"
-      },
-      "weight": {
-        "type": "String"
-      }
-    }
-  },
   "profileTargetModeLabel": "Cách đặt mốc",
-  "profileTargetModeSuggested": "Theo gợi ý của Lành",
+  "profileTargetModeSuggested": "Gợi ý",
   "profileTargetModeCustom": "Tự chọn",
-  "profileTargetSuggestedFrom": "Lành tính sẵn từ cân nặng hiện tại {weight} kg",
+  "profileTargetSuggestedFrom": "Tính từ cân nặng hiện tại {weight} kg",
   "@profileTargetSuggestedFrom": {
     "placeholders": {
       "weight": {
@@ -382,74 +368,16 @@
       }
     }
   },
-  "profileTargetCustomTitle": "Mốc bạn đang chọn",
-  "profileTargetCustomDeltaLose": "Giảm {delta} kg so với {current} kg hiện tại",
-  "@profileTargetCustomDeltaLose": {
-    "placeholders": {
-      "delta": {
-        "type": "String"
-      },
-      "current": {
-        "type": "String"
-      }
-    }
-  },
-  "profileTargetCustomDeltaGain": "Tăng {delta} kg so với {current} kg hiện tại",
-  "@profileTargetCustomDeltaGain": {
-    "placeholders": {
-      "delta": {
-        "type": "String"
-      },
-      "current": {
-        "type": "String"
-      }
-    }
-  },
   "profileTargetCustomEmpty": "Chọn một mốc bên dưới.",
-  "profileTargetPickerLabel": "Chọn cân nặng mong muốn (kg)",
-  "profileTargetPickerRangeLose": "Từ {min} kg (BMI 18,5 theo chiều cao) đến dưới cân hiện tại.",
-  "@profileTargetPickerRangeLose": {
-    "placeholders": {
-      "min": {
-        "type": "String"
-      }
-    }
-  },
-  "profileTargetPickerRangeGain": "Từ trên cân hiện tại đến {max} kg (BMI 24,9 theo chiều cao).",
-  "@profileTargetPickerRangeGain": {
-    "placeholders": {
-      "max": {
-        "type": "String"
-      }
-    }
-  },
-  "profileTargetWhenTitle": "Khi nào muốn đạt?",
-  "profileTargetWhenLabel": "Thời gian",
-  "profileTargetNoDate": "Không đặt ngày",
-  "profileTargetNoDateNote": "Lành chỉ theo dõi xu hướng, không đặt ngày cụ thể.",
-  "profileTargetDateRequired": "Chọn ngày muốn đạt.",
-  "profileTargetEarliestDate": "Sớm nhất trong nhịp an toàn: {date}",
-  "@profileTargetEarliestDate": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "profilePlanEstimateTitle": "Ước tính kế hoạch",
-  "profilePlanRate": "Tốc độ",
-  "profilePlanDuration": "Thời gian",
-  "profilePlanDurationValue": "khoảng {count} tuần",
-  "@profilePlanDurationValue": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "profilePaceGentle": "Nhịp nhẹ nhàng, dễ duy trì",
-  "profilePaceCommonLose": "Trong khoảng 0,5–1 kg/tuần mà NHS và CDC mô tả là an toàn",
-  "profilePaceCommonGain": "Trong khoảng tăng từ từ 0,25–0,5% cân nặng mỗi tuần",
+  "profileTargetSetDate": "Hẹn ngày đạt mục tiêu",
+  "profileTargetDateMoved": "Lành đã lùi ngày để vừa sức hơn",
+  "profileTargetDecrease": "Giảm 0,5 kg",
+  "profileTargetIncrease": "Tăng 0,5 kg",
+  "profileTargetPerWeek": "Mỗi tuần",
+  "profileTargetNeeds": "Cần khoảng",
+  "profileTargetEatPerDay": "Ăn mỗi ngày",
+  "profileUnitWeeks": "tuần",
   "profilePaceTooFast": "Nhanh hơn mức an toàn — chọn ngày muộn hơn",
   "profileTargetUnavailableLose": "Cân nặng hiện tại đã ở mức BMI 18,5 theo chiều cao. Lành không gợi ý giảm thêm; hãy cân nhắc Giữ cân hoặc hỏi chuyên gia.",
   "profileTargetUnavailableGain": "Cân nặng hiện tại đã ở mức BMI 22,9 theo chiều cao. Lành không gợi ý tăng thêm; hãy cân nhắc Giữ cân hoặc hỏi chuyên gia.",
@@ -460,30 +388,9 @@
   "profileActivityHeavyHint": "Xây dựng, làm nông, tập luyện nặng",
   "profileActivityVariableHint": "Lành tính theo mức thấp để an toàn",
   "profileEnergyTitle": "Cơ thể bạn dùng khoảng",
-  "profileEnergyValue": "{kcal} kcal/ngày",
-  "@profileEnergyValue": {
-    "placeholders": {
-      "kcal": {
-        "type": "String"
-      }
-    }
-  },
-  "profileEnergyRange": "{low}–{high} kcal/ngày",
-  "@profileEnergyRange": {
-    "placeholders": {
-      "low": {
-        "type": "String"
-      },
-      "high": {
-        "type": "String"
-      }
-    }
-  },
-  "profileEnergyCaption": "Ước tính từ tuổi, giới, chiều cao, cân nặng và mức vận động (Mifflin‑St Jeor × hệ số vận động FAO/WHO). Không thay thế tư vấn dinh dưỡng.",
+  "profileEnergyUnit": "kcal/ngày",
+  "profileEnergyCaption": "Ước tính, không thay thế tư vấn dinh dưỡng.",
   "profileEnergyPickActivity": "Chọn một mức để xem năng lượng ước tính.",
-  "profilePregnancyLabel": "Đang mang thai hoặc cho con bú",
-  "profilePregnancyHint": "Lành sẽ không tự tính kcal hay mục tiêu cân nặng.",
-  "profilePregnancyNote": "Khi mang thai hoặc cho con bú, nhu cầu thay đổi theo từng giai đoạn. Lành không tự lập kế hoạch cân nặng hay kcal; hãy hỏi bác sĩ hoặc chuyên gia dinh dưỡng.",
   "profileTargetDailyKcal": "≈ {kcal} kcal/ngày",
   "@profileTargetDailyKcal": {
     "placeholders": {
@@ -508,7 +415,6 @@
       }
     }
   },
-  "profilePlanDailyKcal": "Ăn khoảng",
   "profileTargetPlanModerate": "Vừa phải · {percent}%",
   "@profileTargetPlanModerate": {
     "placeholders": {
@@ -570,9 +476,13 @@
   "planTileActivity": "Vận động",
   "planTileGoal": "Mong muốn",
   "planTileNow": "Hiện tại",
+  "planTileBmi": "BMI",
+  "planBmiShortUnderweight": "Dưới vùng khỏe",
+  "planBmiShortHealthy": "Thường gặp",
+  "planBmiShortOverweight": "Cao hơn",
+  "planBmiShortObesity": "Cần đánh giá",
   "planNoKcalTitle": "Theo dõi, không đếm kcal",
   "planNoKcalTeen": "Giai đoạn này cần đủ năng lượng. Hỏi chuyên gia khi cần.",
-  "planNoKcalPregnant": "Nhu cầu thay đổi theo từng giai đoạn. Hỏi bác sĩ khi cần.",
   "planStart": "Bắt đầu",
   "planEdit": "Chỉnh lại",
   "profileActivityShortSitting": "Chủ yếu ngồi",

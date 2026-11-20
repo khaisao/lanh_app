@@ -7,15 +7,15 @@ import '../domain/energy_estimate.dart';
 import '../domain/goal_policy.dart';
 import 'profile_setup_widgets.dart';
 import 'profile_target_cards.dart';
+import 'profile_target_custom_cards.dart';
 import 'profile_target_draft.dart';
 
 /// The "Mong muốn" step from Profile Setup Target: Lành's 5%/10% plans, or a
-/// custom whole-kilogram target with an optional date and a live estimate.
+/// custom half-kilogram target with an optional date and a live estimate.
 class ProfileTargetStep extends StatelessWidget {
   const ProfileTargetStep({
     super.key,
     required this.goal,
-    required this.goalLabel,
     required this.currentKg,
     required this.heightCm,
     required this.draft,
@@ -26,7 +26,6 @@ class ProfileTargetStep extends StatelessWidget {
   });
 
   final GoalType goal;
-  final String goalLabel;
   final double currentKg;
   final double heightCm;
   final ProfileTargetDraft draft;
@@ -50,17 +49,11 @@ class ProfileTargetStep extends StatelessWidget {
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: AppSpacing.lg,
+      spacing: AppSpacing.card,
       children: [
         AppEntrance(
           index: 0,
-          child: ProfileStepHeading(
-            title: strings.profileTarget,
-            subtitle: strings.profileTargetSubtitle(
-              goalLabel,
-              format.kg(currentKg),
-            ),
-          ),
+          child: ProfileStepHeading(title: strings.profileTarget),
         ),
         if (options.isEmpty || !lossPlanAllowed(goal, energy))
           AppGlassCard(
@@ -114,26 +107,26 @@ class ProfileTargetStep extends StatelessWidget {
                 (
                   ProfileTargetMode.suggested,
                   strings.profileTargetModeSuggested,
+                  'ph-sparkle',
                 ),
-                (ProfileTargetMode.custom, strings.profileTargetModeCustom),
+                (
+                  ProfileTargetMode.custom,
+                  strings.profileTargetModeCustom,
+                  'ph-pencil-simple',
+                ),
               ],
               selected: draft.mode,
-              onChanged: (mode) => onChanged(_switchMode(mode)),
+              onChanged: (mode) => onChanged(draft.copyWith(mode: mode)),
             ),
           ),
           if (draft.mode == ProfileTargetMode.suggested)
             ..._suggested(strings, format)
           else
-            ..._custom(context, strings, format, options),
+            ..._custom(context, format, options),
         ],
       ],
     );
   }
-
-  ProfileTargetDraft _switchMode(ProfileTargetMode mode) =>
-      mode == ProfileTargetMode.custom && draft.customKg == null
-      ? draft.copyWith(mode: mode, customKg: () => draft.suggestedKg?.round())
-      : draft.copyWith(mode: mode);
 
   List<Widget> _suggested(
     AppLocalizations strings,
@@ -149,13 +142,25 @@ class ProfileTargetStep extends StatelessWidget {
     return [
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: AppSpacing.sm,
+        spacing: AppSpacing.denseGap,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxs),
-            child: Text(
-              strings.profileTargetSuggestedFrom(format.kg(currentKg)),
-              style: AppTypography.label,
+            child: Row(
+              spacing: AppSpacing.stepGap,
+              children: [
+                const AppIcon.asset(
+                  'ph-scales',
+                  size: AppSizes.iconInfo,
+                  color: AppColors.mutedForeground,
+                ),
+                Expanded(
+                  child: Text(
+                    strings.profileTargetSuggestedFrom(format.kg(currentKg)),
+                    style: AppTypography.label,
+                  ),
+                ),
+              ],
             ),
           ),
           for (final (index, suggestion) in suggestions.indexed) ...[
@@ -163,6 +168,7 @@ class ProfileTargetStep extends StatelessWidget {
               index: index + 2,
               child: ProfileTargetPlanCard(
                 key: Key('profile-target-plan-$index'),
+                icon: _planIcons[index.clamp(0, _planIcons.length - 1)],
                 title: _planTitle(strings, format, index, suggestion),
                 suggestion: suggestion,
                 selected: draft.suggestedKg == suggestion.targetKg,
@@ -189,6 +195,9 @@ class ProfileTargetStep extends StatelessWidget {
     ];
   }
 
+  /// Gentle, moderate and longer plans: footprints, a path, the finish flag.
+  static const _planIcons = ['ph-footprints', 'ph-path', 'ph-flag-checkered'];
+
   String _planTitle(
     AppLocalizations strings,
     ProfileTargetFormat format,
@@ -205,231 +214,89 @@ class ProfileTargetStep extends StatelessWidget {
         : strings.profileTargetPlanGainGentle(percent);
   }
 
+  /// Profile Setup Target Custom: the weight card, then the date switch with
+  /// the live plan estimate. [ProfileTargetDraft.reconcile] has already set a
+  /// valid custom target.
   List<Widget> _custom(
     BuildContext context,
-    AppLocalizations strings,
     ProfileTargetFormat format,
-    List<int> options,
+    List<double> options,
   ) {
-    final target = draft.customKg?.toDouble();
-    final estimate = target == null
-        ? null
-        : estimateAdultGoal(
-            goal: goal,
-            currentWeight: currentKg,
-            targetWeight: target,
-            targetDate: draft.targetDate,
-            energy: energy,
-          );
-    final onPrimary = AppColors.primaryForeground;
+    final target = draft.customKg!;
+    final deadline = draft.deadline(
+      goal: goal,
+      currentKg: currentKg,
+      energy: energy,
+    );
+    final estimate = estimateAdultGoal(
+      goal: goal,
+      currentWeight: currentKg,
+      targetWeight: target,
+      targetDate: deadline,
+      energy: energy,
+    );
     return [
       AppEntrance(
         index: 2,
-        child: ProfilePrimaryCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: AppSpacing.xxs,
-            children: [
-              Text(
-                strings.profileTargetCustomTitle,
-                style: AppTypography.label.copyWith(
-                  color: onPrimary.withValues(alpha: 0.8),
-                ),
-              ),
-              // The chosen weight rolls as chips are tapped.
-              AppRollingText(
-                target == null ? '—' : '${format.kg(target)} kg',
-                key: const Key('profile-target-custom-value'),
-                style: AppTypography.numericLarge.copyWith(
-                  color: onPrimary,
-                  height: 1.1,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
-              ),
-              AppRollingText(
-                target == null
-                    ? strings.profileTargetCustomEmpty
-                    : goal == GoalType.lose
-                    ? strings.profileTargetCustomDeltaLose(
-                        format.delta(currentKg, target),
-                        format.kg(currentKg),
-                      )
-                    : strings.profileTargetCustomDeltaGain(
-                        format.delta(currentKg, target),
-                        format.kg(currentKg),
-                      ),
-                style: AppTypography.label.copyWith(
-                  color: onPrimary.withValues(alpha: 0.8),
-                ),
-              ),
-            ],
-          ),
+        child: ProfileTargetWeightCard(
+          kg: target,
+          options: options,
+          format: format,
+          onChanged: (kg) => onChanged(draft.copyWith(customKg: () => kg)),
         ),
       ),
       AppEntrance(
         index: 3,
-        child: ProfileTargetKgPicker(
-          label: strings.profileTargetPickerLabel,
-          helper: goal == GoalType.lose
-              ? strings.profileTargetPickerRangeLose('${options.first}')
-              : strings.profileTargetPickerRangeGain('${options.last}'),
-          options: options,
-          selected: draft.customKg,
-          onSelected: (kg) => onChanged(draft.copyWith(customKg: () => kg)),
-        ),
-      ),
-      AppEntrance(
-        index: 4,
-        child: _timingCard(context, strings, format, target),
-      ),
-      AppEntrance(
-        index: 5,
-        child: ProfilePlanEstimateCard(
+        child: ProfileTargetTimingCard(
           goal: goal,
+          date: deadline,
+          dateMoved: deadline != null && deadline != draft.date,
           estimate: estimate,
           format: format,
+          onDateEnabled: (enabled) => enabled
+              ? _pickDate(context, target, deadline)
+              : onChanged(draft.copyWith(timing: ProfileTargetTiming.none)),
+          onPickDate: () => _pickDate(context, target, deadline),
         ),
       ),
       if (error case final message?) ProfileFieldError(message),
     ];
   }
 
-  Widget _timingCard(
+  /// Opens the date picker limited to dates the plan can safely reach, and
+  /// turns the deadline on once a date is chosen. Cancelling changes nothing.
+  Future<void> _pickDate(
     BuildContext context,
-    AppLocalizations strings,
-    ProfileTargetFormat format,
-    double? target,
-  ) {
-    final earliest = target == null
-        ? null
-        : earliestSafeDate(
-            goal: goal,
-            currentKg: currentKg,
-            targetKg: target,
-            energy: energy,
-          );
-    return AppGlassCard(
-      padding: const EdgeInsets.all(AppSpacing.card),
-      // The date row opens and closes smoothly with the timing choice.
-      child: AppAnimatedSize(
-        alignment: Alignment.topCenter,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: AppSpacing.sm,
-          children: [
-            Semantics(
-              header: true,
-              child: Text(
-                strings.profileTargetWhenTitle,
-                style: AppTypography.cardTitle.copyWith(
-                  fontFamily: AppFonts.heading,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            AppGlassSegmentedControl<ProfileTargetTiming>(
-              key: const Key('profile-target-timing'),
-              label: strings.profileTargetWhenLabel,
-              segments: [
-                (ProfileTargetTiming.none, strings.profileTargetNoDate),
-                (ProfileTargetTiming.date, strings.profilePickDate),
-              ],
-              selected: draft.timing,
-              onChanged: (timing) => onChanged(draft.copyWith(timing: timing)),
-            ),
-            if (draft.timing == ProfileTargetTiming.none)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxs),
-                child: Text(
-                  strings.profileTargetNoDateNote,
-                  style: AppTypography.caption.copyWith(height: 1.625),
-                ),
-              )
-            else ...[
-              Semantics(
-                button: true,
-                label:
-                    '${strings.profileTargetDate}, ${draft.date == null ? strings.profilePickDate : format.date(draft.date!)}',
-                excludeSemantics: true,
-                child: Material(
-                  key: const Key('profile-target-date'),
-                  color: AppColors.input,
-                  shape: AppSquircleBorder(
-                    radius: AppRadii.glassInner,
-                    side: BorderSide(color: AppGlass.edge),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: InkWell(
-                    onTap: target == null
-                        ? null
-                        : () => _pickDate(context, earliest!),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minHeight: AppSizes.action,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.sm),
-                        child: Row(
-                          spacing: AppSpacing.sm,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                strings.profileTargetDate,
-                                style: AppTypography.fieldLabel.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              draft.date == null
-                                  ? strings.profilePickDate
-                                  : format.date(draft.date!),
-                              style: AppTypography.fieldLabel.copyWith(
-                                fontWeight: FontWeight.w700,
-                                fontFeatures: const [
-                                  FontFeature.tabularFigures(),
-                                ],
-                              ),
-                            ),
-                            const AppIcon.asset(
-                              'ph-calendar-blank',
-                              size: AppSizes.iconSm,
-                              color: AppColors.foreground,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              if (earliest != null)
-                Text(
-                  strings.profileTargetEarliestDate(format.date(earliest)),
-                  style: AppTypography.caption,
-                ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _pickDate(BuildContext context, DateTime earliest) async {
+    double target,
+    DateTime? deadline,
+  ) async {
     FocusManager.instance.primaryFocus?.unfocus();
-    final previous = draft.date;
+    final earliest = earliestSafeDate(
+      goal: goal,
+      currentKg: currentKg,
+      targetKg: target,
+      energy: energy,
+    );
+    // Reopens at the shown or previously picked day, never before the first
+    // selectable one (which can move on at midnight).
+    final previous = deadline ?? draft.date;
+    final initial = previous == null || previous.isBefore(earliest)
+        ? earliest
+        : previous;
+    final last = DateUtils.addDaysToDate(
+      earliest,
+      WeightPlanPolicy.maximumPlanWeeks * 7,
+    );
     final picked = await showDatePicker(
       context: context,
       firstDate: earliest,
-      initialDate: previous == null || previous.isBefore(earliest)
-          ? earliest
-          : previous,
-      lastDate: DateUtils.addDaysToDate(
-        earliest,
-        WeightPlanPolicy.maximumPlanWeeks * 7,
-      ),
+      initialDate: initial,
+      // A date picked for a farther target may sit past the usual end.
+      lastDate: initial.isAfter(last) ? initial : last,
     );
     if (picked == null || !context.mounted) return;
-    onChanged(draft.copyWith(date: () => picked));
+    onChanged(
+      draft.copyWith(timing: ProfileTargetTiming.date, date: () => picked),
+    );
   }
 }

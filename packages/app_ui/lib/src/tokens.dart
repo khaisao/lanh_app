@@ -21,8 +21,6 @@ abstract final class AppColors {
   static const chartGold = Color(0xFFE0B54A);
   static const chartPeach = Color(0xFFEFB99A);
   static const chartStone = Color(0xFFB8A890);
-  static const surface = card;
-  static const outline = border;
   static const navSelection = Color(0xB8D9E8D5);
   static const navActionHighlight = Color(0xFF578561);
   static const navActionRim = Color(0xBB9CC09A);
@@ -32,48 +30,59 @@ abstract final class AppColors {
   static const glassRim = Color(0x80FFFFFF);
 }
 
-/// Liquid glass card recipe shared by every card in the app. Mirrors the Sleek
-/// export `bg-card/70 backdrop-blur-xl border border-card/80 ring-1 ring-inset
-/// ring-white/50 shadow-[0_20px_40px_-20px_rgba(59,47,37,0.3),inset_0_1px_0_0_
-/// rgba(255,255,255,0.6)]`.
-/// Single-choice items across the app (goal, activity, option lists), from
-/// the Profile Setup Goal export: an idle item is plain glass with a
-/// `secondary` icon well and an empty `border-2 border-border` ring; a chosen
-/// item fills with `bg-primary/5`, gets a `border-2 border-primary` stroke,
-/// a solid primary icon well and a filled check.
+/// The two states of every choice card (goal, activity, target plan, mode
+/// switch), from the Profile Setup Goal / Activity / Target exports.
+///
+/// Default: liquid glass `bg-card/70 border-2 border-card/80`, a `bg-secondary`
+/// icon well with a primary icon and an empty `border-2 border-border` ring.
+/// Selected: solid `bg-secondary`, `border-2 border-primary`, the softer
+/// [selectedShadow], a `bg-primary` well with a light icon and a `bg-primary`
+/// circle holding a 12 px `ph:check-bold`.
 abstract final class AppChoice {
-  /// `bg-primary/5` over the glass blur.
-  static const selectedFill = Color(0x0D2F5D3A);
+  static const selectedFill = AppColors.secondary;
   static const selectedStroke = AppColors.primary;
-  static const selectedStrokeWidth = AppBorders.selected;
+
+  /// `border-2` on both states, so choosing never shifts the layout.
+  static const strokeWidth = AppBorders.selected;
   static const wellIdle = AppColors.secondary;
   static const wellSelected = AppColors.primary;
   static const iconIdle = AppColors.primary;
   static const iconSelected = AppColors.primaryForeground;
   static const markIdle = AppColors.border;
   static const markSelected = AppColors.primary;
-  static const markStroke = AppBorders.selected;
 
-  /// `size-6` ring / check.
+  /// `size-6` ring / check circle.
   static const markSize = AppSizes.iconLg;
 
-  /// `size-12` well on full items, `size-10` on compact ones.
-  static const well = AppSizes.choiceIcon;
-  static const wellCompact = AppSizes.avatar;
+  /// `ph:check-bold` 12 px inside the selected circle.
+  static const markCheck = 12.0;
+
+  /// `size-10 rounded-2xl` icon well with a 20 px icon.
+  static const well = AppSizes.avatar;
+  static const wellIcon = AppSizes.iconMd;
+
+  /// `shadow-[0_12px_24px_-18px_rgba(59,47,37,0.14)]` on a chosen card.
+  static const selectedShadow = [
+    BoxShadow(
+      color: Color(0x243B2F25),
+      blurRadius: 24,
+      spreadRadius: -18,
+      offset: Offset(0, 12),
+    ),
+  ];
 }
 
+/// Liquid glass card recipe shared by every card in the app. Mirrors the Sleek
+/// export `bg-card/70 backdrop-blur-xl border border-card/80 ring-1 ring-inset
+/// ring-white/50 shadow-[0_20px_40px_-20px_rgba(59,47,37,0.3),inset_0_1px_0_0_
+/// rgba(255,255,255,0.6)]`.
 abstract final class AppGlass {
-  /// `shadow-inner` on segmented tracks: the top inside edge shade.
-  static const insetShade = Color(0x0D000000);
-
   /// `bg-card/70`.
   static const fill = Color(0xB3FFFDF7);
 
-  /// `bg-card/50`, used by tracks and docked bars behind glass content.
-  static const track = Color(0x80FFFDF7);
-
-  /// `bg-card/90`, the raised segment inside a track.
-  static const raised = Color(0xE6FFFDF7);
+  /// `bg-card/40 backdrop-blur-2xl border-t border-white/60`: the docked
+  /// action bar under the setup steps.
+  static const dock = Color(0x66FFFDF7);
 
   /// `bg-background/60`, recessed chips inside a card.
   static const recessed = Color(0x99F8F3E8);
@@ -109,6 +118,9 @@ abstract final class AppSpacing {
   static const denseGap = 10.0;
   static const denseVertical = 14.0;
   static const pageHorizontal = 24.0;
+
+  /// `px-5`: the gutter of the Profile Setup exports.
+  static const gutter = 20.0;
   static const pageTop = 40.0;
   static const onboardingTop = 56.0;
   static const onboardingBottom = 40.0;
@@ -119,9 +131,6 @@ abstract final class AppSpacing {
   static const contentBottom = 88.0;
   static const fieldGap = 6.0;
   static const navLabelGap = 2.0;
-  static const small = xs;
-  static const medium = md;
-  static const large = lg;
 }
 
 abstract final class AppRadii {
@@ -130,10 +139,6 @@ abstract final class AppRadii {
   static const lg = 24.0;
   static const xl = 32.0;
   static const pill = 999.0;
-  static const cardSquircle = lg;
-  // The export multiplies rounded-xl (20) and rounded-2xl (24) by 2.5.
-  static const exportCompactSquircle = 50.0;
-  static const exportCardSquircle = 60.0;
   // PhotoEstimating / PhotoEstimationError export radii, including CSS squircle scaling.
   static const estimationSteps = 70.0;
   static const estimationHero = 110.0;
@@ -150,7 +155,6 @@ abstract final class AppSizes {
   // VoiceMealInput / VoiceMealConfirm export geometry.
   static const voiceGradient = 520.0;
   static const voiceMascot = 96.0;
-  static const voiceConfirmMascot = 64.0;
   static const voiceConfirmHeroMascot = 144.0;
   // Recorder waveform: `h-32` with `w-[3px]` bars and 3px gaps.
   static const voiceWaveform = 128.0;
@@ -165,6 +169,9 @@ abstract final class AppSizes {
   static const voiceLiveTextMax = 352.0;
   static const voiceRevealBlur = 8.0;
   static const iconBadge = 11.0;
+
+  /// 13 px meta icons beside `text-xs` (target plan weeks and date).
+  static const iconMeta = 13.0;
   static const iconInfo = 14.0;
   static const iconXs = 16.0;
   static const iconSm = 18.0;
@@ -177,8 +184,10 @@ abstract final class AppSizes {
   static const avatar = 40.0;
   static const avatarLarge = 56.0;
   static const choiceIcon = 48.0;
-  // Sex choice circle and light icon (`size-14`, 30 px) in Body Direction 2.
-  static const sexChoiceCircle = 56.0;
+  // Target Custom slider: `h-2` track and a `size-7` thumb.
+  static const sliderTrack = 8.0;
+  static const sliderThumb = 28.0;
+  // Sex choice light icon (30 px in a `size-14` circle) in Body Direction 2.
   static const sexChoiceIcon = 30.0;
   // Plan sheet mascot (`size-24`) and tile icon circles (`size-9`).
   static const planMascot = 96.0;
@@ -194,10 +203,7 @@ abstract final class AppSizes {
   static const contentMax = 448.0;
   static const readableWidth = 320.0;
   static const backAction = 44.0;
-  static const weekInput = 44.0;
   static const summaryImage = 80.0;
-  static const setupMascot = 128.0;
-  static const setupMascotHalo = 144.0;
   static const setupBadgeMax = 112.0;
   static const photoPermissionBadge = 112.0;
   static const photoPermissionIcon = 44.0;
@@ -235,6 +241,9 @@ abstract final class AppSizes {
 abstract final class AppBorders {
   static const hairline = 1.0;
   static const selected = 2.0;
+
+  /// `border-[3px]` ring of the slider thumb.
+  static const thumbRing = 3.0;
 }
 
 abstract final class AppScales {
@@ -362,19 +371,13 @@ abstract final class AppShadows {
       offset: Offset(0, 8),
     ),
   ];
-  // Raised segment inside a glass track: `shadow-md`.
-  static const glassRaised = [
+  // Setup action dock: `shadow-[0_-12px_32px_-16px_rgba(59,47,37,0.25)]`.
+  static const dock = [
     BoxShadow(
-      color: Color(0x1A000000),
-      blurRadius: 6,
-      spreadRadius: -1,
-      offset: Offset(0, 4),
-    ),
-    BoxShadow(
-      color: Color(0x1A000000),
-      blurRadius: 4,
-      spreadRadius: -2,
-      offset: Offset(0, 2),
+      color: Color(0x403B2F25),
+      blurRadius: 32,
+      spreadRadius: -16,
+      offset: Offset(0, -12),
     ),
   ];
   static const primaryGlow = [
@@ -450,7 +453,6 @@ abstract final class AppTypography {
     fontWeight: FontWeight.w700,
     height: 1.2,
   );
-  static const pageHeading = title;
   static const sectionTitle = TextStyle(
     fontFamily: AppFonts.heading,
     color: AppColors.foreground,
@@ -546,20 +548,33 @@ abstract final class AppTypography {
     fontWeight: FontWeight.w600,
     height: 1.5,
   );
+
+  /// Estimate row value: `font-heading text-xl font-bold tabular-nums`.
+  static const metricValue = TextStyle(
+    fontFamily: AppFonts.heading,
+    color: AppColors.foreground,
+    fontSize: 20,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w700,
+    height: 1.4,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
+
+  /// Choice card label: `text-sm font-semibold text-foreground`.
+  static const choiceTitle = TextStyle(
+    fontFamily: AppFonts.body,
+    color: AppColors.foreground,
+    fontSize: 14,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w600,
+    height: 20 / 14,
+  );
   static const welcomeAction = TextStyle(
     leadingDistribution: TextLeadingDistribution.even,
   );
-  static const cardSubtitle = caption;
   static final setupHeading = screenTitle.copyWith(height: 1.25);
   static final setupCaption = bodySmall.copyWith(height: 20 / 14);
-  static final setupFieldLabel = caption.copyWith(
-    fontWeight: FontWeight.w500,
-    height: 2,
-  );
   static final setupNumber = title.copyWith(
-    fontFeatures: const [FontFeature.tabularFigures()],
-  );
-  static final setupTargetNumber = screenTitle.copyWith(
     fontFeatures: const [FontFeature.tabularFigures()],
   );
   static const optionDescription = TextStyle(
@@ -622,13 +637,6 @@ abstract final class AppTypography {
     letterSpacing: 0,
     fontWeight: FontWeight.w500,
     height: 20 / 14,
-  );
-  static const inputValue = TextStyle(
-    fontFamily: AppFonts.mono,
-    color: AppColors.foreground,
-    fontSize: 16,
-    letterSpacing: 0,
-    height: 1.5,
   );
   static const navLabel = TextStyle(
     fontFamily: AppFonts.body,

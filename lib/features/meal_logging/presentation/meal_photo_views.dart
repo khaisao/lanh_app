@@ -307,7 +307,7 @@ class _MealPhotoReviewView extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
     final imageShape = AppSquircleBorder(
-      radius: AppRadii.exportCardSquircle,
+      radius: AppRadii.glassInner,
       side: BorderSide(color: AppColors.card.withValues(alpha: 0.4)),
     );
     return SafeArea(
@@ -444,7 +444,7 @@ class _MealPhotoReviewView extends StatelessWidget {
                         decoration: ShapeDecoration(
                           color: AppColors.card,
                           shape: const AppSquircleBorder(
-                            radius: AppRadii.exportCardSquircle,
+                            radius: AppRadii.glassInner,
                             side: BorderSide(color: AppColors.border),
                           ),
                           shadows: const [AppShadows.photoPreviewCard],

@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Progress marks for the four setup steps, with the glass back control from
-/// the Body/Target exports on every step after the first.
+/// Progress marks for the four setup steps after the glass back control
+/// (`size-11`, `gap-4`); the current mark wears a `ring-4 ring-secondary`.
 class ProfileStepBar extends StatelessWidget {
   const ProfileStepBar({
     super.key,
@@ -19,28 +19,26 @@ class ProfileStepBar extends StatelessWidget {
   final ValueChanged<int> onStep;
   final VoidCallback onBack;
 
+  static const _targetInset = (AppSizes.action - AppSizes.glassControl) / 2;
+
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
     return Row(
       children: [
-        if (step > 0) ...[
-          Transform.translate(
-            // The 56 dp target keeps the 44 dp glass circle on the page edge.
-            offset: const Offset(
-              -(AppSizes.action - AppSizes.glassControl) / 2,
-              0,
-            ),
-            child: AppGlassIconButton(
-              icon: 'ph-arrow-left',
-              tooltip: strings.profileBack,
-              color: AppColors.foreground,
-              iconSize: AppSizes.iconSm,
-              onPressed: onBack,
-            ),
+        Transform.translate(
+          // The 56 dp target keeps the 44 dp glass circle on the page edge.
+          offset: const Offset(-_targetInset, 0),
+          child: AppGlassIconButton(
+            icon: 'ph-arrow-left',
+            tooltip: strings.profileBack,
+            color: AppColors.foreground,
+            iconSize: AppSizes.iconSm,
+            onPressed: onBack,
           ),
-          const SizedBox(width: AppSpacing.xs),
-        ],
+        ),
+        // `gap-4` from the visible circle, less the shifted touch target.
+        const SizedBox(width: AppSpacing.md - _targetInset * 2),
         Expanded(
           child: Semantics(
             label: strings.profileStepStatus(step + 1),
@@ -52,7 +50,7 @@ class ProfileStepBar extends StatelessWidget {
                   Expanded(
                     child: _StepMark(
                       attained: index <= step,
-                      current: index == step && step > 0,
+                      current: index == step,
                       label: strings.profileEditStep(titles[index]),
                       onTap: index < step ? () => onStep(index) : null,
                     ),
@@ -129,116 +127,34 @@ class _StepMark extends StatelessWidget {
   }
 }
 
-/// Step heading: the bouncing hero mascot on the goal step, or the 64 dp
-/// mascot tile beside the title on later steps.
+/// Step heading from every setup export: the 64 dp mascot tile
+/// (`size-16 rounded-2xl bg-secondary p-1`) beside the `text-3xl` title.
 class ProfileStepHeading extends StatelessWidget {
-  const ProfileStepHeading({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    this.hero = false,
-  });
+  const ProfileStepHeading({super.key, required this.title});
 
   final String title;
-  final String subtitle;
-  final bool hero;
 
   @override
-  Widget build(BuildContext context) {
-    final heading = Semantics(
-      header: true,
-      child: Text(
-        title,
-        style: AppTypography.setupHeading,
-        textAlign: hero ? TextAlign.center : TextAlign.start,
-      ),
-    );
-    final caption = Text(
-      subtitle,
-      style: AppTypography.setupCaption,
-      textAlign: hero ? TextAlign.center : TextAlign.start,
-    );
-    if (hero) {
-      return Column(
-        children: [
-          const SizedBox.square(
-            dimension: AppSizes.setupMascot,
-            child: Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              children: [
-                OverflowBox(
-                  minWidth: AppSizes.setupMascotHalo,
-                  maxWidth: AppSizes.setupMascotHalo,
-                  minHeight: AppSizes.setupMascotHalo,
-                  maxHeight: AppSizes.setupMascotHalo,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-                AppMascot(size: AppSizes.setupMascot, bounce: true),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          heading,
-          const SizedBox(height: AppSpacing.xs),
-          caption,
-        ],
-      );
-    }
-    return Row(
-      children: [
-        const DecoratedBox(
-          decoration: ShapeDecoration(
-            color: AppColors.secondary,
-            shape: AppSquircleBorder(radius: AppRadii.glassInner),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(AppSpacing.xxs),
-            child: AppMascot(size: AppSizes.avatarLarge),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: AppSpacing.xxs,
-            children: [heading, caption],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// A 40 dp secondary icon well (`size-10 rounded-2xl bg-secondary`).
-class ProfileIconWell extends StatelessWidget {
-  const ProfileIconWell(this.icon, {super.key});
-
-  final String icon;
-
-  @override
-  Widget build(BuildContext context) => ExcludeSemantics(
-    child: SizedBox.square(
-      dimension: AppSizes.avatar,
-      child: DecoratedBox(
-        decoration: const ShapeDecoration(
+  Widget build(BuildContext context) => Row(
+    spacing: AppSpacing.md,
+    children: [
+      const DecoratedBox(
+        decoration: ShapeDecoration(
           color: AppColors.secondary,
-          shape: AppSquircleBorder(radius: AppRadii.exportCompactSquircle),
+          shape: AppSquircleBorder(radius: AppRadii.glassInner),
         ),
-        child: Center(
-          child: AppIcon.asset(
-            icon,
-            size: AppSizes.iconMd,
-            color: AppColors.secondaryForeground,
-          ),
+        child: Padding(
+          padding: EdgeInsets.all(AppSpacing.xxs),
+          child: AppMascot(size: AppSizes.avatarLarge),
         ),
       ),
-    ),
+      Expanded(
+        child: Semantics(
+          header: true,
+          child: Text(title, style: AppTypography.setupHeading),
+        ),
+      ),
+    ],
   );
 }
 
@@ -340,7 +256,19 @@ class _ProfileMeasureCardState extends State<ProfileMeasureCard> {
       textBaseline: TextBaseline.alphabetic,
       spacing: AppSpacing.xxs,
       children: [
-        Expanded(child: input),
+        // Stacked cards keep the unit right after the number (`w-16` input,
+        // `gap-1`); the inline age value fills its slot, right-aligned.
+        if (widget.inline)
+          Expanded(child: input)
+        else
+          Flexible(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.textScalerOf(context).scale(64),
+              ),
+              child: IntrinsicWidth(child: input),
+            ),
+          ),
         if (widget.unit case final unit?)
           ExcludeSemantics(
             child: Text(unit, style: AppTypography.setupCaption),
@@ -348,29 +276,55 @@ class _ProfileMeasureCardState extends State<ProfileMeasureCard> {
       ],
     );
     // Part of the field for tap-outside: tapping the card focuses it
-    // instead of closing the keyboard first.
+    // instead of closing the keyboard first. Focus fades in the
+    // `focus-within:ring-2 ring-ring` outline over the glass; the fill stays.
     final card = TextFieldTapRegion(
-      child: AppGlassCard(
-        tone: _focus.hasFocus ? AppGlassTone.selected : AppGlassTone.glass,
-        onPressed: _focus.requestFocus,
-        pressedScale: 1,
-        // Focus only fades the outline in: no tinted fill, no pop.
-        fill: AppGlass.fill,
-        popOnSelect: false,
-        child: widget.inline
-            ? Row(
-                spacing: AppSpacing.md,
-                children: [
-                  ProfileIconWell(widget.icon),
-                  Expanded(child: label),
-                  SizedBox(width: AppSizes.setupBadgeMax / 2, child: value),
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: AppSpacing.sm,
-                children: [ProfileIconWell(widget.icon), label, value],
+      child: Stack(
+        fit: StackFit.passthrough,
+        children: [
+          AppGlassCard(
+            onPressed: _focus.requestFocus,
+            pressedScale: 1,
+            child: widget.inline
+                ? Row(
+                    spacing: AppSpacing.md,
+                    children: [
+                      AppIconWell(icon: widget.icon),
+                      Expanded(child: label),
+                      SizedBox(width: AppSizes.setupBadgeMax / 2, child: value),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: AppSpacing.sm,
+                    children: [
+                      AppIconWell(icon: widget.icon),
+                      label,
+                      value,
+                    ],
+                  ),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: AnimatedOpacity(
+                opacity: _focus.hasFocus ? 1 : 0,
+                duration: AppMotion.of(context, AppMotion.selection),
+                curve: AppMotion.selectionCurve,
+                child: const DecoratedBox(
+                  decoration: ShapeDecoration(
+                    shape: AppSquircleBorder(
+                      radius: AppRadii.glassCard,
+                      side: BorderSide(
+                        color: AppColors.primary,
+                        width: AppChoice.strokeWidth,
+                      ),
+                    ),
+                  ),
+                ),
               ),
+            ),
+          ),
+        ],
       ),
     );
     return Column(
@@ -397,6 +351,35 @@ class ProfileFieldError extends StatelessWidget {
     child: Semantics(
       liveRegion: true,
       child: Text(message, style: AppTypography.error),
+    ),
+  );
+}
+
+/// A tinted icon circle: `size-9` with an 18 px icon on the tiles.
+class ProfileIconCircle extends StatelessWidget {
+  const ProfileIconCircle({
+    super.key,
+    required this.icon,
+    required this.background,
+    required this.color,
+    this.dimension = AppSizes.planTileIcon,
+    this.iconSize = AppSizes.iconSm,
+  });
+
+  final String icon;
+  final Color background;
+  final Color color;
+  final double dimension;
+  final double iconSize;
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+    dimension: dimension,
+    child: DecoratedBox(
+      decoration: BoxDecoration(color: background, shape: BoxShape.circle),
+      child: Center(
+        child: AppIcon.asset(icon, size: iconSize, color: color),
+      ),
     ),
   );
 }

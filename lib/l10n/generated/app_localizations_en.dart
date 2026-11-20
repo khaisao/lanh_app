@@ -231,9 +231,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileGoalHeading => 'What would you like?';
 
   @override
-  String get profileGoalCaption => 'You can change this any time.';
-
-  @override
   String get profileGain => 'Gain weight';
 
   @override
@@ -292,23 +289,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileTargetDate => 'Target date';
 
   @override
-  String get profilePickDate => 'Choose a date';
-
-  @override
   String get profileEstimate => 'Estimate';
-
-  @override
-  String get profileEstimateCaption => 'For planning only, not medical advice.';
 
   @override
   String get profileActivity => 'Daily activity';
 
   @override
   String get profileActivityHeading => 'A typical day';
-
-  @override
-  String get profileActivityCaption =>
-      'Pick the closest match so Lành can estimate your daily energy.';
 
   @override
   String get profileSitting => 'Mostly sitting';
@@ -676,6 +663,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Voice logging isn’t available on this device. You can type instead.';
 
   @override
+  String get mealVoiceAccessDeniedBody =>
+      'Allow the microphone in Settings to log meals by voice.';
+
+  @override
+  String get mealVoiceDeviceUnavailable =>
+      'Voice logging isn’t available on this device.';
+
+  @override
   String get mealVoiceConfirmTitle => 'Check the transcript';
 
   @override
@@ -797,9 +792,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mealVoiceAllowCaption => 'Tap to allow the microphone';
 
   @override
-  String get profileBodyTapCaption => 'Tap a card to enter a value.';
-
-  @override
   String get profileBmiEstimateTitle => 'Estimated BMI';
 
   @override
@@ -819,22 +811,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileWeightRange => 'Weight should be 25–350 kg';
 
   @override
-  String profileTargetSubtitle(String goal, String weight) {
-    return '$goal · now $weight kg';
-  }
-
-  @override
   String get profileTargetModeLabel => 'How to set the target';
 
   @override
-  String get profileTargetModeSuggested => 'Lành\'s suggestion';
+  String get profileTargetModeSuggested => 'Suggested';
 
   @override
   String get profileTargetModeCustom => 'Choose myself';
 
   @override
   String profileTargetSuggestedFrom(String weight) {
-    return 'Calculated from your current $weight kg';
+    return 'From your current weight $weight kg';
   }
 
   @override
@@ -863,79 +850,35 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get profileTargetCustomTitle => 'Your target';
-
-  @override
-  String profileTargetCustomDeltaLose(String delta, String current) {
-    return '$delta kg less than your current $current kg';
-  }
-
-  @override
-  String profileTargetCustomDeltaGain(String delta, String current) {
-    return '$delta kg more than your current $current kg';
-  }
-
-  @override
   String get profileTargetCustomEmpty => 'Pick a target below.';
-
-  @override
-  String get profileTargetPickerLabel => 'Choose a target weight (kg)';
-
-  @override
-  String profileTargetPickerRangeLose(String min) {
-    return 'From $min kg (BMI 18.5 for your height) to below your current weight.';
-  }
-
-  @override
-  String profileTargetPickerRangeGain(String max) {
-    return 'From above your current weight to $max kg (BMI 24.9 for your height).';
-  }
-
-  @override
-  String get profileTargetWhenTitle => 'When do you want to get there?';
-
-  @override
-  String get profileTargetWhenLabel => 'Timing';
-
-  @override
-  String get profileTargetNoDate => 'No date';
-
-  @override
-  String get profileTargetNoDateNote =>
-      'Lành follows the trend without a fixed date.';
-
-  @override
-  String get profileTargetDateRequired => 'Choose a target date.';
-
-  @override
-  String profileTargetEarliestDate(String date) {
-    return 'Earliest date at a safe pace: $date';
-  }
 
   @override
   String get profilePlanEstimateTitle => 'Plan estimate';
 
   @override
-  String get profilePlanRate => 'Pace';
+  String get profileTargetSetDate => 'Set a target date';
 
   @override
-  String get profilePlanDuration => 'Duration';
+  String get profileTargetDateMoved =>
+      'Lành moved the date to keep the pace comfortable';
 
   @override
-  String profilePlanDurationValue(int count) {
-    return 'about $count weeks';
-  }
+  String get profileTargetDecrease => 'Down 0.5 kg';
 
   @override
-  String get profilePaceGentle => 'A gentle pace that is easy to keep';
+  String get profileTargetIncrease => 'Up 0.5 kg';
 
   @override
-  String get profilePaceCommonLose =>
-      'Within the 0.5–1 kg/week range NHS and CDC describe as safe';
+  String get profileTargetPerWeek => 'Each week';
 
   @override
-  String get profilePaceCommonGain =>
-      'Within a gradual 0.25–0.5% of body weight per week';
+  String get profileTargetNeeds => 'About';
+
+  @override
+  String get profileTargetEatPerDay => 'Eat each day';
+
+  @override
+  String get profileUnitWeeks => 'weeks';
 
   @override
   String get profilePaceTooFast =>
@@ -973,33 +916,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEnergyTitle => 'Your body uses about';
 
   @override
-  String profileEnergyValue(String kcal) {
-    return '$kcal kcal/day';
-  }
-
-  @override
-  String profileEnergyRange(String low, String high) {
-    return '$low–$high kcal/day';
-  }
+  String get profileEnergyUnit => 'kcal/day';
 
   @override
   String get profileEnergyCaption =>
-      'Estimated from age, sex, height, weight and activity (Mifflin‑St Jeor × FAO/WHO activity level). Not a substitute for nutrition advice.';
+      'An estimate, not a substitute for nutrition advice.';
 
   @override
   String get profileEnergyPickActivity =>
       'Choose a level to see the estimated energy.';
-
-  @override
-  String get profilePregnancyLabel => 'Pregnant or breastfeeding';
-
-  @override
-  String get profilePregnancyHint =>
-      'Lành will not calculate kcal or a weight target.';
-
-  @override
-  String get profilePregnancyNote =>
-      'During pregnancy or breastfeeding, needs change by stage. Lành does not plan weight or kcal; ask a doctor or dietitian.';
 
   @override
   String profileTargetDailyKcal(String kcal) {
@@ -1015,9 +940,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String profileTargetUnavailableEnergy(String kcal) {
     return 'At this activity level, losing weight would mean eating below the safe floor (about $kcal kcal/day). Consider Maintain, more activity, or a professional\'s advice.';
   }
-
-  @override
-  String get profilePlanDailyKcal => 'Eat about';
 
   @override
   String profileTargetPlanModerate(String percent) {
@@ -1089,15 +1011,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get planTileNow => 'Now';
 
   @override
+  String get planTileBmi => 'BMI';
+
+  @override
+  String get planBmiShortUnderweight => 'Below healthy';
+
+  @override
+  String get planBmiShortHealthy => 'Common range';
+
+  @override
+  String get planBmiShortOverweight => 'Above healthy';
+
+  @override
+  String get planBmiShortObesity => 'Needs review';
+
+  @override
   String get planNoKcalTitle => 'Track, no kcal count';
 
   @override
   String get planNoKcalTeen =>
       'This stage needs enough energy. Ask a professional when needed.';
-
-  @override
-  String get planNoKcalPregnant =>
-      'Needs change at each stage. Ask your doctor when needed.';
 
   @override
   String get planStart => 'Start';

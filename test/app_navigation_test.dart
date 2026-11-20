@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui' show PointerDeviceKind;
 
-import 'package:app_ui/app_ui.dart' show AppBottomBar;
+import 'package:app_ui/app_ui.dart' show AppBottomBar, AppRollingText;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +14,7 @@ import 'package:lanh_app/features/meal_logging/meal_logging.dart'
 import 'package:lanh_app/features/onboarding/onboarding_providers.dart';
 import 'package:lanh_app/features/profile_setup/profile_setup_providers.dart';
 import 'package:material_ui/material_ui.dart'
-    show DatePickerDialog, FilledButton, Icon, MaterialLocalizations;
+    show DatePickerDialog, FilledButton, Icon, MaterialLocalizations, Slider;
 
 import 'support/test_goal_repository.dart';
 import 'support/test_meal_log_repository.dart';
@@ -69,18 +69,20 @@ void main() {
     await tapSetupAction(tester);
   }
 
-  Future<void> tapKey(WidgetTester tester, String key) async {
-    final target = find.byKey(Key(key));
-    await tester.ensureVisible(target);
-    await tester.pumpAndSettle();
-    await tester.tap(target);
+  /// Moves the custom target slider to [kg].
+  Future<void> setCustomKg(WidgetTester tester, double kg) async {
+    tester
+        .widget<Slider>(find.byKey(const Key('profile-target-slider')))
+        .onChanged!(kg);
     await tester.pumpAndSettle();
   }
 
+  /// Turns the deadline on: the switch opens the picker at the earliest safe
+  /// date, which is accepted.
   Future<void> pickTargetDate(WidgetTester tester) async {
-    final date = find.byKey(const Key('profile-target-date'));
-    await tester.ensureVisible(date);
-    await tester.tap(date);
+    final toggle = find.byKey(const Key('profile-target-date-switch'));
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
     await tester.pumpAndSettle();
     final localizations = MaterialLocalizations.of(
       tester.element(find.byType(DatePickerDialog)),
@@ -154,8 +156,7 @@ void main() {
       await fillBody(tester);
       await chooseActivity(tester);
       await tapText(tester, 'Tự chọn');
-      await tapKey(tester, 'profile-target-kg-58');
-      await tapText(tester, 'Chọn ngày');
+      await setCustomKg(tester, 58);
       await pickTargetDate(tester);
       await tapSetupAction(tester);
       expect(find.byKey(const Key('profile-plan-sheet')), findsOneWidget);
@@ -501,11 +502,11 @@ void main() {
     expect(find.byKey(const Key('progress-screen')), findsOneWidget);
   });
 
-  for (final (goal, weight, valid, outside) in [
-    // 62.5 kg at 160 cm can lose down to 48 kg (BMI 18.5).
-    ('Giảm cân', '62,5', '58', ['63', '47']),
-    // 55 kg at 160 cm can only gain to 58 kg before BMI 22.9.
-    ('Tăng cân', '55', '58', ['55', '59']),
+  for (final (goal, weight, valid, min, max) in [
+    // 62.5 kg at 160 cm can lose down to 47.5 kg (BMI 18.5 = 47.36 kg).
+    ('Giảm cân', '62,5', '58', 47.5, 62.0),
+    // 55 kg at 160 cm can gain to 58.5 kg before BMI 22.9 (58.62 kg).
+    ('Tăng cân', '55', '58', 55.5, 58.5),
   ]) {
     testWidgets(
       '$goal offers only healthy targets and preserves the draft when going back',
@@ -529,14 +530,12 @@ void main() {
         await chooseActivity(tester);
         expect(find.byKey(const Key('profile-setup-target')), findsOneWidget);
         await tapText(tester, 'Tự chọn');
-        for (final kg in outside) {
-          expect(find.byKey(Key('profile-target-kg-$kg')), findsNothing);
-        }
-        await tapKey(tester, 'profile-target-kg-$valid');
-        await tapText(tester, 'Chọn ngày');
-        await tapSetupAction(tester);
-        expect(find.text('Chọn ngày muốn đạt.'), findsOneWidget);
-
+        // The slider only spans healthy targets on the goal's side.
+        final slider = tester.widget<Slider>(
+          find.byKey(const Key('profile-target-slider')),
+        );
+        expect((slider.min, slider.max), (min, max));
+        await setCustomKg(tester, double.parse(valid));
         await pickTargetDate(tester);
 
         await tester.binding.handlePopRoute();
@@ -544,7 +543,16 @@ void main() {
         expect(find.byKey(const Key('profile-setup-activity')), findsOneWidget);
         await tapSetupAction(tester);
         expect(find.byKey(const Key('profile-setup-target')), findsOneWidget);
-        expect(find.text('$valid kg'), findsOneWidget);
+        // The custom target and its date survive going back.
+        expect(
+          tester
+              .widget<AppRollingText>(
+                find.byKey(const Key('profile-target-custom-value')),
+              )
+              .text,
+          valid,
+        );
+        expect(find.byKey(const Key('profile-target-date')), findsOneWidget);
         await tapSetupAction(tester);
         expect(find.byKey(const Key('profile-plan-sheet')), findsOneWidget);
         // The plan's first tile is the chosen target.
@@ -570,7 +578,10 @@ void main() {
     await reachActivity(tester);
     await openReview(tester);
     // Maintain, 32 y, 160 cm, 62.5 kg, mostly sitting: 1,825.6 → 1.850.
-    expect(find.text('1.850'), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.byKey(const Key('profile-plan-kcal'))).data,
+      '1.850',
+    );
     await tapText(tester, 'Bắt đầu');
     expect(profiles.profile?.dailyEnergyKcal, 1850);
     expect(profiles.profile?.goal.type, GoalType.maintain);

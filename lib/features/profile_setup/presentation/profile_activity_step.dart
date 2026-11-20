@@ -25,7 +25,7 @@ class ProfileActivityStep extends StatelessWidget {
   /// Null when no estimate is possible yet or Lành must not compute one.
   final EnergyEstimate? energy;
 
-  /// False for teens and pregnancy, where [notice] explains instead.
+  /// False for teens, where [notice] explains instead.
   final bool showsEnergy;
   final Widget? notice;
 
@@ -60,14 +60,11 @@ class ProfileActivityStep extends StatelessWidget {
     final strings = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: AppSpacing.lg,
+      spacing: AppSpacing.card,
       children: [
         AppEntrance(
           index: 0,
-          child: ProfileStepHeading(
-            title: strings.profileActivityHeading,
-            subtitle: strings.profileActivityCaption,
-          ),
+          child: ProfileStepHeading(title: strings.profileActivityHeading),
         ),
         if (notice case final notice?) AppEntrance(index: 1, child: notice),
         Semantics(
@@ -84,7 +81,6 @@ class ProfileActivityStep extends StatelessWidget {
                     icon: icon(level),
                     label: label(strings, level),
                     description: _hint(strings, level),
-                    compact: true,
                     selected: selected == level,
                     onPressed: () => onSelected(level),
                   ),
@@ -102,7 +98,9 @@ class ProfileActivityStep extends StatelessWidget {
   }
 }
 
-/// Glass card with the estimated daily energy, or a prompt to pick a level.
+/// Centred glass card with the estimated daily energy (a 56 dp fire circle,
+/// "Cơ thể bạn dùng khoảng", the kcal number and a disclaimer), or a prompt
+/// to pick a level.
 class ProfileEnergyCard extends StatelessWidget {
   const ProfileEnergyCard({super.key, required this.energy});
 
@@ -114,65 +112,97 @@ class ProfileEnergyCard extends StatelessWidget {
     final format = NumberFormat.decimalPattern(strings.localeName);
     final energy = this.energy;
     final range = energy?.totalRangeKcal;
-    final value = energy == null
+    final number = energy == null
         ? null
         : range == null
-        ? strings.profileEnergyValue(format.format(roundKcal(energy.totalKcal)))
-        : strings.profileEnergyRange(
-            format.format(roundKcal(range.$1)),
-            format.format(roundKcal(range.$2)),
-          );
+        ? format.format(roundKcal(energy.totalKcal))
+        : '${format.format(roundKcal(range.$1))}–'
+              '${format.format(roundKcal(range.$2))}';
     return Semantics(
       key: const Key('profile-energy-estimate'),
       container: true,
-      label: value == null
+      label: number == null
           ? strings.profileEnergyPickActivity
-          : '${strings.profileEnergyTitle} $value',
+          : '${strings.profileEnergyTitle} $number ${strings.profileEnergyUnit}',
       excludeSemantics: true,
       child: AppGlassCard(
-        padding: const EdgeInsets.all(AppSpacing.card),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: AppSpacing.md,
-          children: [
-            const ProfileIconWell('ph-fire'),
-            Expanded(
-              // Grows smoothly from the prompt to the full estimate.
-              child: AppAnimatedSize(
-                alignment: Alignment.topLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: AppSpacing.xxs,
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        // Grows smoothly from the prompt to the full estimate.
+        child: AppAnimatedSize(
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: [
+              const SizedBox.square(
+                dimension: AppSizes.avatarLarge,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: AppIcon.asset(
+                      'ph-fire',
+                      size: AppSizes.iconXl,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              if (number == null)
+                Text(
+                  strings.profileEnergyPickActivity,
+                  textAlign: TextAlign.center,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.foreground,
+                  ),
+                )
+              else ...[
+                Text(
+                  strings.profileEnergyTitle,
+                  textAlign: TextAlign.center,
+                  style: AppTypography.label,
+                ),
+                const SizedBox(height: AppSpacing.xxs),
+                // The unit sits beside the number and wraps below it when
+                // large text leaves no room.
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.end,
+                  spacing: AppSpacing.stepGap,
                   children: [
-                    if (value == null)
-                      Text(
-                        strings.profileEnergyPickActivity,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.foreground,
-                        ),
-                      )
-                    else ...[
-                      Text(
-                        strings.profileEnergyTitle,
-                        style: AppTypography.label,
-                      ),
-                      // Rolls to the new estimate as the activity changes.
-                      AppRollingText(
-                        value,
-                        style: AppTypography.sectionTitle.copyWith(
+                    // Rolls to the new estimate as the activity changes.
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: AppRollingText(
+                        number,
+                        style: AppTypography.numericLarge.copyWith(
+                          height: 1.25,
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),
                       ),
-                      Text(
-                        strings.profileEnergyCaption,
-                        style: AppTypography.caption,
+                    ),
+                    Padding(
+                      // Lines the unit up with the number's baseline.
+                      padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
+                      child: Text(
+                        strings.profileEnergyUnit,
+                        style: AppTypography.cardTitle.copyWith(
+                          color: AppColors.mutedForeground,
+                        ),
                       ),
-                    ],
+                    ),
                   ],
                 ),
-              ),
-            ),
-          ],
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  strings.profileEnergyCaption,
+                  textAlign: TextAlign.center,
+                  style: AppTypography.caption,
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );

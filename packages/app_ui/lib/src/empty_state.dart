@@ -15,12 +15,12 @@ class AppEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: AppSpacing.large),
+    padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ExcludeSemantics(child: Icon(icon, size: 56, color: AppColors.primary)),
-        const SizedBox(height: AppSpacing.medium),
+        const SizedBox(height: AppSpacing.md),
         Semantics(
           header: true,
           child: Text(
@@ -29,16 +29,13 @@ class AppEmptyState extends StatelessWidget {
             style: AppTypography.title,
           ),
         ),
-        const SizedBox(height: AppSpacing.small),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           description,
           textAlign: TextAlign.center,
           style: AppTypography.body,
         ),
-        if (action != null) ...[
-          const SizedBox(height: AppSpacing.medium),
-          action!,
-        ],
+        if (action != null) ...[const SizedBox(height: AppSpacing.md), action!],
       ],
     ),
   );

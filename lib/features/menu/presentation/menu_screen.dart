@@ -188,7 +188,7 @@ class _MenuRow extends StatelessWidget {
                     children: [
                       Text(item.title, style: AppTypography.cardTitle),
                       const SizedBox(height: AppSpacing.xxs),
-                      Text(item.subtitle, style: AppTypography.cardSubtitle),
+                      Text(item.subtitle, style: AppTypography.caption),
                     ],
                   ),
           ),

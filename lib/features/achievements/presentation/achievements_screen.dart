@@ -160,7 +160,7 @@ class _AchievementTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.xxs),
-              Text(description, style: AppTypography.cardSubtitle),
+              Text(description, style: AppTypography.caption),
             ],
           ),
         ),

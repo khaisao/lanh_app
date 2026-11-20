@@ -8,8 +8,10 @@ import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../domain/body_metrics.dart';
 import '../domain/profile.dart';
 import 'profile_activity_step.dart';
+import 'profile_setup_widgets.dart';
 import 'profile_target_cards.dart';
 
 /// Which variant of the plan sheet to show (Plan Ready, Plan Ready Gain,
@@ -30,7 +32,6 @@ final class ProfilePlanSummary {
     this.rateKgPerWeek,
     this.projectedDate,
     this.bmi,
-    this.pregnant = false,
   });
 
   final ProfilePlanKind kind;
@@ -43,7 +44,6 @@ final class ProfilePlanSummary {
   final double? rateKgPerWeek;
   final DateTime? projectedDate;
   final double? bmi;
-  final bool pregnant;
 }
 
 /// Shows the plan as a modal bottom sheet. Returns true for "Bắt đầu" and
@@ -122,11 +122,11 @@ class ProfilePlanSheet extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.card),
               AppEntrance(
                 index: 2,
                 child: summary.kind == ProfilePlanKind.noKcal
-                    ? _NoKcalCard(pregnant: summary.pregnant)
+                    ? const _NoKcalCard()
                     : _BudgetCard(summary: summary),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -157,7 +157,7 @@ class ProfilePlanSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.denseGap),
               AppEntrance(
                 index: 7,
                 child: AppGlassCard(
@@ -379,7 +379,6 @@ class _BudgetCard extends StatelessWidget {
       label:
           '${strings.planDailyLabel} ${format.format(budget)} kcal, ${strings.profileEstimate}',
       child: AppGlassCard(
-        shadows: const [],
         padding: const EdgeInsets.all(AppSpacing.card),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -397,7 +396,7 @@ class _BudgetCard extends StatelessWidget {
                     children: [
                       const AppIcon.asset(
                         'ph-bowl-food',
-                        size: AppSizes.iconSm,
+                        size: AppSizes.iconXs,
                         color: AppColors.accentForeground,
                       ),
                       Flexible(
@@ -564,7 +563,7 @@ class _EnergyBar extends StatelessWidget {
             else
               ColoredBox(
                 color: kind == ProfilePlanKind.gain
-                    ? AppColors.chartGold.withValues(alpha: 0.45)
+                    ? AppColors.chartGold.withValues(alpha: 0.4)
                     : AppColors.muted,
               ),
             TweenAnimationBuilder<double>(
@@ -617,40 +616,41 @@ class _StripePainter extends CustomPainter {
   bool shouldRepaint(_StripePainter oldDelegate) => false;
 }
 
-/// Teens and pregnancy: no kcal number, a calm explanation instead.
+/// Teens: no kcal number, a calm explanation instead.
 class _NoKcalCard extends StatelessWidget {
-  const _NoKcalCard({required this.pregnant});
-
-  final bool pregnant;
+  const _NoKcalCard();
 
   @override
   Widget build(BuildContext context) {
     final strings = AppLocalizations.of(context);
     return AppGlassCard(
       key: const Key('profile-plan-no-kcal'),
-      shadows: const [],
       padding: const EdgeInsets.all(AppSpacing.card),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: AppSpacing.md,
         children: [
-          const _IconCircle(
+          // `size-12` circle with a 24 px leaf.
+          const ProfileIconCircle(
             icon: 'ph-leaf',
             background: AppColors.secondary,
             color: AppColors.primary,
+            dimension: AppSizes.choiceIcon,
+            iconSize: AppSizes.iconLg,
           ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: AppSpacing.xxs,
               children: [
-                Text(strings.planNoKcalTitle, style: AppTypography.cardTitle),
                 Text(
-                  pregnant
-                      ? strings.planNoKcalPregnant
-                      : strings.planNoKcalTeen,
-                  style: AppTypography.bodySmall,
+                  strings.planNoKcalTitle,
+                  style: AppTypography.cardTitle.copyWith(
+                    fontFamily: AppFonts.heading,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
+                Text(strings.planNoKcalTeen, style: AppTypography.bodySmall),
               ],
             ),
           ),
@@ -658,29 +658,6 @@ class _NoKcalCard extends StatelessWidget {
       ),
     );
   }
-}
-
-class _IconCircle extends StatelessWidget {
-  const _IconCircle({
-    required this.icon,
-    required this.background,
-    required this.color,
-  });
-
-  final String icon;
-  final Color background;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => SizedBox.square(
-    dimension: AppSizes.planTileIcon,
-    child: DecoratedBox(
-      decoration: BoxDecoration(color: background, shape: BoxShape.circle),
-      child: Center(
-        child: AppIcon.asset(icon, size: AppSizes.iconSm, color: color),
-      ),
-    ),
-  );
 }
 
 /// Three icon tiles that rise in one after another.
@@ -752,8 +729,16 @@ class _Tiles extends StatelessWidget {
           (
             'ph-heart',
             blueTone,
-            summary.bmi == null ? '—' : kg.format(summary.bmi),
-            'BMI',
+            summary.bmi == null ? 'BMI —' : 'BMI ${kg.format(summary.bmi)}',
+            switch (summary.bmi) {
+              null => strings.planTileBmi,
+              final bmi => switch (adultBmiCategory(bmi)) {
+                AdultBmiCategory.underweight => strings.planBmiShortUnderweight,
+                AdultBmiCategory.healthy => strings.planBmiShortHealthy,
+                AdultBmiCategory.overweight => strings.planBmiShortOverweight,
+                AdultBmiCategory.obesity => strings.planBmiShortObesity,
+              },
+            },
           ),
         ],
         ProfilePlanKind.noKcal => [
@@ -833,12 +818,11 @@ class _Tile extends StatelessWidget {
       excludeSemantics: true,
       child: AppGlassCard(
         radius: AppRadii.glassInner,
-        shadows: const [],
         padding: const EdgeInsets.all(AppSpacing.sm),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _IconCircle(icon: icon, background: background, color: color),
+            ProfileIconCircle(icon: icon, background: background, color: color),
             const SizedBox(height: AppSpacing.xs),
             FittedBox(
               fit: BoxFit.scaleDown,

@@ -2,19 +2,16 @@ part of '../app_ui.dart';
 
 /// Visual states of [AppGlassCard].
 enum AppGlassTone {
-  /// Frosted glass: translucent card fill, backdrop blur, white rim and a
-  /// specular top highlight.
+  /// Frosted glass, the default state of every card: translucent card fill,
+  /// backdrop blur, `card/80` edge, white rim and a specular top highlight.
   glass,
 
-  /// A chosen option: [AppChoice.selectedFill] over the blur with the 2 dp
-  /// [AppChoice.selectedStroke].
+  /// A chosen card ([AppChoice]): solid secondary fill, the 2 dp primary
+  /// outline and a softer shadow.
   selected,
 
-  /// Solid primary card (a chosen plan or a summary) with a primary glow.
+  /// Solid primary summary card with a primary glow.
   primary,
-
-  /// Solid secondary tint with the primary outline (a chosen compact tile).
-  tinted,
 }
 
 /// The liquid glass card every card in the app is built from.
@@ -27,7 +24,8 @@ enum AppGlassTone {
 /// When [onPressed] is set the card scales down while pressed, unless the
 /// platform asks to reduce motion. Tone changes cross-fade the fill, outline
 /// and shadow; becoming chosen (from [AppGlassTone.glass]) also plays a small
-/// pop when [popOnSelect] is true. High contrast replaces the glass with an
+/// pop when [popOnSelect] is true. [ripple] false drops the ink splash and
+/// highlight for calm choice cards. High contrast replaces the glass with an
 /// opaque card and a visible border.
 class AppGlassCard extends StatefulWidget {
   const AppGlassCard({
@@ -43,6 +41,8 @@ class AppGlassCard extends StatefulWidget {
     this.blur = AppGlass.blur,
     this.pressedScale = AppScales.pressedCard,
     this.popOnSelect = true,
+    this.ripple = true,
+    this.strokeWidth = AppBorders.hairline,
   });
 
   final Widget child;
@@ -55,13 +55,20 @@ class AppGlassCard extends StatefulWidget {
   /// Overrides the tone's default shadow.
   final List<BoxShadow>? shadows;
 
-  /// Overrides the glass fill colour (e.g. [AppGlass.track]).
+  /// Overrides the glass fill colour of the [AppGlassTone.glass] state.
   final Color? fill;
   final double blur;
   final double pressedScale;
 
   /// Plays the selection pop when the tone leaves [AppGlassTone.glass].
   final bool popOnSelect;
+
+  /// Paints the Material ink splash and pressed highlight when tapped.
+  final bool ripple;
+
+  /// Width of the outline in the glass and selected states. Choice cards use
+  /// [AppChoice.strokeWidth] in both so choosing never shifts the layout.
+  final double strokeWidth;
 
   @override
   State<AppGlassCard> createState() => _AppGlassCardState();
@@ -114,33 +121,31 @@ class _AppGlassCardState extends State<AppGlassCard>
   Widget build(BuildContext context) {
     final highContrast = MediaQuery.highContrastOf(context);
     final tone = widget.tone;
-    final frosted =
-        (tone == AppGlassTone.glass || tone == AppGlassTone.selected) &&
-        !highContrast;
+    final frosted = tone != AppGlassTone.primary && !highContrast;
     final side = switch (tone) {
       AppGlassTone.glass => BorderSide(
         color: highContrast ? AppColors.border : AppGlass.edge,
+        width: widget.strokeWidth,
       ),
-      AppGlassTone.selected || AppGlassTone.tinted => const BorderSide(
+      AppGlassTone.selected => BorderSide(
         color: AppChoice.selectedStroke,
-        width: AppChoice.selectedStrokeWidth,
+        width: widget.strokeWidth,
       ),
       AppGlassTone.primary => BorderSide.none,
     };
     final shape = _shape(side);
     final fill = switch (tone) {
       AppGlassTone.primary => AppColors.primary,
-      AppGlassTone.tinted => AppColors.secondary,
+      AppGlassTone.selected => AppChoice.selectedFill,
       _ when highContrast => AppGlass.contrastFill,
-      AppGlassTone.selected => widget.fill ?? AppChoice.selectedFill,
       _ => widget.fill ?? AppGlass.fill,
     };
     final shadows =
         widget.shadows ??
         switch (tone) {
           AppGlassTone.primary => AppShadows.primaryCard,
-          AppGlassTone.tinted => const <BoxShadow>[],
-          _ => AppShadows.glassCard,
+          AppGlassTone.selected => AppChoice.selectedShadow,
+          AppGlassTone.glass => AppShadows.glassCard,
         };
 
     final onPressed = widget.onPressed;
@@ -155,6 +160,8 @@ class _AppGlassCardState extends State<AppGlassCard>
         child: InkWell(
           onTap: onPressed,
           customBorder: shape,
+          splashFactory: widget.ripple ? null : NoSplash.splashFactory,
+          highlightColor: widget.ripple ? null : const Color(0x00FFFFFF),
           onHighlightChanged: duration == Duration.zero
               ? null
               : (value) => setState(() => _pressed = value),
