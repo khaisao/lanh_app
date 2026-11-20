@@ -64,19 +64,3 @@ flutter:
           weight: 700
         - asset: assets/fonts/Nunito-Variable.ttf
           weight: 900
-    - family: Playfair Display
-      fonts:
-        - asset: assets/fonts/PlayfairDisplay-Variable.ttf
-          weight: 400
-        - asset: assets/fonts/PlayfairDisplay-Variable.ttf
-          weight: 600
-        - asset: assets/fonts/PlayfairDisplay-Variable.ttf
-          weight: 700
-    - family: JetBrains Mono
-      fonts:
-        - asset: assets/fonts/JetBrainsMono-Variable.ttf
-          weight: 400
-        - asset: assets/fonts/JetBrainsMono-Variable.ttf
-          weight: 600
-        - asset: assets/fonts/JetBrainsMono-Variable.ttf
-          weight: 700
