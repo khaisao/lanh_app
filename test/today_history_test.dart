@@ -379,4 +379,20 @@ void main() {
     expect(find.byKey(const Key('meal-detail-sheet')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('reaching the water goal under Reduce Motion lays out cleanly', (
+    tester,
+  ) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    for (var i = 0; i < 7; i++) {
+      water.logs.add((daysAgo(0, 8), 250));
+    }
+    await pump(tester, const TodayScreen());
+    await tester.tap(find.byKey(const Key('today-water-glass-7')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('today-water-reached')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

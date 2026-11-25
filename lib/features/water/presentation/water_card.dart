@@ -178,10 +178,9 @@ class _WaterCardState extends State<WaterCard> {
                   ),
               ],
             ),
-          AnimatedSize(
-            duration: AppMotion.of(context, AppMotion.selection),
-            curve: AppMotion.selectionCurve,
-            alignment: Alignment.topCenter,
+          // Reduce Motion lays the child out directly: a zero-length
+          // AnimatedSize trips a layout assertion when the goal is met.
+          AppAnimatedSize(
             // Takes no space until the goal is met.
             child: reached
                 ? Padding(
