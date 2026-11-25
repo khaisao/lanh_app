@@ -120,6 +120,14 @@ void main() {
     ) {
       await tester.pump(const Duration(milliseconds: 100));
     }
+    // A simulator with the Mac keyboard attached never shows the on-screen
+    // one; stand in its height so the layout check still runs.
+    if (tester.view.viewInsets.bottom == 0) {
+      tester.view.viewInsets = FakeViewPadding(
+        bottom: 336 * tester.view.devicePixelRatio,
+      );
+      addTearDown(tester.view.resetViewInsets);
+    }
     expect(tester.view.viewInsets.bottom, greaterThan(0));
     await tester.pumpAndSettle();
     await shot('android-voice-confirm-keyboard');

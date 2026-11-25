@@ -374,7 +374,7 @@ void main() {
     await waitFor(tester, find.text('Chưa ước lượng được'));
     expect(find.textContaining('Lời kể vẫn được giữ lại'), findsOneWidget);
     await screenshot(tester, 'iphone-voice-network-error');
-    await tester.tap(find.text('Quay lại'));
+    await tester.tap(find.byType(AppNavigationButton).first);
     await tester.pumpAndSettle();
     expect(find.text(description), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());

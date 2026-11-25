@@ -102,6 +102,9 @@ void main() {
     await tester.tap(estimate);
     await tester.pump();
     expect(find.text('Lành đang ước lượng'), findsOneWidget);
+    // On a 402 pt phone the cancel action sits below the fold.
+    await tester.ensureVisible(find.text('Hủy phân tích'));
+    await tester.pump();
     await tester.tap(find.text('Hủy phân tích'));
     await tester.pumpAndSettle();
     expect(estimate, findsOneWidget);
@@ -171,7 +174,7 @@ void main() {
     await waitFor(tester, error);
     expect(find.textContaining('máy chủ'), findsOneWidget);
     await screenshot(tester, 'iphone-meal-estimation-network-error');
-    await tester.tap(find.text('Quay lại'));
+    await tester.tap(find.byType(AppNavigationButton).first);
     await tester.pumpAndSettle();
     expect(estimate, findsOneWidget);
     expect(tester.takeException(), isNull);
