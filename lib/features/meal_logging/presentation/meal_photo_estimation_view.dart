@@ -26,134 +26,159 @@ class _MealPhotoEstimationView extends StatelessWidget {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
-            child: LayoutBuilder(
-              builder: (context, constraints) => SingleChildScrollView(
-                key: Key(failed ? 'meal-estimation-error' : 'meal-estimating'),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.pageHorizontal,
-                      AppSpacing.xl - AppSpacing.stepGap,
-                      AppSpacing.pageHorizontal,
-                      AppSpacing.onboardingBottom,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              spacing: AppSpacing.xs,
-                              runSpacing: AppSpacing.xs,
-                              children: [
-                                _EstimationBackButton(onPressed: onBack),
-                                if (!failed)
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: AppSpacing.denseVertical,
-                                      vertical: AppSpacing.xs,
-                                    ),
-                                    constraints: const BoxConstraints(
-                                      minHeight: AppSizes.estimationNotice,
-                                    ),
-                                    decoration: const ShapeDecoration(
-                                      color: AppColors.secondary,
-                                      shape: StadiumBorder(),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      spacing: AppSpacing.stepGap,
-                                      children: [
-                                        const AppIcon.asset(
-                                          'ph-info-bold',
-                                          size: AppSizes.iconInfo,
-                                          color: AppColors.primary,
-                                        ),
-                                        Flexible(
-                                          child: Text(
-                                            strings.mealEstimationNotice,
-                                            style: AppTypography.label.copyWith(
-                                              color: AppColors.primary,
-                                            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => SingleChildScrollView(
+                      key: Key(
+                        failed ? 'meal-estimation-error' : 'meal-estimating',
+                      ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.pageHorizontal,
+                            AppSpacing.xl - AppSpacing.stepGap,
+                            AppSpacing.pageHorizontal,
+                            AppSpacing.onboardingBottom,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Wrap(
+                                    alignment: WrapAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    spacing: AppSpacing.xs,
+                                    runSpacing: AppSpacing.xs,
+                                    children: [
+                                      _EstimationBackButton(onPressed: onBack),
+                                      if (!failed)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal:
+                                                AppSpacing.denseVertical,
+                                            vertical: AppSpacing.xs,
+                                          ),
+                                          constraints: const BoxConstraints(
+                                            minHeight:
+                                                AppSizes.estimationNotice,
+                                          ),
+                                          decoration: const ShapeDecoration(
+                                            color: AppColors.secondary,
+                                            shape: StadiumBorder(),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            spacing: AppSpacing.stepGap,
+                                            children: [
+                                              const AppIcon.asset(
+                                                'ph-info-bold',
+                                                size: AppSizes.iconInfo,
+                                                color: AppColors.primary,
+                                              ),
+                                              Flexible(
+                                                child: Text(
+                                                  strings.mealEstimationNotice,
+                                                  style: AppTypography.label
+                                                      .copyWith(
+                                                        color:
+                                                            AppColors.primary,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: AppSpacing.xl - AppSpacing.stepGap,
+                                  ),
+                                  Center(
+                                    child: _EstimationHero(
+                                      photo: photo,
+                                      failed: failed,
                                     ),
                                   ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: AppSpacing.xl - AppSpacing.stepGap,
-                            ),
-                            Center(
-                              child: _EstimationHero(
-                                photo: photo,
-                                failed: failed,
+                                  const SizedBox(height: AppSpacing.xl),
+                                  Semantics(
+                                    header: true,
+                                    liveRegion: true,
+                                    child: Text(
+                                      failed
+                                          ? strings.mealEstimationErrorTitle
+                                          : strings.mealEstimatingTitle,
+                                      style: AppTypography.setupHeading,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: failed
+                                        ? AppSpacing.sm
+                                        : AppSpacing.xs,
+                                  ),
+                                  Center(
+                                    child: ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: AppSizes.readableWidth,
+                                      ),
+                                      child: Text(
+                                        failed
+                                            ? _failureBody(
+                                                strings,
+                                                failure,
+                                                text: photo == null,
+                                              )
+                                            : strings.mealEstimatingBody,
+                                        style: AppTypography.estimationBody,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                  if (!failed) ...[
+                                    const SizedBox(height: AppSpacing.xl),
+                                    _EstimationSteps(text: photo == null),
+                                  ],
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: AppSpacing.xl),
-                            Semantics(
-                              header: true,
-                              liveRegion: true,
-                              child: Text(
-                                failed
-                                    ? strings.mealEstimationErrorTitle
-                                    : strings.mealEstimatingTitle,
-                                style: AppTypography.setupHeading,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            SizedBox(
-                              height: failed ? AppSpacing.sm : AppSpacing.xs,
-                            ),
-                            Center(
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: AppSizes.readableWidth,
-                                ),
-                                child: Text(
-                                  failed
-                                      ? _failureBody(
-                                          strings,
-                                          failure,
-                                          text: photo == null,
-                                        )
-                                      : strings.mealEstimatingBody,
-                                  style: AppTypography.estimationBody,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            if (!failed) ...[
-                              const SizedBox(height: AppSpacing.xl),
-                              _EstimationSteps(text: photo == null),
                             ],
-                          ],
+                          ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: AppSpacing.lg),
-                          child: failed
-                              ? AppButton(
-                                  onPressed: onRetry,
-                                  fullWidth: true,
-                                  leadingIcon: 'ph-arrow-clockwise-bold',
-                                  label: strings.retry,
-                                )
-                              : AppButton.surface(
-                                  onPressed: onBack,
-                                  label: strings.mealEstimationCancel,
-                                ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+                // Pinned under the scrolling content, so the action stays
+                // reachable on short phones and at large text sizes.
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.pageHorizontal,
+                    AppSpacing.sm,
+                    AppSpacing.pageHorizontal,
+                    AppSpacing.md,
+                  ),
+                  child: failed
+                      ? AppButton(
+                          onPressed: onRetry,
+                          fullWidth: true,
+                          leadingIcon: 'ph-arrow-clockwise-bold',
+                          label: strings.retry,
+                        )
+                      : AppButton.surface(
+                          onPressed: onBack,
+                          label: strings.mealEstimationCancel,
+                        ),
+                ),
+              ],
             ),
           ),
         ),
