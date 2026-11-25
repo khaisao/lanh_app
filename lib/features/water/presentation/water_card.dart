@@ -20,7 +20,11 @@ class WaterCard extends StatefulWidget {
     required this.onAdd,
     required this.onRemove,
     required this.onRetry,
+    this.readOnly = false,
   });
+
+  /// A past day: glasses show what was logged and do not respond to taps.
+  final bool readOnly;
 
   /// Glasses logged today; null while loading.
   final int? glasses;
@@ -157,8 +161,9 @@ class _WaterCardState extends State<WaterCard> {
                     child: _GlassButton(
                       index: index,
                       filled: glasses != null && index < glasses,
+                      readOnly: widget.readOnly,
                       // Waits for today's count and the goal before logging.
-                      onTap: !ready
+                      onTap: !ready || widget.readOnly
                           ? null
                           : index < glasses
                           ? () {
@@ -194,7 +199,9 @@ class _WaterCardState extends State<WaterCard> {
                         ),
                         Flexible(
                           child: Text(
-                            strings.waterReached,
+                            widget.readOnly
+                                ? strings.waterReachedDay
+                                : strings.waterReached,
                             style: AppTypography.label.copyWith(
                               color: AppColors.primary,
                             ),
@@ -216,10 +223,12 @@ class _GlassButton extends StatelessWidget {
     required this.index,
     required this.filled,
     required this.onTap,
+    required this.readOnly,
   });
 
   final int index;
   final bool filled;
+  final bool readOnly;
   final VoidCallback? onTap;
 
   @override
@@ -228,7 +237,7 @@ class _GlassButton extends StatelessWidget {
     final number = '${index + 1}';
     return Semantics(
       key: Key('today-water-glass-$index'),
-      button: true,
+      button: !readOnly,
       enabled: onTap != null,
       label: filled
           ? strings.waterGlassFull(number)
@@ -239,7 +248,9 @@ class _GlassButton extends StatelessWidget {
         radius: AppSizes.waterGlassTarget / 2,
         child: SizedBox(
           height: AppSizes.waterGlassTarget,
-          child: Center(child: WaterGlass(filled: filled)),
+          child: Center(
+            child: WaterGlass(filled: filled, tappable: !readOnly),
+          ),
         ),
       ),
     );

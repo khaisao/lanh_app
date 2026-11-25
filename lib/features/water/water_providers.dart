@@ -17,6 +17,18 @@ final waterGoalGlassesProvider = Provider<int?>((ref) {
       : waterGoalGlasses(female: sex == ProfileSex.female);
 });
 
+/// Glasses per local day over the last [recentWaterDays] days, today
+/// included; days without water are absent. Follows today's taps.
+final recentWaterProvider = FutureProvider<Map<DateTime, int>>((ref) {
+  ref.watch(todayWaterProvider);
+  final now = DateTime.now();
+  final from = DateTime(now.year, now.month, now.day - recentWaterDays + 1);
+  return ref.watch(waterLogRepositoryProvider).countsBetween(from, now);
+});
+
+/// Today and the seven days before it: the Home day strip and Nhìn lại.
+const recentWaterDays = 8;
+
 /// Glasses logged today, persisted on the device.
 final todayWaterProvider = AsyncNotifierProvider<TodayWater, int>(
   TodayWater.new,

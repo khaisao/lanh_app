@@ -57,6 +57,26 @@ final class SqliteWaterLogRepository implements WaterLogRepository {
   }
 
   @override
+  Future<Map<DateTime, int>> countsBetween(DateTime from, DateTime to) async {
+    final db = await _open();
+    final (start, _) = _day(from);
+    final (_, end) = _day(to);
+    final rows = await db.query(
+      'water_logs',
+      columns: ['logged_at'],
+      where: 'logged_at >= ? AND logged_at < ?',
+      whereArgs: [start, end],
+    );
+    final counts = <DateTime, int>{};
+    for (final row in rows) {
+      final at = DateTime.fromMillisecondsSinceEpoch(row['logged_at'] as int);
+      final day = DateTime(at.year, at.month, at.day);
+      counts[day] = (counts[day] ?? 0) + 1;
+    }
+    return counts;
+  }
+
+  @override
   Future<void> add({required DateTime at, required int milliliters}) async {
     if (milliliters <= 0) {
       throw ArgumentError.value(milliliters, 'milliliters', 'Must be > 0.');

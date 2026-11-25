@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lanh_app/features/weight/weight.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -10,7 +11,7 @@ import 'meal_photo_flow.dart';
 import 'meal_voice_access_gate.dart';
 import 'meal_voice_flow.dart';
 
-enum _MealMethod { camera, voice }
+enum _MealMethod { camera, voice, weight }
 
 /// Closes the picker, then opens the chosen task. Closing either task returns
 /// to the tab that opened the picker, without showing the picker again.
@@ -22,6 +23,8 @@ Future<void> showMealMethodSheet(BuildContext context) async {
       await showMealPhotoFlow(context);
     case _MealMethod.voice:
       await showMealVoiceFlow(context);
+    case _MealMethod.weight:
+      await showWeightSheet(context);
     case null:
       return;
   }
@@ -83,14 +86,23 @@ class _MealMethodSheetHostState extends ConsumerState<_MealMethodSheetHost> {
     return MealMethodSheet(
       onCamera: () => _pick(_MealMethod.camera),
       onVoice: _requestingVoice ? null : () => unawaited(_voice()),
+      onWeight: () => _pick(_MealMethod.weight),
     );
   }
 }
 
 class MealMethodSheet extends StatelessWidget {
-  const MealMethodSheet({super.key, required this.onCamera, this.onVoice});
+  const MealMethodSheet({
+    super.key,
+    required this.onCamera,
+    this.onVoice,
+    this.onWeight,
+  });
 
   final VoidCallback onCamera;
+
+  /// Opens "Cập nhật cân nặng"; the option is hidden when null.
+  final VoidCallback? onWeight;
 
   /// Null while voice access is being requested.
   final VoidCallback? onVoice;
@@ -173,6 +185,17 @@ class MealMethodSheet extends StatelessWidget {
               description: strings.mealVoiceDescription,
               onPressed: onVoice,
             ),
+            if (onWeight != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              AppOptionCard(
+                key: const Key('meal-method-weight'),
+                caretSize: AppSizes.iconMd,
+                icon: 'ph-scales',
+                title: strings.weightUpdateTitle,
+                description: strings.weightOptionDescription,
+                onPressed: onWeight,
+              ),
+            ],
           ],
         ),
       ),

@@ -9,9 +9,12 @@ import 'package:material_ui/material_ui.dart';
 /// glass gives a small shake). The first build and Reduce Motion show the
 /// end state at once.
 class WaterGlass extends StatefulWidget {
-  const WaterGlass({super.key, required this.filled});
+  const WaterGlass({super.key, required this.filled, this.tappable = true});
 
   final bool filled;
+
+  /// Draws the "+" hint in an empty glass; off when the day is read-only.
+  final bool tappable;
 
   @override
   State<WaterGlass> createState() => _WaterGlassState();
@@ -112,6 +115,7 @@ class _WaterGlassState extends State<WaterGlass> with TickerProviderStateMixin {
               wavePhase: t * math.pi * 3,
               waveAmplitude: active ? 2.2 * (1 - t) + .6 : .6,
               droplets: active && _pouring ? t : null,
+              tappable: widget.tappable,
             ),
           ),
         ),
@@ -126,7 +130,10 @@ class _GlassPainter extends CustomPainter {
     required this.wavePhase,
     required this.waveAmplitude,
     required this.droplets,
+    required this.tappable,
   });
+
+  final bool tappable;
 
   /// 0 empty … 1 full (water stands at 85 % of the glass when full).
   final double level;
@@ -196,7 +203,7 @@ class _GlassPainter extends CustomPainter {
     );
 
     // A small "+" invites the tap while the glass is empty.
-    if (level < .2) {
+    if (tappable && level < .2) {
       final plus = Paint()
         ..color = AppColors.mutedForeground.withValues(alpha: 1 - level * 5)
         ..strokeWidth = 1.4
@@ -226,5 +233,6 @@ class _GlassPainter extends CustomPainter {
       old.level != level ||
       old.wavePhase != wavePhase ||
       old.waveAmplitude != waveAmplitude ||
-      old.droplets != droplets;
+      old.droplets != droplets ||
+      old.tappable != tappable;
 }

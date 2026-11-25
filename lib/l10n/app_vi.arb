@@ -12,7 +12,7 @@
   "startupError": "Chưa đọc được thiết lập của bạn. Thử lại để tiếp tục.",
   "retry": "Thử lại",
   "today": "Hôm nay",
-  "progress": "Tiến trình",
+  "progress": "Nhìn lại",
   "achievements": "Thành tựu",
   "menu": "Menu",
   "logMeal": "Ghi bữa ăn",
@@ -629,5 +629,207 @@
   "waterReminderError": "Chưa đổi được nhắc uống nước. Thử lại nhé.",
   "waterReminderChannel": "Nhắc uống nước",
   "waterReminderNotificationTitle": "Uống một cốc nước nhé 💧",
-  "waterReminderNotificationBody": "Chạm để ghi vào Lành."
+  "waterReminderNotificationBody": "Chạm để ghi vào Lành.",
+  "weightTitle": "Cân nặng",
+  "weightUpdate": "Cập nhật",
+  "weightUpdateTitle": "Cập nhật cân nặng",
+  "weightOptionDescription": "Ghi số cân của hôm nay",
+  "weightNone": "Chưa có số đo",
+  "weightReadError": "Chưa đọc được cân nặng.",
+  "weightKg": "{kg} kg",
+  "@weightKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "weightUnit": "kg",
+  "weightDate": "Ngày cân",
+  "weightReplaceWarning": "Ngày này đã có {kg} kg; lưu sẽ thay số cũ.",
+  "@weightReplaceWarning": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "weightRange": "Nhập từ 20 đến 300 kg",
+  "weightSave": "Lưu",
+  "weightDelete": "Xoá cân nặng",
+  "weightSaveError": "Chưa lưu được cân nặng. Thử lại nhé.",
+  "weightDecrease": "Giảm 0,1 kg",
+  "weightIncrease": "Tăng 0,1 kg",
+  "dayToday": "hôm nay",
+  "dayYesterday": "hôm qua",
+  "dayStripWeekday": "{weekday, select, 1{T2} 2{T3} 3{T4} 4{T5} 5{T6} 6{T7} other{CN}}",
+  "@dayStripWeekday": {
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "dayStripLabel": "{weekday}, {date}",
+  "@dayStripLabel": {
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dayEnergy": "Năng lượng",
+  "dayNoMeals": "Chưa ghi bữa",
+  "dayNoMealsBody": "Chưa có món nào trong ngày này",
+  "dayGainBelow": "Thiếu {kcal} kcal so với mục tiêu",
+  "@dayGainBelow": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "dayGainReached": "Đã đạt mục tiêu",
+  "dayLoseWithin": "Dưới kế hoạch {kcal} kcal",
+  "@dayLoseWithin": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "dayLoseAtPlan": "Vừa đủ kế hoạch",
+  "dayLoseOver": "Hơn kế hoạch {kcal} kcal",
+  "@dayLoseOver": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "dayMaintainBelow": "Dưới dải duy trì",
+  "dayMaintainAbove": "Hơn dải {kcal} kcal",
+  "@dayMaintainAbove": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "waterReachedDay": "Đã đủ nước",
+  "mealDelete": "Xoá bữa",
+  "mealDeleteTitle": "Xoá bữa này?",
+  "mealDeleteError": "Chưa xoá được bữa. Thử lại nhé.",
+  "mealDetailEstimated": "Ước lượng AI",
+  "mealProtein": "Đạm",
+  "mealCarbohydrate": "Tinh bột",
+  "mealFat": "Chất béo",
+  "reviewRange": "{from}–{to}",
+  "@reviewRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewReadError": "Chưa đọc được dữ liệu tuần này.",
+  "reviewMoreDays": "{count, plural, other{Ghi thêm {count} ngày để xem phân tích}}",
+  "@reviewMoreDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewLoggedOf": "Đã ghi {logged}/{total} ngày",
+  "@reviewLoggedOf": {
+    "placeholders": {
+      "logged": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewGoalLose": "Mục tiêu: giảm cân",
+  "reviewGoalGain": "Mục tiêu: tăng cân",
+  "reviewGoalMaintain": "Mục tiêu: giữ cân",
+  "reviewGoalNone": "Theo dõi ăn uống",
+  "reviewOnTrack": "Đúng hướng mục tiêu",
+  "reviewOffTrack": "Chưa đúng hướng mục tiêu",
+  "reviewNoTrend": "Cân 2 lần mỗi tuần để thấy xu hướng",
+  "reviewNoData": "—",
+  "reviewWeighIns": "{count, plural, other{{count} lần cân}}",
+  "@reviewWeighIns": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewKcal": "Kcal/ngày",
+  "reviewPlan": "Kế hoạch {kcal}",
+  "@reviewPlan": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewLoggedDays": "Ngày có ghi bữa",
+  "reviewEnough": "Đủ để phân tích",
+  "reviewWater": "Nước/ngày",
+  "reviewGlasses": "ly",
+  "reviewNoWater": "Chưa ghi nước",
+  "reviewWaterDays": "{met}/{days} ngày đủ ly",
+  "@reviewWaterDays": {
+    "placeholders": {
+      "met": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewChartTitle": "Kcal 7 ngày",
+  "reviewChartDay": "{day}: {value}",
+  "@reviewChartDay": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewNotLogged": "Chưa ghi",
+  "reviewOverDays": "{count, plural, other{{count} ngày vượt kế hoạch}}",
+  "@reviewOverDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewNotable": "Đáng chú ý",
+  "reviewNothing": "Chưa có gì nổi bật.",
+  "reviewWeekend": "Cuối tuần nhiều hơn {kcal} kcal/ngày",
+  "@reviewWeekend": {
+    "placeholders": {
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewWeekendTip": "Chọn trước một bữa nhẹ cho cuối tuần",
+  "cancel": "Hủy"
 }

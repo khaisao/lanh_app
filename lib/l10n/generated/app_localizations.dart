@@ -173,7 +173,7 @@ abstract class AppLocalizations {
   /// No description provided for @progress.
   ///
   /// In vi, this message translates to:
-  /// **'Tiến trình'**
+  /// **'Nhìn lại'**
   String get progress;
 
   /// No description provided for @achievements.
@@ -2053,6 +2053,414 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chạm để ghi vào Lành.'**
   String get waterReminderNotificationBody;
+
+  /// No description provided for @weightTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng'**
+  String get weightTitle;
+
+  /// No description provided for @weightUpdate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật'**
+  String get weightUpdate;
+
+  /// No description provided for @weightUpdateTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật cân nặng'**
+  String get weightUpdateTitle;
+
+  /// No description provided for @weightOptionDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi số cân của hôm nay'**
+  String get weightOptionDescription;
+
+  /// No description provided for @weightNone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có số đo'**
+  String get weightNone;
+
+  /// No description provided for @weightReadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đọc được cân nặng.'**
+  String get weightReadError;
+
+  /// No description provided for @weightKg.
+  ///
+  /// In vi, this message translates to:
+  /// **'{kg} kg'**
+  String weightKg(String kg);
+
+  /// No description provided for @weightUnit.
+  ///
+  /// In vi, this message translates to:
+  /// **'kg'**
+  String get weightUnit;
+
+  /// No description provided for @weightDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày cân'**
+  String get weightDate;
+
+  /// No description provided for @weightReplaceWarning.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày này đã có {kg} kg; lưu sẽ thay số cũ.'**
+  String weightReplaceWarning(String kg);
+
+  /// No description provided for @weightRange.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập từ 20 đến 300 kg'**
+  String get weightRange;
+
+  /// No description provided for @weightSave.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu'**
+  String get weightSave;
+
+  /// No description provided for @weightDelete.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá cân nặng'**
+  String get weightDelete;
+
+  /// No description provided for @weightSaveError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu được cân nặng. Thử lại nhé.'**
+  String get weightSaveError;
+
+  /// No description provided for @weightDecrease.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giảm 0,1 kg'**
+  String get weightDecrease;
+
+  /// No description provided for @weightIncrease.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng 0,1 kg'**
+  String get weightIncrease;
+
+  /// No description provided for @dayToday.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm nay'**
+  String get dayToday;
+
+  /// No description provided for @dayYesterday.
+  ///
+  /// In vi, this message translates to:
+  /// **'hôm qua'**
+  String get dayYesterday;
+
+  /// No description provided for @dayStripWeekday.
+  ///
+  /// In vi, this message translates to:
+  /// **'{weekday, select, 1{T2} 2{T3} 3{T4} 4{T5} 5{T6} 6{T7} other{CN}}'**
+  String dayStripWeekday(String weekday);
+
+  /// No description provided for @dayStripLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'{weekday}, {date}'**
+  String dayStripLabel(String weekday, String date);
+
+  /// No description provided for @dayEnergy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Năng lượng'**
+  String get dayEnergy;
+
+  /// No description provided for @dayNoMeals.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi bữa'**
+  String get dayNoMeals;
+
+  /// No description provided for @dayNoMealsBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có món nào trong ngày này'**
+  String get dayNoMealsBody;
+
+  /// No description provided for @dayGainBelow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiếu {kcal} kcal so với mục tiêu'**
+  String dayGainBelow(String kcal);
+
+  /// No description provided for @dayGainReached.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đạt mục tiêu'**
+  String get dayGainReached;
+
+  /// No description provided for @dayLoseWithin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dưới kế hoạch {kcal} kcal'**
+  String dayLoseWithin(String kcal);
+
+  /// No description provided for @dayLoseAtPlan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa đủ kế hoạch'**
+  String get dayLoseAtPlan;
+
+  /// No description provided for @dayLoseOver.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hơn kế hoạch {kcal} kcal'**
+  String dayLoseOver(String kcal);
+
+  /// No description provided for @dayMaintainBelow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dưới dải duy trì'**
+  String get dayMaintainBelow;
+
+  /// No description provided for @dayMaintainAbove.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hơn dải {kcal} kcal'**
+  String dayMaintainAbove(String kcal);
+
+  /// No description provided for @waterReachedDay.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đủ nước'**
+  String get waterReachedDay;
+
+  /// No description provided for @mealDelete.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá bữa'**
+  String get mealDelete;
+
+  /// No description provided for @mealDeleteTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá bữa này?'**
+  String get mealDeleteTitle;
+
+  /// No description provided for @mealDeleteError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa xoá được bữa. Thử lại nhé.'**
+  String get mealDeleteError;
+
+  /// No description provided for @mealDetailEstimated.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ước lượng AI'**
+  String get mealDetailEstimated;
+
+  /// No description provided for @mealProtein.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đạm'**
+  String get mealProtein;
+
+  /// No description provided for @mealCarbohydrate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tinh bột'**
+  String get mealCarbohydrate;
+
+  /// No description provided for @mealFat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chất béo'**
+  String get mealFat;
+
+  /// No description provided for @reviewRange.
+  ///
+  /// In vi, this message translates to:
+  /// **'{from}–{to}'**
+  String reviewRange(String from, String to);
+
+  /// No description provided for @reviewReadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đọc được dữ liệu tuần này.'**
+  String get reviewReadError;
+
+  /// No description provided for @reviewMoreDays.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{Ghi thêm {count} ngày để xem phân tích}}'**
+  String reviewMoreDays(int count);
+
+  /// No description provided for @reviewLoggedOf.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ghi {logged}/{total} ngày'**
+  String reviewLoggedOf(int logged, int total);
+
+  /// No description provided for @reviewGoalLose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu: giảm cân'**
+  String get reviewGoalLose;
+
+  /// No description provided for @reviewGoalGain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu: tăng cân'**
+  String get reviewGoalGain;
+
+  /// No description provided for @reviewGoalMaintain.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu: giữ cân'**
+  String get reviewGoalMaintain;
+
+  /// No description provided for @reviewGoalNone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo dõi ăn uống'**
+  String get reviewGoalNone;
+
+  /// No description provided for @reviewOnTrack.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đúng hướng mục tiêu'**
+  String get reviewOnTrack;
+
+  /// No description provided for @reviewOffTrack.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đúng hướng mục tiêu'**
+  String get reviewOffTrack;
+
+  /// No description provided for @reviewNoTrend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân 2 lần mỗi tuần để thấy xu hướng'**
+  String get reviewNoTrend;
+
+  /// No description provided for @reviewNoData.
+  ///
+  /// In vi, this message translates to:
+  /// **'—'**
+  String get reviewNoData;
+
+  /// No description provided for @reviewWeighIns.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} lần cân}}'**
+  String reviewWeighIns(int count);
+
+  /// No description provided for @reviewKcal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kcal/ngày'**
+  String get reviewKcal;
+
+  /// No description provided for @reviewPlan.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kế hoạch {kcal}'**
+  String reviewPlan(String kcal);
+
+  /// No description provided for @reviewLoggedDays.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày có ghi bữa'**
+  String get reviewLoggedDays;
+
+  /// No description provided for @reviewEnough.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đủ để phân tích'**
+  String get reviewEnough;
+
+  /// No description provided for @reviewWater.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nước/ngày'**
+  String get reviewWater;
+
+  /// No description provided for @reviewGlasses.
+  ///
+  /// In vi, this message translates to:
+  /// **'ly'**
+  String get reviewGlasses;
+
+  /// No description provided for @reviewNoWater.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi nước'**
+  String get reviewNoWater;
+
+  /// No description provided for @reviewWaterDays.
+  ///
+  /// In vi, this message translates to:
+  /// **'{met}/{days} ngày đủ ly'**
+  String reviewWaterDays(int met, int days);
+
+  /// No description provided for @reviewChartTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kcal 7 ngày'**
+  String get reviewChartTitle;
+
+  /// No description provided for @reviewChartDay.
+  ///
+  /// In vi, this message translates to:
+  /// **'{day}: {value}'**
+  String reviewChartDay(String day, String value);
+
+  /// No description provided for @reviewNotLogged.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi'**
+  String get reviewNotLogged;
+
+  /// No description provided for @reviewOverDays.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, other{{count} ngày vượt kế hoạch}}'**
+  String reviewOverDays(int count);
+
+  /// No description provided for @reviewNotable.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đáng chú ý'**
+  String get reviewNotable;
+
+  /// No description provided for @reviewNothing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có gì nổi bật.'**
+  String get reviewNothing;
+
+  /// No description provided for @reviewWeekend.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cuối tuần nhiều hơn {kcal} kcal/ngày'**
+  String reviewWeekend(String kcal);
+
+  /// No description provided for @reviewWeekendTip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn trước một bữa nhẹ cho cuối tuần'**
+  String get reviewWeekendTip;
+
+  /// No description provided for @cancel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

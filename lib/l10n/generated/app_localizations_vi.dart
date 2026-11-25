@@ -48,7 +48,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get today => 'Hôm nay';
 
   @override
-  String get progress => 'Tiến trình';
+  String get progress => 'Nhìn lại';
 
   @override
   String get achievements => 'Thành tựu';
@@ -1137,4 +1137,266 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get waterReminderNotificationBody => 'Chạm để ghi vào Lành.';
+
+  @override
+  String get weightTitle => 'Cân nặng';
+
+  @override
+  String get weightUpdate => 'Cập nhật';
+
+  @override
+  String get weightUpdateTitle => 'Cập nhật cân nặng';
+
+  @override
+  String get weightOptionDescription => 'Ghi số cân của hôm nay';
+
+  @override
+  String get weightNone => 'Chưa có số đo';
+
+  @override
+  String get weightReadError => 'Chưa đọc được cân nặng.';
+
+  @override
+  String weightKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
+  String get weightUnit => 'kg';
+
+  @override
+  String get weightDate => 'Ngày cân';
+
+  @override
+  String weightReplaceWarning(String kg) {
+    return 'Ngày này đã có $kg kg; lưu sẽ thay số cũ.';
+  }
+
+  @override
+  String get weightRange => 'Nhập từ 20 đến 300 kg';
+
+  @override
+  String get weightSave => 'Lưu';
+
+  @override
+  String get weightDelete => 'Xoá cân nặng';
+
+  @override
+  String get weightSaveError => 'Chưa lưu được cân nặng. Thử lại nhé.';
+
+  @override
+  String get weightDecrease => 'Giảm 0,1 kg';
+
+  @override
+  String get weightIncrease => 'Tăng 0,1 kg';
+
+  @override
+  String get dayToday => 'hôm nay';
+
+  @override
+  String get dayYesterday => 'hôm qua';
+
+  @override
+  String dayStripWeekday(String weekday) {
+    String _temp0 = intl.Intl.selectLogic(weekday, {
+      '1': 'T2',
+      '2': 'T3',
+      '3': 'T4',
+      '4': 'T5',
+      '5': 'T6',
+      '6': 'T7',
+      'other': 'CN',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String dayStripLabel(String weekday, String date) {
+    return '$weekday, $date';
+  }
+
+  @override
+  String get dayEnergy => 'Năng lượng';
+
+  @override
+  String get dayNoMeals => 'Chưa ghi bữa';
+
+  @override
+  String get dayNoMealsBody => 'Chưa có món nào trong ngày này';
+
+  @override
+  String dayGainBelow(String kcal) {
+    return 'Thiếu $kcal kcal so với mục tiêu';
+  }
+
+  @override
+  String get dayGainReached => 'Đã đạt mục tiêu';
+
+  @override
+  String dayLoseWithin(String kcal) {
+    return 'Dưới kế hoạch $kcal kcal';
+  }
+
+  @override
+  String get dayLoseAtPlan => 'Vừa đủ kế hoạch';
+
+  @override
+  String dayLoseOver(String kcal) {
+    return 'Hơn kế hoạch $kcal kcal';
+  }
+
+  @override
+  String get dayMaintainBelow => 'Dưới dải duy trì';
+
+  @override
+  String dayMaintainAbove(String kcal) {
+    return 'Hơn dải $kcal kcal';
+  }
+
+  @override
+  String get waterReachedDay => 'Đã đủ nước';
+
+  @override
+  String get mealDelete => 'Xoá bữa';
+
+  @override
+  String get mealDeleteTitle => 'Xoá bữa này?';
+
+  @override
+  String get mealDeleteError => 'Chưa xoá được bữa. Thử lại nhé.';
+
+  @override
+  String get mealDetailEstimated => 'Ước lượng AI';
+
+  @override
+  String get mealProtein => 'Đạm';
+
+  @override
+  String get mealCarbohydrate => 'Tinh bột';
+
+  @override
+  String get mealFat => 'Chất béo';
+
+  @override
+  String reviewRange(String from, String to) {
+    return '$from–$to';
+  }
+
+  @override
+  String get reviewReadError => 'Chưa đọc được dữ liệu tuần này.';
+
+  @override
+  String reviewMoreDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Ghi thêm $count ngày để xem phân tích',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reviewLoggedOf(int logged, int total) {
+    return 'Đã ghi $logged/$total ngày';
+  }
+
+  @override
+  String get reviewGoalLose => 'Mục tiêu: giảm cân';
+
+  @override
+  String get reviewGoalGain => 'Mục tiêu: tăng cân';
+
+  @override
+  String get reviewGoalMaintain => 'Mục tiêu: giữ cân';
+
+  @override
+  String get reviewGoalNone => 'Theo dõi ăn uống';
+
+  @override
+  String get reviewOnTrack => 'Đúng hướng mục tiêu';
+
+  @override
+  String get reviewOffTrack => 'Chưa đúng hướng mục tiêu';
+
+  @override
+  String get reviewNoTrend => 'Cân 2 lần mỗi tuần để thấy xu hướng';
+
+  @override
+  String get reviewNoData => '—';
+
+  @override
+  String reviewWeighIns(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lần cân',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewKcal => 'Kcal/ngày';
+
+  @override
+  String reviewPlan(String kcal) {
+    return 'Kế hoạch $kcal';
+  }
+
+  @override
+  String get reviewLoggedDays => 'Ngày có ghi bữa';
+
+  @override
+  String get reviewEnough => 'Đủ để phân tích';
+
+  @override
+  String get reviewWater => 'Nước/ngày';
+
+  @override
+  String get reviewGlasses => 'ly';
+
+  @override
+  String get reviewNoWater => 'Chưa ghi nước';
+
+  @override
+  String reviewWaterDays(int met, int days) {
+    return '$met/$days ngày đủ ly';
+  }
+
+  @override
+  String get reviewChartTitle => 'Kcal 7 ngày';
+
+  @override
+  String reviewChartDay(String day, String value) {
+    return '$day: $value';
+  }
+
+  @override
+  String get reviewNotLogged => 'Chưa ghi';
+
+  @override
+  String reviewOverDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ngày vượt kế hoạch',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewNotable => 'Đáng chú ý';
+
+  @override
+  String get reviewNothing => 'Chưa có gì nổi bật.';
+
+  @override
+  String reviewWeekend(String kcal) {
+    return 'Cuối tuần nhiều hơn $kcal kcal/ngày';
+  }
+
+  @override
+  String get reviewWeekendTip => 'Chọn trước một bữa nhẹ cho cuối tuần';
+
+  @override
+  String get cancel => 'Hủy';
 }

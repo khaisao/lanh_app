@@ -302,7 +302,7 @@ void main() {
     tester,
   ) async {
     await openApp(tester, returning: true);
-    expect(find.bySemanticsLabel('Tiến trình'), findsOneWidget);
+    expect(find.bySemanticsLabel('Nhìn lại'), findsOneWidget);
     final tab = find.byKey(const Key('nav-progress'));
     final lens = find.descendant(
       of: tab,
@@ -604,6 +604,17 @@ void main() {
       find.text('Thêm 1.650\u2060–\u20602.050 kcal là vào dải'),
       findsOneWidget,
     );
+    // The dock points at the action while the day is empty; it hides once
+    // the page scrolls, so check it first.
+    expect(
+      tester.widget<AppBottomBar>(find.byType(AppBottomBar)).highlightAction,
+      isTrue,
+    );
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('today-first-meal-action')),
+      120,
+    );
+    await tester.pumpAndSettle();
     expect(find.byKey(const Key('today-first-meal')), findsOneWidget);
     expect(find.text('Ghi bữa đầu tiên hôm nay'), findsOneWidget);
     // Sleek Today First Run: the card action spans the card (`w-full`).
@@ -621,10 +632,6 @@ void main() {
         ),
       ),
       const Size.square(AppSizes.buttonIconCard),
-    );
-    expect(
-      tester.widget<AppBottomBar>(find.byType(AppBottomBar)).highlightAction,
-      isTrue,
     );
   });
 
@@ -825,7 +832,10 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Hello'), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.byKey(const Key('today-title'))).data,
+      'Today',
+    );
     await tester.tap(find.byKey(const Key('nav-log-meal')));
     await tester.pumpAndSettle();
     expect(find.text('Log a meal'), findsOneWidget);

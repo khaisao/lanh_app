@@ -49,7 +49,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get today => 'Today';
 
   @override
-  String get progress => 'Progress';
+  String get progress => 'Review';
 
   @override
   String get achievements => 'Achievements';
@@ -1148,4 +1148,269 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waterReminderNotificationBody => 'Tap to log it in Lành.';
+
+  @override
+  String get weightTitle => 'Weight';
+
+  @override
+  String get weightUpdate => 'Update';
+
+  @override
+  String get weightUpdateTitle => 'Update weight';
+
+  @override
+  String get weightOptionDescription => 'Log today\'s weigh-in';
+
+  @override
+  String get weightNone => 'No weigh-in yet';
+
+  @override
+  String get weightReadError => 'Couldn\'t read your weight.';
+
+  @override
+  String weightKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
+  String get weightUnit => 'kg';
+
+  @override
+  String get weightDate => 'Weigh-in day';
+
+  @override
+  String weightReplaceWarning(String kg) {
+    return 'This day already has $kg kg; saving replaces it.';
+  }
+
+  @override
+  String get weightRange => 'Enter 20 to 300 kg';
+
+  @override
+  String get weightSave => 'Save';
+
+  @override
+  String get weightDelete => 'Delete weigh-in';
+
+  @override
+  String get weightSaveError => 'Couldn\'t save your weight. Please try again.';
+
+  @override
+  String get weightDecrease => 'Decrease 0.1 kg';
+
+  @override
+  String get weightIncrease => 'Increase 0.1 kg';
+
+  @override
+  String get dayToday => 'today';
+
+  @override
+  String get dayYesterday => 'yesterday';
+
+  @override
+  String dayStripWeekday(String weekday) {
+    String _temp0 = intl.Intl.selectLogic(weekday, {
+      '1': 'Mon',
+      '2': 'Tue',
+      '3': 'Wed',
+      '4': 'Thu',
+      '5': 'Fri',
+      '6': 'Sat',
+      'other': 'Sun',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String dayStripLabel(String weekday, String date) {
+    return '$weekday, $date';
+  }
+
+  @override
+  String get dayEnergy => 'Energy';
+
+  @override
+  String get dayNoMeals => 'No meals logged';
+
+  @override
+  String get dayNoMealsBody => 'No meals on this day';
+
+  @override
+  String dayGainBelow(String kcal) {
+    return '$kcal kcal short of the goal';
+  }
+
+  @override
+  String get dayGainReached => 'Goal reached';
+
+  @override
+  String dayLoseWithin(String kcal) {
+    return '$kcal kcal under the plan';
+  }
+
+  @override
+  String get dayLoseAtPlan => 'Right at the plan';
+
+  @override
+  String dayLoseOver(String kcal) {
+    return '$kcal kcal over the plan';
+  }
+
+  @override
+  String get dayMaintainBelow => 'Below the maintenance range';
+
+  @override
+  String dayMaintainAbove(String kcal) {
+    return '$kcal kcal above the range';
+  }
+
+  @override
+  String get waterReachedDay => 'Water goal reached';
+
+  @override
+  String get mealDelete => 'Delete meal';
+
+  @override
+  String get mealDeleteTitle => 'Delete this meal?';
+
+  @override
+  String get mealDeleteError => 'Couldn\'t delete the meal. Please try again.';
+
+  @override
+  String get mealDetailEstimated => 'AI estimate';
+
+  @override
+  String get mealProtein => 'Protein';
+
+  @override
+  String get mealCarbohydrate => 'Carbs';
+
+  @override
+  String get mealFat => 'Fat';
+
+  @override
+  String reviewRange(String from, String to) {
+    return '$from–$to';
+  }
+
+  @override
+  String get reviewReadError => 'Couldn\'t read this week\'s data.';
+
+  @override
+  String reviewMoreDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Log $count more days to see insights',
+      one: 'Log 1 more day to see insights',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String reviewLoggedOf(int logged, int total) {
+    return 'Logged $logged/$total days';
+  }
+
+  @override
+  String get reviewGoalLose => 'Goal: lose weight';
+
+  @override
+  String get reviewGoalGain => 'Goal: gain weight';
+
+  @override
+  String get reviewGoalMaintain => 'Goal: maintain weight';
+
+  @override
+  String get reviewGoalNone => 'Tracking meals';
+
+  @override
+  String get reviewOnTrack => 'On track for your goal';
+
+  @override
+  String get reviewOffTrack => 'Not on track yet';
+
+  @override
+  String get reviewNoTrend => 'Weigh in twice a week to see the trend';
+
+  @override
+  String get reviewNoData => '—';
+
+  @override
+  String reviewWeighIns(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weigh-ins',
+      one: '1 weigh-in',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewKcal => 'Kcal/day';
+
+  @override
+  String reviewPlan(String kcal) {
+    return 'Plan $kcal';
+  }
+
+  @override
+  String get reviewLoggedDays => 'Days logged';
+
+  @override
+  String get reviewEnough => 'Enough to analyse';
+
+  @override
+  String get reviewWater => 'Water/day';
+
+  @override
+  String get reviewGlasses => 'glasses';
+
+  @override
+  String get reviewNoWater => 'No water logged';
+
+  @override
+  String reviewWaterDays(int met, int days) {
+    return '$met/$days days on goal';
+  }
+
+  @override
+  String get reviewChartTitle => 'Kcal, 7 days';
+
+  @override
+  String reviewChartDay(String day, String value) {
+    return '$day: $value';
+  }
+
+  @override
+  String get reviewNotLogged => 'Not logged';
+
+  @override
+  String reviewOverDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days over the plan',
+      one: '1 day over the plan',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewNotable => 'Worth noticing';
+
+  @override
+  String get reviewNothing => 'Nothing stands out yet.';
+
+  @override
+  String reviewWeekend(String kcal) {
+    return 'Weekends run $kcal kcal/day higher';
+  }
+
+  @override
+  String get reviewWeekendTip => 'Plan one light meal for the weekend';
+
+  @override
+  String get cancel => 'Cancel';
 }

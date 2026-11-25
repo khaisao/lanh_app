@@ -3,6 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
@@ -75,6 +76,38 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   /// The custom deadline, kept reachable for the current target and body.
   DateTime? get _deadline =>
       _target.deadline(goal: _goal!, currentKg: _weightValue!, energy: _energy);
+
+  @override
+  void initState() {
+    super.initState();
+    // Editing from Menu starts from the saved profile instead of blank
+    // fields; a first setup has none and keeps the empty defaults.
+    ref.listenManual(savedProfileProvider, (_, next) {
+      final profile = next.value;
+      // After the first frame, so the locale for number formats is ready.
+      if (profile != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _prefill(profile));
+      }
+    }, fireImmediately: true);
+  }
+
+  bool _prefilled = false;
+
+  void _prefill(Profile profile) {
+    if (_prefilled || !mounted) return;
+    _prefilled = true;
+    final format = NumberFormat.decimalPattern(_strings.localeName)
+      ..maximumFractionDigits = 1;
+    setState(() {
+      _goal = profile.goal.type == GoalType.logOnly ? null : profile.goal.type;
+      _sex = profile.sex;
+      _activity = profile.activityLevel;
+      _age.text = '${profile.ageYears}';
+      _height.text = format.format(profile.heightCm);
+      final kg = profile.goal.currentWeight;
+      if (kg != null) _weight.text = format.format(kg);
+    });
+  }
 
   @override
   void dispose() {

@@ -672,15 +672,11 @@ class _Tiles extends StatelessWidget {
       ActivityLevel.heavy => strings.profileActivityShortHeavy,
       ActivityLevel.variable => strings.profileActivityShortVariable,
     };
+    // Meaning colors (Sleek, 25/11): the goal and its weight are green,
+    // pace and activity burn energy (orange), the date is sunny yellow.
     const goalTone = (AppColors.secondary, AppColors.primary);
-    final goldTone = (
-      AppColors.chartGold.withValues(alpha: 0.25),
-      AppColors.accentForeground,
-    );
-    final blueTone = (
-      AppColors.chartBlue.withValues(alpha: 0.25),
-      AppColors.foreground,
-    );
+    const energyTone = (AppColors.energyTint, AppColors.energy);
+    const dateTone = (AppColors.sunnyTint, AppColors.sunny);
     final tiles = <(String, (Color, Color), String, String)>[
       ...switch (summary.kind) {
         ProfilePlanKind.lose || ProfilePlanKind.gain => [
@@ -692,13 +688,13 @@ class _Tiles extends StatelessWidget {
           ),
           (
             'ph-gauge',
-            goldTone,
+            energyTone,
             '${rate.format(roundRate(summary.rateKgPerWeek!))} kg',
             strings.planTilePerWeek,
           ),
           (
             'ph-calendar-check',
-            blueTone,
+            dateTone,
             DateFormat.yMd(strings.localeName).format(summary.projectedDate!),
             strings.planTileDue,
           ),
@@ -712,13 +708,13 @@ class _Tiles extends StatelessWidget {
           ),
           (
             ProfileActivityStep.icon(summary.activity),
-            goldTone,
+            energyTone,
             activity,
             strings.planTileActivity,
           ),
           (
             'ph-heart',
-            blueTone,
+            goalTone,
             summary.bmi == null ? 'BMI —' : 'BMI ${kg.format(summary.bmi)}',
             switch (summary.bmi) {
               null => strings.planTileBmi,
@@ -744,13 +740,13 @@ class _Tiles extends StatelessWidget {
           ),
           (
             'ph-scales',
-            goldTone,
+            goalTone,
             '${kg.format(summary.currentKg)} kg',
             strings.planTileNow,
           ),
           (
             ProfileActivityStep.icon(summary.activity),
-            blueTone,
+            energyTone,
             activity,
             strings.planTileActivity,
           ),

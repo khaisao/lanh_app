@@ -5,43 +5,150 @@ import 'package:material_ui/material_ui.dart';
 class TodayDashboard extends StatelessWidget {
   const TodayDashboard({
     super.key,
+    required this.title,
+    required this.subtitle,
+    required this.days,
     required this.energy,
     required this.water,
+    required this.weight,
     required this.journal,
+    this.onBackToToday,
   });
 
+  /// "Hôm nay", or the date of the past day on screen.
+  final String title;
+  final String? subtitle;
+
+  /// Shown on past days: the small text action back to today.
+  final VoidCallback? onBackToToday;
+  final Widget days;
   final Widget energy;
   final Widget water;
+  final Widget weight;
   final Widget journal;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    key: const Key('today-screen'),
-    body: AppPageList(
-      children: [
-        Row(
-          spacing: AppSpacing.sm,
-          children: [
-            Expanded(
-              child: Text(
-                AppLocalizations.of(context).todayGreeting,
-                style: AppTypography.screenTitle,
+  Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
+    return Scaffold(
+      key: const Key('today-screen'),
+      body: AppPageList(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: AppSpacing.sm,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        title,
+                        key: const Key('today-title'),
+                        style: AppTypography.screenTitle,
+                      ),
+                    ),
+                    if (subtitle case final text?)
+                      Text(text, style: AppTypography.bodySmall),
+                  ],
+                ),
               ),
-            ),
-            const AppMascot(size: AppSizes.avatar),
-            const CircleAvatar(
-              radius: AppSizes.avatar / 2,
-              backgroundColor: AppColors.secondary,
-              child: AppIcon.asset('ph-user-circle', color: AppColors.primary),
-            ),
-          ],
+              if (onBackToToday != null)
+                TextButton(
+                  key: const Key('today-back-to-today'),
+                  onPressed: onBackToToday,
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    minimumSize: const Size(
+                      AppSizes.compactAction,
+                      AppSizes.compactAction,
+                    ),
+                  ),
+                  child: Text(strings.today),
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          days,
+          const SizedBox(height: AppSpacing.md),
+          energy,
+          const SizedBox(height: AppSpacing.md),
+          water,
+          const SizedBox(height: AppSpacing.md),
+          weight,
+          const SizedBox(height: AppSpacing.xl),
+          journal,
+        ],
+      ),
+    );
+  }
+}
+
+/// A past day without meals (Sleek "Hôm nay · Ngày trống"): no kcal meter,
+/// since nothing was logged and missing data is not zero.
+class TodayEmptyDayCard extends StatelessWidget {
+  const TodayEmptyDayCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
+    return TodayCard(
+      key: const Key('today-empty-day'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      radius: AppRadii.glassCard,
+      raised: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: AppSpacing.md,
+        children: [
+          Row(
+            spacing: AppSpacing.sm,
+            children: [
+              const AppGradientIconWell(
+                icon: 'ph-fire',
+                gradient: [AppColors.energyTint, AppColors.card],
+                color: AppColors.energy,
+                size: AppSizes.iconTile,
+                iconSize: AppSizes.iconSm,
+              ),
+              Text(strings.dayEnergy, style: AppTypography.label),
+            ],
+          ),
+          Text(
+            strings.dayNoMeals,
+            style: AppTypography.title.copyWith(fontFamily: AppFonts.heading),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Journal placeholder for a past day with no meals.
+class TodayNoMealsCard extends StatelessWidget {
+  const TodayNoMealsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) => TodayCard(
+    key: const Key('today-no-meals'),
+    padding: const EdgeInsets.all(AppSpacing.lg),
+    child: Column(
+      spacing: AppSpacing.xs,
+      children: [
+        const AppGradientIconWell(
+          icon: 'game-icons-bowl-of-rice',
+          gradient: [AppColors.secondary, AppColors.card],
+          color: AppColors.primary,
+          size: AppSizes.avatar,
+          iconSize: AppSizes.iconSm,
         ),
-        const SizedBox(height: AppSpacing.lg),
-        energy,
-        const SizedBox(height: AppSpacing.md),
-        water,
-        const SizedBox(height: AppSpacing.xl),
-        journal,
+        Text(
+          AppLocalizations.of(context).dayNoMealsBody,
+          textAlign: TextAlign.center,
+          style: AppTypography.bodySmall,
+        ),
       ],
     ),
   );

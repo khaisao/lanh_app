@@ -12,9 +12,16 @@ import 'today_dashboard.dart';
 /// logged kcal against the plan, a flat read-only meter and one status line.
 /// The meter has no thumb or marker, so it never reads as a slider.
 class TodayEnergyCard extends StatefulWidget {
-  const TodayEnergyCard({super.key, required this.status});
+  const TodayEnergyCard({
+    super.key,
+    required this.status,
+    this.pastDay = false,
+  });
 
   final TodayEnergyStatus status;
+
+  /// A finished past day: the status reads as a result, not "còn … hôm nay".
+  final bool pastDay;
 
   @override
   State<TodayEnergyCard> createState() => _TodayEnergyCardState();
@@ -26,7 +33,9 @@ class _TodayEnergyCardState extends State<TodayEnergyCard> {
     super.didUpdateWidget(oldWidget);
     // A meal that completes the plan gets a short tap; opening Home on an
     // already complete day does not.
-    if (!oldWidget.status.state.isDone && widget.status.state.isDone) {
+    if (!widget.pastDay &&
+        !oldWidget.status.state.isDone &&
+        widget.status.state.isDone) {
       HapticFeedback.mediumImpact();
     }
   }
@@ -46,26 +55,30 @@ class _TodayEnergyCardState extends State<TodayEnergyCard> {
     final rangeText = range == null
         ? null
         : '${kcal(range.lower)}–${kcal(range.upper)}';
-    final sentence = switch (status.state) {
-      TodayEnergyState.gainBelow => strings.todayGainLeft(
-        kcal(status.remaining),
-      ),
-      TodayEnergyState.gainReached => strings.todayGainReached,
-      TodayEnergyState.loseWithin => strings.todayLoseLeft(
-        kcal(status.remaining),
-      ),
-      TodayEnergyState.loseAtPlan => strings.todayLoseAtPlan,
-      TodayEnergyState.loseOver => strings.todayLoseOver(kcal(status.over)),
-      TodayEnergyState.maintainBelow => strings.todayMaintainBelow(
-        // Word joiners keep "920–1.320" on one line.
-        '${kcal(status.gapToRange.lower)}⁠–⁠'
-        '${kcal(status.gapToRange.upper)}',
-      ),
-      TodayEnergyState.maintainWithin => strings.todayMaintainWithin,
-      TodayEnergyState.maintainAbove => strings.todayMaintainAbove(
-        kcal(status.over),
-      ),
-    };
+    final sentence = widget.pastDay
+        ? _pastSentence(strings, status, kcal)
+        : switch (status.state) {
+            TodayEnergyState.gainBelow => strings.todayGainLeft(
+              kcal(status.remaining),
+            ),
+            TodayEnergyState.gainReached => strings.todayGainReached,
+            TodayEnergyState.loseWithin => strings.todayLoseLeft(
+              kcal(status.remaining),
+            ),
+            TodayEnergyState.loseAtPlan => strings.todayLoseAtPlan,
+            TodayEnergyState.loseOver => strings.todayLoseOver(
+              kcal(status.over),
+            ),
+            TodayEnergyState.maintainBelow => strings.todayMaintainBelow(
+              // Word joiners keep "920–1.320" on one line.
+              '${kcal(status.gapToRange.lower)}⁠–⁠'
+              '${kcal(status.gapToRange.upper)}',
+            ),
+            TodayEnergyState.maintainWithin => strings.todayMaintainWithin,
+            TodayEnergyState.maintainAbove => strings.todayMaintainAbove(
+              kcal(status.over),
+            ),
+          };
     return TodayCard(
       key: ValueKey('today-energy-${status.goal.name}'),
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -112,6 +125,21 @@ class _TodayEnergyCardState extends State<TodayEnergyCard> {
     );
   }
 }
+
+String _pastSentence(
+  AppLocalizations strings,
+  TodayEnergyStatus status,
+  String Function(int) kcal,
+) => switch (status.state) {
+  TodayEnergyState.gainBelow => strings.dayGainBelow(kcal(status.remaining)),
+  TodayEnergyState.gainReached => strings.dayGainReached,
+  TodayEnergyState.loseWithin => strings.dayLoseWithin(kcal(status.remaining)),
+  TodayEnergyState.loseAtPlan => strings.dayLoseAtPlan,
+  TodayEnergyState.loseOver => strings.dayLoseOver(kcal(status.over)),
+  TodayEnergyState.maintainBelow => strings.dayMaintainBelow,
+  TodayEnergyState.maintainWithin => strings.todayMaintainWithin,
+  TodayEnergyState.maintainAbove => strings.dayMaintainAbove(kcal(status.over)),
+};
 
 /// Goal icon well, label and the "Ước tính" chip shared by every Home kcal
 /// card variant, including the plan-less and error cards.

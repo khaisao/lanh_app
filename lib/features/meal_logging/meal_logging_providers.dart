@@ -50,6 +50,18 @@ final todayMealLogsProvider = FutureProvider<List<MealLog>>((ref) {
   return ref.watch(mealLogRepositoryProvider).readForDate(DateTime.now());
 });
 
+/// Meals from the last [recentMealDays] days, today included, newest first.
+/// Refreshes whenever today's journal does (save, delete, new day).
+final recentMealLogsProvider = FutureProvider<List<MealLog>>((ref) {
+  ref.watch(todayMealLogsProvider);
+  final now = DateTime.now();
+  final from = DateTime(now.year, now.month, now.day - recentMealDays + 1);
+  return ref.watch(mealLogRepositoryProvider).readBetween(from, now);
+});
+
+/// Today and the seven days before it: the Home day strip and Nhìn lại.
+const recentMealDays = 8;
+
 /// The meal the user saved most recently in this session, so Home can
 /// confirm it and highlight its row once. Home clears it after showing.
 final lastSavedMealProvider = NotifierProvider<LastSavedMeal, MealLog?>(

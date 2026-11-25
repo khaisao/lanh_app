@@ -134,14 +134,12 @@ class TodayEnergyErrorCard extends StatelessWidget {
 
 /// Sleek Home 13: today's meals could not be read; retry or log anyway.
 class TodayJournalErrorCard extends StatelessWidget {
-  const TodayJournalErrorCard({
-    super.key,
-    required this.onRetry,
-    required this.onLog,
-  });
+  const TodayJournalErrorCard({super.key, required this.onRetry, this.onLog});
 
   final VoidCallback onRetry;
-  final VoidCallback onLog;
+
+  /// Null on past days, which are read-only.
+  final VoidCallback? onLog;
 
   @override
   Widget build(BuildContext context) {
@@ -163,11 +161,12 @@ class TodayJournalErrorCard extends StatelessWidget {
                 leadingIcon: 'ph-arrow-clockwise-bold',
                 label: strings.retry,
               ),
-              AppButton(
-                onPressed: onLog,
-                leadingIcon: 'ph-plus-bold',
-                label: strings.logMeal,
-              ),
+              if (onLog != null)
+                AppButton(
+                  onPressed: onLog,
+                  leadingIcon: 'ph-plus-bold',
+                  label: strings.logMeal,
+                ),
             ],
           ),
         ],

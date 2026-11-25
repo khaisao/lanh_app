@@ -148,9 +148,13 @@ final class SqliteMealLogRepository implements MealLogRepository {
   }
 
   @override
-  Future<List<MealLog>> readForDate(DateTime date) async {
-    final localStart = DateTime(date.year, date.month, date.day);
-    final localEnd = localStart.add(const Duration(days: 1));
+  Future<List<MealLog>> readForDate(DateTime date) => readBetween(date, date);
+
+  @override
+  Future<List<MealLog>> readBetween(DateTime from, DateTime to) async {
+    final start = from.toLocal(), end = to.toLocal();
+    final localStart = DateTime(start.year, start.month, start.day);
+    final localEnd = DateTime(end.year, end.month, end.day + 1);
     final db = await _open();
     final meals = await db.query(
       'meals',
@@ -169,6 +173,7 @@ final class SqliteMealLogRepository implements MealLogRepository {
       whereArgs: ids,
       orderBy: 'id ASC',
     );
+    final photoRoot = await _photoRoot();
     final byMeal = <int, List<MealLogItem>>{};
     for (final row in items) {
       final mealId = row['meal_id'] as int;
@@ -189,7 +194,7 @@ final class SqliteMealLogRepository implements MealLogRepository {
           isUtc: true,
         ),
         portionScale: (row['portion_scale'] as num).toDouble(),
-        imagePath: row['image_path'] as String?,
+        imagePath: _relocate(row['image_path'] as String?, photoRoot),
         totalCalories: (row['total_calories'] as num?)?.toDouble(),
         totalProtein: (row['total_protein'] as num?)?.toDouble(),
         totalCarbohydrate: (row['total_carbohydrate'] as num?)?.toDouble(),
@@ -197,6 +202,47 @@ final class SqliteMealLogRepository implements MealLogRepository {
         items: mealItems,
       );
     }).toList();
+  }
+
+  @override
+  Future<void> delete(int id) async {
+    final db = await _open();
+    final rows = await db.query(
+      'meals',
+      columns: ['image_path'],
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (rows.isEmpty) return;
+    // Items go with the meal through ON DELETE CASCADE.
+    await db.delete('meals', where: 'id = ?', whereArgs: [id]);
+    final imagePath = rows.single['image_path'] as String?;
+    if (imagePath == null) return;
+    try {
+      await File(imagePath).delete();
+    } on FileSystemException {
+      // The meal is gone; a leftover photo file is not worth failing over.
+    }
+  }
+
+  /// The folder photos are written to, or null for in-memory databases.
+  Future<String?> _photoRoot() async {
+    if (databasePath == ':memory:') return null;
+    final root = databasePath == null
+        ? await getDatabasesPath()
+        : File(databasePath!).parent.path;
+    return '$root${Platform.pathSeparator}lanh_meal_photos';
+  }
+
+  /// iOS moves the app container on reinstall and update, so a stored
+  /// absolute path can go stale; the photo keeps its name in [root].
+  static String? _relocate(String? stored, String? root) {
+    if (stored == null || root == null || File(stored).existsSync()) {
+      return stored;
+    }
+    final name = stored.split(RegExp(r'[/\\]')).last;
+    final moved = '$root${Platform.pathSeparator}$name';
+    return File(moved).existsSync() ? moved : stored;
   }
 
   Future<String?> _storePhoto(

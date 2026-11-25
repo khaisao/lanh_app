@@ -159,7 +159,7 @@ void main() {
         });
         await pumpHome(tester, size: size, textScale: scale);
         final card = find.byKey(const Key('today-water'));
-        await tester.ensureVisible(card);
+        await tester.scrollUntilVisible(card, 120);
         await tester.pumpAndSettle();
         final bounds = tester.getRect(card);
         final journal = tester.getRect(find.text('Nhật ký ăn uống'));

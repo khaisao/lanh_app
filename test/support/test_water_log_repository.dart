@@ -20,6 +20,22 @@ final class TestWaterLogRepository implements WaterLogRepository {
   }
 
   @override
+  Future<Map<DateTime, int>> countsBetween(DateTime from, DateTime to) async {
+    reads++;
+    if (failRead) throw StateError('read failed');
+    final start = DateTime(from.year, from.month, from.day);
+    final end = DateTime(to.year, to.month, to.day + 1);
+    final counts = <DateTime, int>{};
+    for (final (at, _) in logs) {
+      final local = at.toLocal();
+      if (local.isBefore(start) || !local.isBefore(end)) continue;
+      final day = DateTime(local.year, local.month, local.day);
+      counts[day] = (counts[day] ?? 0) + 1;
+    }
+    return counts;
+  }
+
+  @override
   Future<void> add({required DateTime at, required int milliliters}) async {
     await Future<void>.delayed(const Duration(milliseconds: 10));
     if (failWrite) throw StateError('write failed');

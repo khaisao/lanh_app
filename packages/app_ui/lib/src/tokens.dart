@@ -49,6 +49,20 @@ abstract final class AppColors {
   // MealReview glass export: `border-white/60` and `border-white/50`.
   static const glassEdge = Color(0x99FFFFFF);
   static const glassRim = Color(0x80FFFFFF);
+
+  // Meaning colors of the history and Nhìn lại screens (Sleek, 25/11):
+  // energy is orange, water blue, starch and sweets sunny yellow, protein
+  // meat red; over the plan uses the accent peach.
+  static const energy = Color(0xFFE0782F);
+  static const energyTint = Color(0xFFFDE7D7);
+  static const waterTint = Color(0xFFE3EEF5);
+  static const sunny = Color(0xFFC99412);
+  static const sunnyTint = Color(0xFFFBEFCC);
+  static const protein = Color(0xFFD9665B);
+  static const proteinTint = Color(0xFFFBE1DE);
+  // Vertical gradient of a chart bar over the plan.
+  static const overTop = Color(0xFFF4C3A3);
+  static const overBottom = Color(0xFFE9946C);
 }
 
 /// The two states of every choice card (goal, activity, target plan, mode
@@ -260,6 +274,7 @@ abstract final class AppSizes {
   static const avatar = 40.0;
   static const avatarLarge = 56.0;
   static const choiceIcon = 48.0;
+  static const iconTile = 32.0;
   // Target Custom slider: `h-2` track and a `size-7` thumb.
   static const sliderTrack = 8.0;
   static const sliderThumb = 28.0;

@@ -6,6 +6,7 @@ import 'package:lanh_app/features/meal_logging/domain/meal_photo_repository.dart
 final class TestMealLogRepository implements MealLogRepository {
   final List<MealLog> saved = [];
   bool failSave = false;
+  bool failDelete = false;
 
   @override
   Future<MealLog> save({
@@ -29,9 +30,18 @@ final class TestMealLogRepository implements MealLogRepository {
   }
 
   @override
-  Future<List<MealLog>> readForDate(DateTime date) async {
-    final start = DateTime(date.year, date.month, date.day);
-    final end = start.add(const Duration(days: 1));
+  Future<List<MealLog>> readForDate(DateTime date) => readBetween(date, date);
+
+  @override
+  Future<void> delete(int id) async {
+    if (failDelete) throw StateError('delete failed');
+    saved.removeWhere((meal) => meal.id == id);
+  }
+
+  @override
+  Future<List<MealLog>> readBetween(DateTime from, DateTime to) async {
+    final start = DateTime(from.year, from.month, from.day);
+    final end = DateTime(to.year, to.month, to.day + 1);
     return saved.where((meal) {
       final local = meal.createdAt.toLocal();
       return !local.isBefore(start) && local.isBefore(end);

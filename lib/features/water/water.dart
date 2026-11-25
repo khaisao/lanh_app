@@ -5,6 +5,7 @@ export 'domain/water_goal.dart' show waterGlassMilliliters;
 export 'presentation/water_card.dart' show WaterCard;
 export 'water_providers.dart'
     show
+        recentWaterProvider,
         todayWaterProvider,
         waterGoalGlassesProvider,
         waterLogRepositoryProvider;

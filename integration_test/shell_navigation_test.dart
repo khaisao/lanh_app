@@ -17,6 +17,11 @@ void main() {
   testWidgets('Glass bar follows native scroll throughout the app shell', (
     tester,
   ) async {
+    // The water reminder waves loop forever; Reduce Motion stills them so
+    // pumpAndSettle can finish.
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -33,18 +38,8 @@ void main() {
     final list = find.byType(ListView);
     final bar = find.byKey(const Key('nav-surface'));
     final action = find.byKey(const Key('nav-log-meal'));
-    for (final screen in [
-      'today',
-      'progress',
-      'achievements',
-      'menu',
-      'about',
-    ]) {
-      if (screen == 'about') {
-        await tester.tap(find.text('Về Lành'));
-      } else {
-        await tester.tap(find.byKey(Key('nav-$screen')));
-      }
+    for (final screen in ['today', 'progress', 'achievements', 'menu']) {
+      await tester.tap(find.byKey(Key('nav-$screen')));
       await tester.pumpAndSettle();
       expect(find.byKey(Key('$screen-screen')), findsOneWidget);
       final viewport = tester.getRect(list);
@@ -81,13 +76,13 @@ void main() {
       await hold.cancel();
       await tester.pumpAndSettle();
       expect(lens, findsNothing);
-      expect(find.byKey(const Key('about-screen')), findsOneWidget);
+      expect(find.byKey(const Key('menu-screen')), findsOneWidget);
     }
     await tester.tap(action);
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('meal-method-sheet')), findsOneWidget);
     await tester.tap(find.byKey(const Key('close-meal-sheet')));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('about-screen')), findsOneWidget);
+    expect(find.byKey(const Key('menu-screen')), findsOneWidget);
   });
 }

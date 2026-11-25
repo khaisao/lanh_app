@@ -410,7 +410,12 @@ void main() {
       if (find.text('/ 1.600 kcal').evaluate().isNotEmpty) break;
     }
     expect(find.text('/ 1.600 kcal'), findsOneWidget);
-    expect(find.text('Còn 1.600 kcal'), findsOneWidget);
+    expect(find.text('Còn 1.600 kcal trong kế hoạch'), findsOneWidget);
+    // The day strip and weight row push the first-meal card down the list.
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('today-first-meal')),
+      200,
+    );
     expect(find.byKey(const Key('today-first-meal')), findsOneWidget);
     await screenshot(tester, '15-today-first-run');
     expect(tester.takeException(), isNull);

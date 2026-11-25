@@ -11,5 +11,13 @@ abstract interface class MealLogRepository {
     DateTime? createdAt,
   });
 
+  /// Meals saved on the local day of [date], newest first.
   Future<List<MealLog>> readForDate(DateTime date);
+
+  /// Meals saved from local day [from] to local day [to], both included,
+  /// newest first.
+  Future<List<MealLog>> readBetween(DateTime from, DateTime to);
+
+  /// Removes the meal with [id] and its stored photo. Missing ids are ignored.
+  Future<void> delete(int id);
 }
