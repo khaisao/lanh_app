@@ -45,66 +45,108 @@ class _MealVoiceConfirmViewState extends State<_MealVoiceConfirmView> {
         title: typed
             ? strings.mealVoiceTypedTitle
             : strings.mealVoiceConfirmTitle,
-        color: AppColors.primaryForeground,
-        leading: AppGlassIconButton(
+        leading: AppNavigationButton.back(
           key: const Key('meal-voice-back'),
-          icon: 'ph-caret-left-bold',
           tooltip: strings.mealVoiceBackToRecording,
-          color: AppColors.primaryForeground,
           onPressed: controller.returnToInput,
         ),
       ),
-      hero: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const AppMascot(size: AppSizes.voiceConfirmHeroMascot),
-          const SizedBox(height: AppSpacing.sm),
-          Semantics(
-            header: true,
-            child: Text(
-              typed
-                  ? strings.mealVoiceHeading
-                  : strings.mealVoiceConfirmHeading,
-              textAlign: TextAlign.center,
-              style: AppTypography.title.copyWith(
-                color: AppColors.primaryForeground,
-              ),
+      dock: Padding(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppButton(
+              key: const Key('meal-voice-send'),
+              onPressed: controller.canSend ? _send : null,
+              fullWidth: true,
+              showShadow: false,
+              leadingIcon: 'ph-paper-plane-tilt-bold',
+              label: strings.mealVoiceSend,
             ),
-          ),
-        ],
+            _DockTextButton(
+              buttonKey: const Key('meal-voice-record-again'),
+              label: strings.mealVoiceRecordAgain,
+              onPressed: controller.recordAgain,
+            ),
+          ],
+        ),
       ),
       child: SingleChildScrollView(
         key: const Key('meal-voice-confirm'),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.gutter,
+          AppSpacing.xl,
+          AppSpacing.gutter,
+          AppSpacing.lg,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: AppSpacing.md,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Container(
+                  width: AppSizes.voiceConfirmHeroMascot,
+                  height: AppSizes.voiceConfirmHeroMascot,
+                  padding: const EdgeInsets.all(AppSpacing.xxs),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    borderRadius: BorderRadius.circular(AppRadii.md),
+                  ),
+                  child: const AppMascot(size: AppSizes.voiceConfirmHeroMascot),
+                ),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     typed
-                        ? strings.mealVoiceTypedLabel
-                        : strings.mealVoiceTranscriptLabel,
-                    style: AppTypography.caption.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                        ? strings.mealVoiceHeading
+                        : strings.mealVoiceConfirmHeading,
+                    style: AppTypography.screenTitle,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      const AppIcon.asset(
+                        'ph-quotes-fill',
+                        size: AppSizes.iconInfo,
+                        color: AppColors.chartGold,
+                      ),
+                      const SizedBox(width: AppSpacing.stepGap),
+                      Flexible(
+                        child: Text(
+                          typed
+                              ? strings.mealVoiceTypedLabel
+                              : strings.mealVoiceTranscriptLabel,
+                          style: AppTypography.caption.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Text(
                   strings.mealVoiceWordCount(controller.wordCount),
                   key: const Key('meal-voice-word-count'),
-                  style: AppTypography.micro,
+                  style: AppTypography.label,
                 ),
               ],
             ),
+            const SizedBox(height: AppSpacing.sm),
             TextField(
               key: const Key('meal-voice-text'),
               controller: _text,
               focusNode: _focus,
               autofocus: typed,
-              minLines: 3,
+              minLines: 4,
               maxLines: 8,
               keyboardType: TextInputType.multiline,
               textCapitalization: TextCapitalization.sentences,
@@ -131,21 +173,24 @@ class _MealVoiceConfirmViewState extends State<_MealVoiceConfirmView> {
                 ),
               ),
             ),
-            Text(strings.mealVoiceConfirmHint, style: AppTypography.caption),
-            Text(strings.mealVoicePrivacy, style: AppTypography.caption),
-            AppButton(
-              key: const Key('meal-voice-send'),
-              onPressed: controller.canSend ? _send : null,
-              fullWidth: true,
-              leadingIcon: 'ph-paper-plane-tilt-bold',
-              label: strings.mealVoiceSend,
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const AppIcon.asset(
+                  'ph-shield-check',
+                  size: AppSizes.iconSm,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: AppSpacing.denseGap),
+                Expanded(
+                  child: Text(
+                    strings.mealVoicePrivacy,
+                    style: AppTypography.caption,
+                  ),
+                ),
+              ],
             ),
-            if (controller.access == MealVoiceAccess.granted)
-              _DockTextButton(
-                buttonKey: const Key('meal-voice-record-again'),
-                label: strings.mealVoiceRecordAgain,
-                onPressed: controller.recordAgain,
-              ),
           ],
         ),
       ),
@@ -157,75 +202,76 @@ class _MealVoiceConfirmViewState extends State<_MealVoiceConfirmView> {
     double width = AppBorders.hairline,
   }) => OutlineInputBorder(
     borderRadius: BorderRadius.circular(AppRadii.lg),
-    borderSide: BorderSide(color: color.withValues(alpha: 0.6), width: width),
+    borderSide: BorderSide(color: color, width: width),
   );
 }
 
+/// Voice Meal Confirm v9: secondary-to-cream page, editable transcript and a
+/// separate floating dock that stays above the system keyboard.
 class _VoiceConfirmScaffold extends StatelessWidget {
   const _VoiceConfirmScaffold({
     required this.header,
-    required this.hero,
+    required this.dock,
     required this.child,
   });
 
   final Widget header;
-  final Widget hero;
+  final Widget dock;
   final Widget child;
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.primary,
-    resizeToAvoidBottomInset: true,
-    body: SafeArea(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.sm,
-              AppSpacing.md,
-              AppSpacing.sm,
-              0,
+    backgroundColor: AppColors.background,
+    body: Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: AppSizes.voiceConfirmGradient,
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [AppColors.secondary, AppColors.background],
+              ),
             ),
-            child: header,
           ),
-          Expanded(
-            child: Stack(
-              children: [
-                Center(child: hero),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
+        ),
+        SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: AppSizes.contentMax),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
                     padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.md,
-                      AppSpacing.md,
-                      AppSpacing.md,
-                      AppSpacing.sm,
+                      AppSpacing.denseVertical,
+                      AppSpacing.xl,
+                      AppSpacing.denseVertical,
+                      0,
                     ),
-                    child: Material(
-                      color: AppColors.card,
-                      elevation: 8,
-                      shadowColor: AppColors.foreground.withValues(alpha: 0.22),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadii.xl),
-                        side: const BorderSide(color: AppColors.border),
-                      ),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.sizeOf(context).height * 0.7,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          child: child,
-                        ),
-                      ),
+                    child: header,
+                  ),
+                  Expanded(child: child),
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: AppGlassCard(
+                      padding: EdgeInsets.zero,
+                      radius: AppRadii.glassCard,
+                      fill: AppColors.card.withValues(alpha: 0.7),
+                      strokeWidth: AppBorders.selected,
+                      child: dock,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }

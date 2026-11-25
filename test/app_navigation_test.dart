@@ -718,6 +718,8 @@ void main() {
   }
 
   testWidgets('closing meal sheet preserves each origin tab', (tester) async {
+    // The Menu water card's waves loop forever unless motion is reduced.
+    reduceMotion(tester);
     await openApp(tester, returning: true);
     for (final tab in ['today', 'progress', 'achievements', 'menu']) {
       await tester.tap(find.byKey(Key('nav-$tab')));
@@ -734,10 +736,13 @@ void main() {
   testWidgets('menu branch retains its nested route when switching tabs', (
     tester,
   ) async {
+    reduceMotion(tester);
     await openApp(tester, returning: true);
     await tester.tap(find.byKey(const Key('nav-menu')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Về Lành'));
+    ProviderScope.containerOf(
+      tester.element(find.byKey(const Key('menu-screen'))),
+    ).read(appRouterProvider).go('/menu/about');
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('about-screen')), findsOneWidget);
     await tester.tap(find.byKey(const Key('nav-today')));

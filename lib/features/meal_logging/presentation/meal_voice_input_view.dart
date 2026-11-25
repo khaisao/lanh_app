@@ -119,12 +119,9 @@ class _MealVoiceInputViewState extends State<_MealVoiceInputView>
     return _VoiceScaffold(
       header: _VoiceHeader(
         title: strings.mealVoiceTitle,
-        leading: AppGlassIconButton(
+        leading: AppNavigationButton.close(
           key: const Key('meal-voice-close'),
-          icon: 'ph-x-bold',
           tooltip: strings.close,
-          color: AppColors.foreground,
-          iconSize: AppSizes.iconSm,
           onPressed: widget.onClose,
         ),
       ),

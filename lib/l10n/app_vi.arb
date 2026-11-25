@@ -248,7 +248,7 @@
   "mealVoiceConfirmTitle": "Kiểm tra lời nói",
   "mealVoiceTypedTitle": "Mô tả bữa ăn",
   "mealVoiceBackToRecording": "Quay lại ghi âm",
-  "mealVoiceConfirmHeading": "Lành nghe xong rồi",
+  "mealVoiceConfirmHeading": "Lành nghe rồi",
   "mealVoiceConfirmHint": "Kết quả chỉ là ước lượng, bạn kiểm tra trước khi lưu.",
   "mealVoiceTranscriptLabel": "Chữ chuyển từ giọng nói",
   "mealVoiceTypedLabel": "Mô tả của bạn",
@@ -268,7 +268,7 @@
       }
     }
   },
-  "mealVoicePrivacy": "Chỉ chữ này được gửi lên Lành để ước lượng món.",
+  "mealVoicePrivacy": "Chỉ chữ này được gửi lên Lành để ước lượng món. Kết quả chỉ là ước lượng.",
   "mealVoiceSend": "Gửi phân tích",
   "mealVoiceRecordAgain": "Ghi lại",
   "mealEstimationReceivedText": "Đã nhận lời kể",
@@ -584,5 +584,50 @@
     }
   },
   "waterReadError": "Chưa đọc được nước hôm nay.",
-  "waterSaveError": "Chưa lưu được nước. Thử lại nhé."
+  "waterSaveError": "Chưa lưu được nước. Thử lại nhé.",
+  "menuHabits": "Thói quen",
+  "menuApp": "Ứng dụng",
+  "menuGoal": "Mục tiêu",
+  "menuGoalSubtitle": "{goal} · đổi hoặc bỏ bất cứ lúc nào",
+  "@menuGoalSubtitle": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "menuGoalNone": "Chưa đặt mục tiêu · đặt bất cứ lúc nào",
+  "menuPrivacy": "Riêng tư",
+  "menuHelp": "Trợ giúp",
+  "menuHelpSubtitle": "Hỏi đáp và gửi phản hồi",
+  "waterReminderTitle": "Nhắc uống nước",
+  "waterReminderSchedule": "{start} – {end} · mỗi {hours} giờ",
+  "@waterReminderSchedule": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "waterReminderNext": "Đang bật · lần tới {time}",
+  "@waterReminderNext": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "waterReminderEnabled": "Đã bật nhắc uống nước",
+  "waterReminderDenied": "Lành chưa được gửi thông báo. Bật trong Cài đặt để nhận nhắc.",
+  "waterReminderOpenSettings": "Cài đặt",
+  "waterReminderError": "Chưa đổi được nhắc uống nước. Thử lại nhé.",
+  "waterReminderChannel": "Nhắc uống nước",
+  "waterReminderNotificationTitle": "Uống một cốc nước nhé 💧",
+  "waterReminderNotificationBody": "Chạm để ghi vào Lành."
 }

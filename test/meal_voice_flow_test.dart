@@ -159,10 +159,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Kiểm tra lời nói'), findsOneWidget);
-    expect(find.text('Lành nghe xong rồi'), findsOneWidget);
+    expect(find.text('Lành nghe rồi'), findsOneWidget);
     expect(find.text('10 từ'), findsOneWidget);
     expect(
-      find.text('Chỉ chữ này được gửi lên Lành để ước lượng món.'),
+      find.text(
+        'Chỉ chữ này được gửi lên Lành để ước lượng món. Kết quả chỉ là ước lượng.',
+      ),
       findsOneWidget,
     );
 
@@ -353,6 +355,27 @@ void main() {
     await tester.pump();
     expect(_analysis.descriptions, ['bún chả']);
   });
+
+  testWidgets(
+    'record again can request microphone access from typed confirmation',
+    (tester) async {
+      await _mount(tester);
+      _voice.requestAnswers.addAll([
+        MealVoiceAccess.granted,
+        MealVoiceAccess.denied,
+      ]);
+      await _openVoice(tester);
+      await tester.tap(find.byKey(const Key('meal-voice-type')));
+      await tester.pumpAndSettle();
+      _voice.statusAfterRequest = MealVoiceAccess.granted;
+      final previousRequests = _voice.requests;
+      await tester.tap(find.byKey(const Key('meal-voice-record-again')));
+      await tester.pumpAndSettle();
+      expect(_voice.requests, previousRequests + 1);
+      expect(_voice.listening, isTrue);
+      expect(find.byKey(const Key('meal-voice-confirm')), findsNothing);
+    },
+  );
 
   for (final size in [
     const Size(320, 700),

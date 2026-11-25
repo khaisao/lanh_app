@@ -21,6 +21,7 @@ class AppButton extends StatefulWidget {
     this.loading = false,
     this.fullWidth = false,
     this.animatePress = true,
+    this.showShadow = true,
   }) : assert(
          (child == null) != (label == null),
          'Pass exactly one of child or label.',
@@ -39,6 +40,7 @@ class AppButton extends StatefulWidget {
     this.loading = false,
     this.fullWidth = false,
     this.animatePress = true,
+    this.showShadow = true,
   }) : assert(
          (child == null) != (label == null),
          'Pass exactly one of child or label.',
@@ -54,6 +56,7 @@ class AppButton extends StatefulWidget {
     this.loading = false,
     this.fullWidth = false,
     this.animatePress = true,
+    this.showShadow = true,
   }) : assert(
          (child == null) != (label == null),
          'Pass exactly one of child or label.',
@@ -71,6 +74,7 @@ class AppButton extends StatefulWidget {
     this.loading = false,
     this.fullWidth = false,
     this.animatePress = true,
+    this.showShadow = true,
   }) : assert(
          (child == null) != (label == null),
          'Pass exactly one of child or label.',
@@ -96,6 +100,10 @@ class AppButton extends StatefulWidget {
 
   /// Scales down while pressed; skipped under Reduce Motion.
   final bool animatePress;
+
+  /// Primary pill elevation. Voice Meal Confirm v9 uses a flat pill inside
+  /// its already raised dock; other primary actions retain their shadow.
+  final bool showShadow;
 
   @override
   State<AppButton> createState() => _AppButtonState();
@@ -162,7 +170,9 @@ class _AppButtonState extends State<AppButton> {
             iconSize: card ? AppSizes.buttonIconCard : AppSizes.buttonIcon,
           ),
     );
-    if (widget._kind == _AppButtonKind.primary && widget.onPressed != null) {
+    if (widget._kind == _AppButtonKind.primary &&
+        widget.onPressed != null &&
+        widget.showShadow) {
       button = DecoratedBox(
         decoration: ShapeDecoration(
           shape: shape,

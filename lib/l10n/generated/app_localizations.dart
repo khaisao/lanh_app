@@ -1181,7 +1181,7 @@ abstract class AppLocalizations {
   /// No description provided for @mealVoiceConfirmHeading.
   ///
   /// In vi, this message translates to:
-  /// **'Lành nghe xong rồi'**
+  /// **'Lành nghe rồi'**
   String get mealVoiceConfirmHeading;
 
   /// No description provided for @mealVoiceConfirmHint.
@@ -1217,7 +1217,7 @@ abstract class AppLocalizations {
   /// No description provided for @mealVoicePrivacy.
   ///
   /// In vi, this message translates to:
-  /// **'Chỉ chữ này được gửi lên Lành để ước lượng món.'**
+  /// **'Chỉ chữ này được gửi lên Lành để ước lượng món. Kết quả chỉ là ước lượng.'**
   String get mealVoicePrivacy;
 
   /// No description provided for @mealVoiceSend.
@@ -1945,6 +1945,114 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa lưu được nước. Thử lại nhé.'**
   String get waterSaveError;
+
+  /// No description provided for @menuHabits.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thói quen'**
+  String get menuHabits;
+
+  /// No description provided for @menuApp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ứng dụng'**
+  String get menuApp;
+
+  /// No description provided for @menuGoal.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mục tiêu'**
+  String get menuGoal;
+
+  /// No description provided for @menuGoalSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'{goal} · đổi hoặc bỏ bất cứ lúc nào'**
+  String menuGoalSubtitle(String goal);
+
+  /// No description provided for @menuGoalNone.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đặt mục tiêu · đặt bất cứ lúc nào'**
+  String get menuGoalNone;
+
+  /// No description provided for @menuPrivacy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Riêng tư'**
+  String get menuPrivacy;
+
+  /// No description provided for @menuHelp.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ giúp'**
+  String get menuHelp;
+
+  /// No description provided for @menuHelpSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi đáp và gửi phản hồi'**
+  String get menuHelpSubtitle;
+
+  /// No description provided for @waterReminderTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc uống nước'**
+  String get waterReminderTitle;
+
+  /// No description provided for @waterReminderSchedule.
+  ///
+  /// In vi, this message translates to:
+  /// **'{start} – {end} · mỗi {hours} giờ'**
+  String waterReminderSchedule(String start, String end, int hours);
+
+  /// No description provided for @waterReminderNext.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bật · lần tới {time}'**
+  String waterReminderNext(String time);
+
+  /// No description provided for @waterReminderEnabled.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bật nhắc uống nước'**
+  String get waterReminderEnabled;
+
+  /// No description provided for @waterReminderDenied.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lành chưa được gửi thông báo. Bật trong Cài đặt để nhận nhắc.'**
+  String get waterReminderDenied;
+
+  /// No description provided for @waterReminderOpenSettings.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt'**
+  String get waterReminderOpenSettings;
+
+  /// No description provided for @waterReminderError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đổi được nhắc uống nước. Thử lại nhé.'**
+  String get waterReminderError;
+
+  /// No description provided for @waterReminderChannel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc uống nước'**
+  String get waterReminderChannel;
+
+  /// No description provided for @waterReminderNotificationTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Uống một cốc nước nhé 💧'**
+  String get waterReminderNotificationTitle;
+
+  /// No description provided for @waterReminderNotificationBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm để ghi vào Lành.'**
+  String get waterReminderNotificationBody;
 }
 
 class _AppLocalizationsDelegate

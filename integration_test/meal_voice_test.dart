@@ -27,6 +27,8 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   final artifacts = Directory('${Directory.systemTemp.path}/meal-voice');
   final notes = <String, Object?>{};
+  var surfaceConverted = false;
+  setUp(() => surfaceConverted = false);
   final reportOriginal = reportTestException;
   reportTestException = (details, description) {
     // Keep the failure text in results.json; Profile builds have no console.
@@ -80,6 +82,11 @@ void main() {
       ),
     );
     await tester.pump(const Duration(milliseconds: 500));
+    if (Platform.isAndroid && !surfaceConverted) {
+      await binding.convertFlutterSurfaceToImage();
+      surfaceConverted = true;
+      await tester.pump();
+    }
   }
 
   Future<void> waitFor(
@@ -301,7 +308,7 @@ void main() {
     await shot('iphone-voice-finishing');
     voice.hear(description, isFinal: true);
     await voice.finish();
-    await waitFor(tester, find.text('Lành nghe xong rồi'));
+    await waitFor(tester, find.text('Lành nghe rồi'));
     await tester.pumpAndSettle();
     await shot('iphone-voice-confirm');
 

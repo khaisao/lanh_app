@@ -110,3 +110,5 @@ app.*.map.json
 /.cursor/
 /.windsurf/
 /NVIDIA Corporation/
+/plans/
+/outputs/

@@ -51,27 +51,9 @@ class _MealPhotoPermissionView extends StatelessWidget {
                     children: [
                       Align(
                         alignment: AlignmentDirectional.centerStart,
-                        child: AppButton.surface(
+                        child: AppNavigationButton.back(
                           onPressed: onBack,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: AppSpacing.xxs,
-                            children: [
-                              const AppIcon.asset(
-                                'ph-caret-left-bold',
-                                size: AppSizes.iconSm,
-                                color: AppColors.primary,
-                              ),
-                              Flexible(
-                                child: Text(
-                                  strings.mealPhotoBack,
-                                  style: AppTypography.button.copyWith(
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          tooltip: strings.mealPhotoBack,
                         ),
                       ),
                       Padding(
@@ -194,10 +176,8 @@ class _MealCameraView extends StatelessWidget {
             ),
           ),
       controls: _MediaControls(
-        top: _MediaIconButton(
-          icon: 'ph-x-bold',
-          label: strings.close,
-          visualSize: AppSizes.photoCloseControl,
+        top: AppNavigationButton.close(
+          tooltip: strings.close,
           onPressed: onClose,
         ),
         bottom: Column(
@@ -332,27 +312,9 @@ class _MealPhotoReviewView extends StatelessWidget {
                         spacing: AppSpacing.sm,
                         runSpacing: AppSpacing.xs,
                         children: [
-                          AppButton.surface(
+                          AppNavigationButton.back(
                             onPressed: onBack,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: AppSpacing.xxs,
-                              children: [
-                                const AppIcon.asset(
-                                  'ph-caret-left-bold',
-                                  size: AppSizes.iconSm,
-                                  color: AppColors.primary,
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    strings.mealPhotoBack,
-                                    style: AppTypography.button.copyWith(
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            tooltip: strings.mealPhotoBack,
                           ),
                           Container(
                             constraints: const BoxConstraints(

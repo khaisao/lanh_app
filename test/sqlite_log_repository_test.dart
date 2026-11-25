@@ -15,7 +15,18 @@ void main() {
   });
   // A file per test: sqflite shares one database per path, even ':memory:'.
   setUp(() async => dir = await Directory.systemTemp.createTemp('lanh_db'));
-  tearDown(() => dir.delete(recursive: true));
+  tearDown(() async {
+    // Windows cannot delete a database file while the FFI connection is open.
+    // Reopening the same path resolves sqflite's shared connection.
+    for (final name in ['water.db', 'meals.db']) {
+      final path = '${dir.path}/$name';
+      if (await File(path).exists()) {
+        final database = await databaseFactory.openDatabase(path);
+        await database.close();
+      }
+    }
+    await dir.delete(recursive: true);
+  });
 
   test('water counts stay within the local calendar day', () async {
     final repository = SqliteWaterLogRepository(

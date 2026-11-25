@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,7 @@ import 'package:lanh_app/features/onboarding/onboarding.dart';
 import 'package:lanh_app/features/profile_setup/profile_setup.dart';
 import 'package:lanh_app/features/progress/progress.dart';
 import 'package:lanh_app/features/today/today.dart';
+import 'package:lanh_app/features/water_reminder/water_reminder.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -128,6 +131,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   );
   ref.onDispose(router.dispose);
   ref.onDispose(refresh.dispose);
+  // A tapped water reminder opens Home ("Chạm để ghi vào Lành").
+  unawaited(
+    ref
+        .read(waterReminderSchedulerProvider)
+        .initialize(onOpen: () => router.go('/today'))
+        .catchError((Object _) {}),
+  );
   return router;
 });
 

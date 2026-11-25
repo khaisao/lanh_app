@@ -2,10 +2,13 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanh_app/features/goal/goal.dart';
 import 'package:lanh_app/features/profile_setup/profile_setup.dart';
+import 'package:lanh_app/features/water_reminder/water_reminder.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
+/// Sleek "Menu · Nhắc nước" (v11): Habits (water reminder, goal) and App
+/// (privacy, help). Privacy and Help have no screen yet.
 class MenuScreen extends ConsumerWidget {
   const MenuScreen({super.key});
 
@@ -13,65 +16,49 @@ class MenuScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final strings = AppLocalizations.of(context);
     final goal = ref.watch(profileGoalProvider).value;
-    final goalName = goal == null ? 'Chưa đặt mục tiêu' : _goalName(goal.type);
     return Scaffold(
       key: const Key('menu-screen'),
       body: AppPageList(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(strings.menu, style: AppTypography.screenTitle),
-              ),
-              TextButton(
-                onPressed: () => context.go('/menu/about'),
-                child: Text(strings.about, style: AppTypography.button),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          _ProfileCard(goalName: goalName),
-          const SizedBox(height: AppSpacing.lg),
+          Text(strings.menu, style: AppTypography.title),
+          const SizedBox(height: AppSpacing.xl),
+          Text(strings.menuHabits, style: AppTypography.sectionTitle),
+          const SizedBox(height: AppSpacing.sm),
+          const WaterReminderCard(),
+          const SizedBox(height: AppSpacing.sm),
           _MenuGroup(
-            title: 'Mục tiêu và bữa ăn',
-            items: [
-              _MenuItem(
-                'Chỉnh mục tiêu',
-                goalName,
-                'ph-target',
-                route: '/profile-setup',
+            rows: [
+              _MenuRow(
+                key: const Key('menu-goal'),
+                title: strings.menuGoal,
+                subtitle: goal == null
+                    ? strings.menuGoalNone
+                    : strings.menuGoalSubtitle(_goalName(goal.type)),
+                icon: 'ph-target',
+                well: AppMenu.wellGoal,
+                onTap: () => context.push('/profile-setup'),
               ),
-              const _MenuItem('Bữa đã lưu', '', 'ph-bookmark-simple'),
-              const _MenuItem('Nhắc nhở', '', 'ph-bell-simple-ringing'),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          const _MenuGroup(
-            title: 'Riêng tư và thiết bị',
-            items: [
-              _MenuItem('Quyền riêng tư', '', 'ph-shield-check'),
-              _MenuItem(
-                'Ảnh và camera',
-                'Chỉ dùng để ước lượng bữa ăn',
-                'ph-camera',
-              ),
-              _MenuItem('Thông báo', '', 'ph-bell'),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          const _MenuGroup(
-            title: 'Tài khoản và hỗ trợ',
-            items: [
-              _MenuItem('Tài khoản', '', 'ph-user-circle'),
-              _MenuItem('Trợ giúp và phản hồi', '', 'ph-chat-circle-dots'),
             ],
           ),
           const SizedBox(height: AppSpacing.xl),
-          const Center(
-            child: Text(
-              'Lành · Mỗi bữa lành, một mầm vui.',
-              style: AppTypography.caption,
-            ),
+          Text(strings.menuApp, style: AppTypography.sectionTitle),
+          const SizedBox(height: AppSpacing.sm),
+          _MenuGroup(
+            padded: true,
+            rows: [
+              _MenuRow(
+                title: strings.menuPrivacy,
+                icon: 'ph-shield-check',
+                well: AppMenu.wellPrivacy,
+              ),
+              _MenuRow(
+                title: strings.menuHelp,
+                subtitle: strings.menuHelpSubtitle,
+                icon: 'ph-chat-circle-dots',
+                well: AppMenu.wellHelp,
+                iconColor: AppColors.accentForeground,
+              ),
+            ],
           ),
         ],
       ),
@@ -86,130 +73,94 @@ class MenuScreen extends ConsumerWidget {
   };
 }
 
-class _ProfileCard extends StatelessWidget {
-  const _ProfileCard({required this.goalName});
+/// One glass section of rows; [padded] adds the App group's `py-2` and
+/// `divide-border/60` between rows.
+class _MenuGroup extends StatelessWidget {
+  const _MenuGroup({required this.rows, this.padded = false});
 
-  final String goalName;
+  final List<_MenuRow> rows;
+  final bool padded;
 
   @override
   Widget build(BuildContext context) => AppGlassCard(
-    padding: const EdgeInsets.all(AppSpacing.md),
     radius: AppRadii.glassInner,
-    shadows: const [],
-    child: Row(
-      children: [
-        const CircleAvatar(
-          radius: AppSizes.avatarLarge / 2,
-          backgroundColor: AppColors.secondary,
-          child: AppIcon.asset('ph-user-circle', color: AppColors.primary),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context).appTitle,
-                style: AppTypography.cardTitle,
-              ),
-              const SizedBox(height: AppSpacing.xxs),
-              Text('Mục tiêu: $goalName', style: AppTypography.bodySmall),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _MenuGroup extends StatelessWidget {
-  const _MenuGroup({required this.title, required this.items});
-
-  final String title;
-  final List<_MenuItem> items;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-        child: Text(title.toUpperCase(), style: AppTypography.label),
-      ),
-      const SizedBox(height: AppSpacing.xs),
-      AppGlassCard(
-        padding: EdgeInsets.zero,
-        radius: AppRadii.glassInner,
-        shadows: const [],
-        // Own Material so row ink shows above the glass fill.
-        child: Material(
-          type: MaterialType.transparency,
-          child: Column(
-            children: [
-              for (var index = 0; index < items.length; index++) ...[
-                _MenuRow(item: items[index]),
-                if (index < items.length - 1)
-                  const Divider(
-                    height: AppBorders.hairline,
-                    color: AppColors.border,
-                  ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-class _MenuRow extends StatelessWidget {
-  const _MenuRow({required this.item});
-
-  final _MenuItem item;
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: item.route == null ? null : () => context.push(item.route!),
-    child: Padding(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Row(
+    padding: EdgeInsets.symmetric(vertical: padded ? AppSpacing.xs : 0),
+    // Own Material so row ink shows above the glass fill.
+    child: Material(
+      type: MaterialType.transparency,
+      child: Column(
         children: [
-          AppIcon.asset(
-            item.icon,
-            size: AppSizes.iconMd,
-            color: AppColors.primary,
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: item.subtitle.isEmpty
-                ? Text(item.title, style: AppTypography.cardTitle)
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item.title, style: AppTypography.cardTitle),
-                      const SizedBox(height: AppSpacing.xxs),
-                      Text(item.subtitle, style: AppTypography.caption),
-                    ],
-                  ),
-          ),
-          const AppIcon.asset(
-            'ph-caret-right',
-            size: AppSizes.iconSm,
-            color: AppColors.mutedForeground,
-          ),
+          for (var index = 0; index < rows.length; index++) ...[
+            if (index > 0)
+              const Divider(
+                height: AppBorders.hairline,
+                thickness: AppBorders.hairline,
+                color: AppMenu.divider,
+              ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: padded ? AppSpacing.gutter : AppSpacing.md,
+              ),
+              child: rows[index],
+            ),
+          ],
         ],
       ),
     ),
   );
 }
 
-class _MenuItem {
-  const _MenuItem(this.title, this.subtitle, this.icon, {this.route});
+class _MenuRow extends StatelessWidget {
+  const _MenuRow({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.well,
+    this.subtitle,
+    this.iconColor = AppColors.primary,
+    this.onTap,
+  });
 
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final String icon;
-  final String? route;
+  final List<Color> well;
+  final Color iconColor;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: AppMenu.rowMinHeight),
+      child: Row(
+        children: [
+          AppGradientIconWell(icon: icon, gradient: well, color: iconColor),
+          const SizedBox(width: AppMenu.rowGap),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: AppTypography.menuRowTitle),
+                if (subtitle != null) ...[
+                  const SizedBox(height: AppSpacing.navLabelGap),
+                  Text(subtitle!, style: AppTypography.caption),
+                ],
+              ],
+            ),
+          ),
+          const ExcludeSemantics(
+            child: AppIcon.asset(
+              'ph-caret-right',
+              size: AppSizes.iconXs,
+              color: AppColors.mutedForeground,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class AboutScreen extends StatelessWidget {
@@ -224,17 +175,9 @@ class AboutScreen extends StatelessWidget {
         children: [
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: TextButton.icon(
+            child: AppNavigationButton.back(
               onPressed: () => context.pop(),
-              icon: const AppIcon.asset(
-                'ph-arrow-left-bold',
-                size: AppSizes.iconMd,
-              ),
-              label: const Text('Quay lại'),
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                padding: const EdgeInsetsDirectional.only(start: AppSpacing.xs),
-              ),
+              tooltip: strings.profileBack,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),

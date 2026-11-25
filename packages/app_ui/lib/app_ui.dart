@@ -13,6 +13,8 @@ part 'src/glass_card.dart';
 part 'src/glass_segmented_control.dart';
 part 'src/glass_surface.dart';
 part 'src/icon.dart';
+part 'src/navigation_button.dart';
+part 'src/icon_well.dart';
 part 'src/keyboard_dismiss.dart';
 part 'src/media_overlay.dart';
 part 'src/motion.dart';

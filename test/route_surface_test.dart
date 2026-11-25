@@ -99,7 +99,7 @@ void main() {
           }
         });
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Quay lại'));
+        await tester.tap(find.bySemanticsLabel('Quay lại'));
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('meal-method-sheet')), findsNothing);
         expect(find.text('Open meal methods'), findsOneWidget);

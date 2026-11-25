@@ -147,19 +147,10 @@ class MealMethodSheet extends StatelessWidget {
                     ],
                   ),
                 ),
-                IconButton(
+                AppNavigationButton.close(
                   key: const Key('close-meal-sheet'),
                   tooltip: strings.close,
                   onPressed: () => Navigator.of(context).pop(),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.muted,
-                    fixedSize: const Size.square(AppSizes.compactAction),
-                  ),
-                  icon: const AppIcon.asset(
-                    'ph-x-bold',
-                    color: AppColors.foreground,
-                    size: AppSizes.iconSm,
-                  ),
                 ),
               ],
             ),

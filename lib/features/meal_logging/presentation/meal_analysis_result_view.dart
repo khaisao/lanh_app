@@ -195,9 +195,8 @@ class _ResultHeader extends StatelessWidget {
     final strings = AppLocalizations.of(context);
     return Row(
       children: [
-        AppGlassIconButton(
+        AppNavigationButton.back(
           key: const Key('meal-analysis-back'),
-          icon: 'ph-caret-left-bold',
           tooltip: strings.mealPhotoBack,
           onPressed: onBack,
         ),
@@ -211,11 +210,8 @@ class _ResultHeader extends StatelessWidget {
             ),
           ),
         ),
-        AppGlassIconButton(
-          icon: 'ph-x-bold',
+        AppNavigationButton.close(
           tooltip: strings.mealReviewClose,
-          color: AppColors.mutedForeground,
-          iconSize: AppSizes.iconSm,
           onPressed: onClose,
         ),
       ],

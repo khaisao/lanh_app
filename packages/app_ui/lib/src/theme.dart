@@ -107,6 +107,8 @@ abstract final class AppMotion {
   // Water glass: pour (fill, bounce, droplets) and drain (shake).
   static const waterPour = Duration(milliseconds: 700);
   static const waterDrain = Duration(milliseconds: 450);
+  // Menu water reminder card: one full drift of the background waves.
+  static const waterWaves = Duration(seconds: 8);
   // A just-saved meal row fades from the highlight back to the card.
   static const todayHighlight = Duration(milliseconds: 1600);
 

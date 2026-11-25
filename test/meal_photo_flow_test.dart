@@ -98,8 +98,8 @@ void main() {
         2,
       );
       expect(
-        glassSizes.where((size) => size == const Size.square(44)).length,
-        1,
+        tester.getSize(find.byType(AppNavigationButton)),
+        const Size.square(56),
       );
       if (captureDirectory != null && size.width == 390) {
         await _capture(tester, captureDirectory, 'camera');
@@ -151,7 +151,7 @@ void main() {
       expect(find.text(_estimate), findsOneWidget);
       await _tap(tester, find.byTooltip('Chụp lại'));
       expect(find.byKey(const Key('live-camera')), findsOneWidget);
-      await _tap(tester, find.byTooltip('Đóng').first);
+      await _tap(tester, find.byType(AppNavigationButton));
       expect(find.byKey(_cameraOption), findsNothing);
       expect(find.byKey(const Key('nav-log-meal')), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -298,7 +298,7 @@ void main() {
       expect(find.text('Thử lại').hitTestable(), findsOneWidget);
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
-      await _tap(tester, find.text('Quay lại'));
+      await _tap(tester, find.bySemanticsLabel('Quay lại'));
       expect(find.text(_allow), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
@@ -351,7 +351,7 @@ void main() {
       await tester.ensureVisible(find.text(english ? 'Try again' : 'Thử lại'));
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
-      await _tap(tester, find.text(english ? 'Back' : 'Quay lại'));
+      await _tap(tester, find.bySemanticsLabel(english ? 'Back' : 'Quay lại'));
       expect(
         find.bySemanticsLabel(
           english ? 'Meal photo preview' : 'Ảnh bữa ăn đang xem lại',
@@ -488,7 +488,7 @@ void main() {
     repository.selected = _photo;
     await _tap(tester, find.byTooltip(_library));
     expect(find.text(_estimate), findsOneWidget);
-    await _tap(tester, find.text('Quay lại'));
+    await _tap(tester, find.bySemanticsLabel('Quay lại'));
     expect(find.byKey(const Key('live-camera')), findsOneWidget);
   });
 
@@ -601,7 +601,7 @@ void main() {
     await tester.tap(option);
     await tester.pumpAndSettle();
     expect(find.byType(MealPhotoFlow), findsOneWidget);
-    await _tap(tester, find.text('Quay lại'));
+    await _tap(tester, find.bySemanticsLabel('Quay lại'));
     expect(find.byKey(_cameraOption), findsNothing);
     expect(find.byKey(const Key('nav-log-meal')), findsOneWidget);
   });

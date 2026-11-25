@@ -1,5 +1,21 @@
 part of '../app_ui.dart';
 
+/// Sleek back/close recipe, shared by every feature navigation control.
+abstract final class AppNavigation {
+  static const visualSize = 44.0;
+  static const targetSize = AppSizes.action;
+  static const iconSize = AppSizes.iconMd;
+  static const fill = AppColors.card;
+  static const border = AppColors.border;
+  static const foreground = AppColors.primary;
+  static const pressedScale = 0.9;
+  static const duration = Duration(milliseconds: 200);
+  static const shadow = [
+    BoxShadow(color: Color(0x0D000000), blurRadius: 3, offset: Offset(0, 1)),
+    BoxShadow(color: Color(0x0D000000), blurRadius: 2, offset: Offset(0, 1)),
+  ];
+}
+
 abstract final class AppColors {
   static const background = Color(0xFFF8F3E8);
   static const foreground = Color(0xFF3B2F25);
@@ -23,6 +39,8 @@ abstract final class AppColors {
   static const waterLight = Color(0xFF9CC4DC);
   static const waterDeep = Color(0xFF6B9BB8);
   static const chartGold = Color(0xFFE0B54A);
+  // Sleek Menu water reminder: drop glyph `#3F6F7F`.
+  static const waterIcon = Color(0xFF3F6F7F);
   static const chartPeach = Color(0xFFEFB99A);
   static const navSelection = Color(0xB8D9E8D5);
   static const navActionHighlight = Color(0xFF578561);
@@ -109,6 +127,54 @@ abstract final class AppGlass {
   static const contrastFill = AppColors.card;
 }
 
+/// Sleek "Menu · Nhắc nước" (v11) gradients, from the theme's chart colours
+/// at the design's opacities (`chart-3` = [AppColors.chartBlue], `chart-2` =
+/// [AppColors.chartGold], `chart-4` = [AppColors.chartPeach]).
+abstract final class AppMenu {
+  /// Water card: `from-chart-3/25 via-card/70 to-secondary/60`.
+  static const waterCard = [
+    Color(0x407FA8B5),
+    AppGlass.fill,
+    Color(0x99E4ECDD),
+  ];
+
+  /// Water card waves: `chart-3/25` (96 dp) and `chart-3/15` (64 dp).
+  static const waveBack = Color(0x407FA8B5);
+  static const waveFront = Color(0x267FA8B5);
+  static const waveBackHeight = 96.0;
+  static const waveFrontHeight = 64.0;
+
+  /// Icon wells, `from` → `to` with a `white/60` edge.
+  /// Water well is opaque (card → `waterLight` at 25 % over card) with a
+  /// solid edge and [wellLift], so the drop stays legible over the waves;
+  /// the design's translucent `chart-3` well blended into them.
+  static const wellWater = [AppColors.card, Color(0xFFE6EFF0)];
+  static const wellWaterEdge = AppColors.card;
+  static const wellLift = [
+    BoxShadow(
+      color: Color(0x2E3B2F25),
+      blurRadius: 12,
+      spreadRadius: -2,
+      offset: Offset(0, 4),
+    ),
+  ];
+  static const wellGoal = [Color(0x59E0B54A), AppColors.card];
+  static const wellPrivacy = [AppColors.secondary, Color(0x407FA8B5)];
+  static const wellHelp = [Color(0x59EFB99A), AppColors.card];
+  static const wellEdge = Color(0x99FFFFFF);
+
+  /// `size-12` water well, `size-11` row wells, `rounded-2xl`.
+  static const wellLarge = 48.0;
+  static const well = 44.0;
+
+  /// `gap-3.5` between well and text; rows are `min-h-[64px]`.
+  static const rowGap = 14.0;
+  static const rowMinHeight = 64.0;
+
+  /// `divide-border/60` between App rows.
+  static const divider = Color(0x99E7DDCB);
+}
+
 abstract final class AppSpacing {
   static const xxs = 4.0;
   static const xs = 8.0;
@@ -158,7 +224,8 @@ abstract final class AppSizes {
   // VoiceMealInput / VoiceMealConfirm export geometry.
   static const voiceGradient = 520.0;
   static const voiceMascot = 96.0;
-  static const voiceConfirmHeroMascot = 144.0;
+  static const voiceConfirmHeroMascot = 64.0;
+  static const voiceConfirmGradient = 384.0;
   // Recorder waveform: `h-32` with `w-[3px]` bars and 3px gaps.
   static const voiceWaveform = 128.0;
   static const voiceWaveBar = 3.0;
@@ -603,6 +670,9 @@ abstract final class AppTypography {
     height: 20 / 14,
   );
   static final photoPermissionBody = bodySmall.copyWith(fontSize: 15);
+
+  /// Menu row title: `text-[15px] font-semibold`.
+  static final menuRowTitle = cardTitle.copyWith(fontSize: 15);
   static final estimationBody = photoPermissionBody.copyWith(height: 1.625);
   static final photoPreviewHeading = title.copyWith(fontSize: 20, height: 1.25);
   static final photoPreviewBody = bodySmall.copyWith(fontSize: 14, height: 1.5);

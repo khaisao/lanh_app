@@ -29,11 +29,8 @@ class ProfileStepBar extends StatelessWidget {
         Transform.translate(
           // The 56 dp target keeps the 44 dp glass circle on the page edge.
           offset: const Offset(-_targetInset, 0),
-          child: AppGlassIconButton(
-            icon: 'ph-arrow-left',
+          child: AppNavigationButton.back(
             tooltip: strings.profileBack,
-            color: AppColors.foreground,
-            iconSize: AppSizes.iconSm,
             onPressed: onBack,
           ),
         ),

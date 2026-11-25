@@ -615,7 +615,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mealVoiceBackToRecording => 'Quay lại ghi âm';
 
   @override
-  String get mealVoiceConfirmHeading => 'Lành nghe xong rồi';
+  String get mealVoiceConfirmHeading => 'Lành nghe rồi';
 
   @override
   String get mealVoiceConfirmHint =>
@@ -644,7 +644,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get mealVoicePrivacy =>
-      'Chỉ chữ này được gửi lên Lành để ước lượng món.';
+      'Chỉ chữ này được gửi lên Lành để ước lượng món. Kết quả chỉ là ước lượng.';
 
   @override
   String get mealVoiceSend => 'Gửi phân tích';
@@ -1076,4 +1076,65 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get waterSaveError => 'Chưa lưu được nước. Thử lại nhé.';
+
+  @override
+  String get menuHabits => 'Thói quen';
+
+  @override
+  String get menuApp => 'Ứng dụng';
+
+  @override
+  String get menuGoal => 'Mục tiêu';
+
+  @override
+  String menuGoalSubtitle(String goal) {
+    return '$goal · đổi hoặc bỏ bất cứ lúc nào';
+  }
+
+  @override
+  String get menuGoalNone => 'Chưa đặt mục tiêu · đặt bất cứ lúc nào';
+
+  @override
+  String get menuPrivacy => 'Riêng tư';
+
+  @override
+  String get menuHelp => 'Trợ giúp';
+
+  @override
+  String get menuHelpSubtitle => 'Hỏi đáp và gửi phản hồi';
+
+  @override
+  String get waterReminderTitle => 'Nhắc uống nước';
+
+  @override
+  String waterReminderSchedule(String start, String end, int hours) {
+    return '$start – $end · mỗi $hours giờ';
+  }
+
+  @override
+  String waterReminderNext(String time) {
+    return 'Đang bật · lần tới $time';
+  }
+
+  @override
+  String get waterReminderEnabled => 'Đã bật nhắc uống nước';
+
+  @override
+  String get waterReminderDenied =>
+      'Lành chưa được gửi thông báo. Bật trong Cài đặt để nhận nhắc.';
+
+  @override
+  String get waterReminderOpenSettings => 'Cài đặt';
+
+  @override
+  String get waterReminderError => 'Chưa đổi được nhắc uống nước. Thử lại nhé.';
+
+  @override
+  String get waterReminderChannel => 'Nhắc uống nước';
+
+  @override
+  String get waterReminderNotificationTitle => 'Uống một cốc nước nhé 💧';
+
+  @override
+  String get waterReminderNotificationBody => 'Chạm để ghi vào Lành.';
 }

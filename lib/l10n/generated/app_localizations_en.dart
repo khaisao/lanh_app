@@ -651,7 +651,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mealVoicePrivacy =>
-      'Only this text is sent to Lành to estimate the dishes.';
+      'Only this text is sent to Lành to estimate the dishes. Results are estimates.';
 
   @override
   String get mealVoiceSend => 'Send for analysis';
@@ -1086,4 +1086,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waterSaveError => 'Couldn’t save water. Please try again.';
+
+  @override
+  String get menuHabits => 'Habits';
+
+  @override
+  String get menuApp => 'App';
+
+  @override
+  String get menuGoal => 'Goal';
+
+  @override
+  String menuGoalSubtitle(String goal) {
+    return '$goal · change or drop it anytime';
+  }
+
+  @override
+  String get menuGoalNone => 'No goal yet · set one anytime';
+
+  @override
+  String get menuPrivacy => 'Privacy';
+
+  @override
+  String get menuHelp => 'Help';
+
+  @override
+  String get menuHelpSubtitle => 'FAQ and feedback';
+
+  @override
+  String get waterReminderTitle => 'Water reminders';
+
+  @override
+  String waterReminderSchedule(String start, String end, int hours) {
+    return '$start – $end · every $hours hours';
+  }
+
+  @override
+  String waterReminderNext(String time) {
+    return 'On · next at $time';
+  }
+
+  @override
+  String get waterReminderEnabled => 'Water reminders on';
+
+  @override
+  String get waterReminderDenied =>
+      'Lành can\'t send notifications yet. Allow them in Settings to get reminders.';
+
+  @override
+  String get waterReminderOpenSettings => 'Settings';
+
+  @override
+  String get waterReminderError =>
+      'Couldn\'t change water reminders. Please try again.';
+
+  @override
+  String get waterReminderChannel => 'Water reminders';
+
+  @override
+  String get waterReminderNotificationTitle => 'Time for a glass of water 💧';
+
+  @override
+  String get waterReminderNotificationBody => 'Tap to log it in Lành.';
 }

@@ -221,7 +221,7 @@
       }
     }
   },
-  "mealVoicePrivacy": "Only this text is sent to Lành to estimate the dishes.",
+  "mealVoicePrivacy": "Only this text is sent to Lành to estimate the dishes. Results are estimates.",
   "mealVoiceSend": "Send for analysis",
   "mealVoiceRecordAgain": "Record again",
   "mealEstimationReceivedText": "Description received",
@@ -495,5 +495,23 @@
     }
   },
   "waterReadError": "Couldn’t read today’s water.",
-  "waterSaveError": "Couldn’t save water. Please try again."
+  "waterSaveError": "Couldn’t save water. Please try again.",
+  "menuHabits": "Habits",
+  "menuApp": "App",
+  "menuGoal": "Goal",
+  "menuGoalSubtitle": "{goal} · change or drop it anytime",
+  "menuGoalNone": "No goal yet · set one anytime",
+  "menuPrivacy": "Privacy",
+  "menuHelp": "Help",
+  "menuHelpSubtitle": "FAQ and feedback",
+  "waterReminderTitle": "Water reminders",
+  "waterReminderSchedule": "{start} – {end} · every {hours} hours",
+  "waterReminderNext": "On · next at {time}",
+  "waterReminderEnabled": "Water reminders on",
+  "waterReminderDenied": "Lành can't send notifications yet. Allow them in Settings to get reminders.",
+  "waterReminderOpenSettings": "Settings",
+  "waterReminderError": "Couldn't change water reminders. Please try again.",
+  "waterReminderChannel": "Water reminders",
+  "waterReminderNotificationTitle": "Time for a glass of water 💧",
+  "waterReminderNotificationBody": "Tap to log it in Lành."
 }

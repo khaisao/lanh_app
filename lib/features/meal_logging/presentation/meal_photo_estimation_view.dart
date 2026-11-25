@@ -582,46 +582,9 @@ class _EstimationBackButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) => TextButton(
+  Widget build(BuildContext context) => AppNavigationButton.back(
     onPressed: onPressed,
-    style: TextButton.styleFrom(
-      minimumSize: const Size(0, AppSizes.action),
-      padding: EdgeInsets.zero,
-      foregroundColor: AppColors.primary,
-      shape: const StadiumBorder(),
-    ),
-    child: Container(
-      constraints: const BoxConstraints(minHeight: AppSizes.backAction),
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.denseGap,
-        AppSpacing.xs,
-        AppSpacing.md,
-        AppSpacing.xs,
-      ),
-      decoration: ShapeDecoration(
-        color: AppColors.card.withValues(alpha: 0.6),
-        shape: StadiumBorder(
-          side: BorderSide(color: AppColors.card.withValues(alpha: 0.8)),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: AppSpacing.xxs,
-        children: [
-          const AppIcon.asset(
-            'ph-caret-left-bold',
-            size: AppSizes.iconSm,
-            color: AppColors.primary,
-          ),
-          Flexible(
-            child: Text(
-              AppLocalizations.of(context).mealPhotoBack,
-              style: AppTypography.button.copyWith(color: AppColors.primary),
-            ),
-          ),
-        ],
-      ),
-    ),
+    tooltip: AppLocalizations.of(context).mealPhotoBack,
   );
 }
 
