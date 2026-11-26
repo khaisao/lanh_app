@@ -1142,9 +1142,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get weightTitle => 'Cân nặng';
 
   @override
-  String get weightUpdate => 'Cập nhật';
-
-  @override
   String get weightUpdateTitle => 'Cập nhật cân nặng';
 
   @override
@@ -1165,30 +1162,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get weightUnit => 'kg';
 
   @override
-  String get weightDate => 'Ngày cân';
-
-  @override
-  String weightReplaceWarning(String kg) {
-    return 'Ngày này đã có $kg kg; lưu sẽ thay số cũ.';
-  }
-
-  @override
-  String get weightRange => 'Nhập từ 20 đến 300 kg';
-
-  @override
   String get weightSave => 'Lưu';
 
   @override
-  String get weightDelete => 'Xoá cân nặng';
-
-  @override
   String get weightSaveError => 'Chưa lưu được cân nặng. Thử lại nhé.';
-
-  @override
-  String get weightDecrease => 'Giảm 0,1 kg';
-
-  @override
-  String get weightIncrease => 'Tăng 0,1 kg';
 
   @override
   String get dayToday => 'hôm nay';

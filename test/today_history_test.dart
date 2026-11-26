@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +10,7 @@ import 'package:lanh_app/features/progress/progress.dart';
 import 'package:lanh_app/features/today/presentation/today_screen.dart';
 import 'package:lanh_app/features/water/water.dart';
 import 'package:lanh_app/features/weight/domain/weight_entry.dart';
+import 'package:lanh_app/features/weight/presentation/weight_ruler.dart';
 import 'package:lanh_app/features/weight/weight_providers.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
@@ -108,6 +110,33 @@ void main() {
   Finder dayChip(DateTime day) =>
       find.byKey(Key('today-day-${day.month}-${day.day}'));
 
+  /// The big number on the weight sheet, e.g. "52,8 kg".
+  String shownWeight(WidgetTester tester) => tester
+      .widget<RichText>(
+        find.descendant(
+          of: find.byKey(const Key('weight-value')),
+          matching: find.byType(RichText),
+        ),
+      )
+      .text
+      .toPlainText();
+
+  /// Moves the weight ruler by [ticks] of 0,1 kg (negative: lighter), the
+  /// way a drag scrolls it.
+  Future<void> moveRuler(WidgetTester tester, int ticks) async {
+    final scroll = tester
+        .widget<ListView>(find.byKey(const Key('weight-ruler')))
+        .controller!;
+    scroll.jumpTo(scroll.offset + ticks * WeightRuler.tickGap);
+    await tester.pumpAndSettle();
+  }
+
+  /// A real finger drag across the ruler, [dx] logical pixels.
+  Future<void> dragRuler(WidgetTester tester, double dx) async {
+    await tester.drag(find.byKey(const Key('weight-ruler')), Offset(dx, 0));
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('a past day is read-only and the text action returns', (
     tester,
   ) async {
@@ -119,10 +148,21 @@ void main() {
     expect(title(tester), 'Hôm nay');
     expect(find.text('Phở bò'), findsOneWidget);
     expect(find.byKey(const Key('today-back-to-today')), findsNothing);
+    final strip = find.byKey(const Key('today-day-strip'));
+    final stripTop = tester.getTopLeft(strip).dy;
+
+    await tester.tap(dayChip(daysAgo(3)));
+    await tester.pumpAndSettle();
+    // An older day: weekday title, date line without repeating it.
+    final weekday = title(tester);
+    expect(weekday, isNot(contains('Hôm')));
+    expect(find.textContaining('$weekday,'), findsNothing);
+    expect(find.textContaining(' tháng '), findsOneWidget);
+    expect(tester.getTopLeft(strip).dy, stripTop); // no jump
 
     await tester.tap(dayChip(daysAgo(1)));
     await tester.pumpAndSettle();
-    expect(title(tester), isNot('Hôm nay'));
+    expect(title(tester), 'Hôm qua');
     expect(find.text('Cơm tấm sườn'), findsOneWidget);
     expect(find.text('Phở bò'), findsNothing);
     expect(find.text('250 / 2.000 ml'), findsOneWidget);
@@ -162,42 +202,54 @@ void main() {
 
     await tester.tap(find.byKey(const Key('today-weight-update')));
     await tester.pumpAndSettle();
-    final input = find.byKey(const Key('weight-input'));
-    expect(tester.widget<TextField>(input).controller!.text, '53,0');
-    expect(find.byKey(const Key('weight-delete')), findsNothing);
-    await tester.tap(find.byKey(const Key('weight-minus')));
-    await tester.tap(find.byKey(const Key('weight-minus')));
-    await tester.pump();
-    expect(tester.widget<TextField>(input).controller!.text, '52,8');
+    expect(shownWeight(tester), '53,0 kg');
+    expect(find.byKey(const Key('weight-delete')), findsNothing); // no delete
+    expect(find.byKey(const Key('weight-day')), findsNothing); // today only
+    // Drag the ruler right by two ticks: 0,2 kg less.
+    await moveRuler(tester, -2);
+    expect(shownWeight(tester), '52,8 kg');
     await tester.tap(find.byKey(const Key('weight-save')));
     await tester.pumpAndSettle();
     expect(weights.entries[today]?.kg, 52.8);
-    expect(find.text('52,8 kg · hôm nay'), findsOneWidget);
+    // Today's own weigh-in needs no date: the header already says it.
+    expect(find.text('52,8 kg', findRichText: true), findsOneWidget);
 
-    // Today now has a weigh-in: saving warns it replaces, delete appears.
+    // Saving again replaces today's number.
     await tester.tap(find.byKey(const Key('today-weight-update')));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('weight-sheet-replace')), findsOneWidget);
-    await tester.enterText(input, '10');
-    await tester.pump();
-    expect(find.text('Nhập từ 20 đến 300 kg'), findsOneWidget);
-    expect(
-      tester.widget<AppButton>(find.byKey(const Key('weight-save'))).onPressed,
-      isNull,
-    );
-    await tester.enterText(input, '52.6');
-    await tester.pump();
+    expect(shownWeight(tester), '52,8 kg');
+    await moveRuler(tester, -2);
     await tester.tap(find.byKey(const Key('weight-save')));
     await tester.pumpAndSettle();
     expect(weights.entries.length, 1);
     expect(weights.entries[today]?.kg, 52.6);
+  });
 
+  testWidgets('the ruler stops at 20 and 300 kg', (tester) async {
+    await pump(tester, const TodayScreen());
     await tester.tap(find.byKey(const Key('today-weight-update')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('weight-delete')));
+    await dragRuler(tester, 5000); // finger right: lighter
+    expect(shownWeight(tester), '20,0 kg');
+    await dragRuler(tester, -30000); // past 300 kg
+    expect(shownWeight(tester), '300,0 kg');
+  });
+
+  testWidgets('screen readers step the ruler by 0,1 kg', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, const TodayScreen());
+    await tester.tap(find.byKey(const Key('today-weight-update')));
     await tester.pumpAndSettle();
-    expect(weights.entries, isEmpty);
-    expect(find.textContaining('53,0 kg'), findsOneWidget);
+    final ruler = find.semantics.byPredicate(
+      (node) => node.getSemanticsData().flagsCollection.isSlider,
+    );
+    final node = ruler.evaluate().single;
+    expect(node.value, '53,0 kg');
+    expect(node.increasedValue, '53,1 kg');
+    tester.semantics.performAction(ruler, SemanticsAction.increase);
+    await tester.pumpAndSettle();
+    expect(shownWeight(tester), '53,1 kg');
+    semantics.dispose();
   });
 
   testWidgets('a failed weigh-in keeps the sheet and its number', (
@@ -211,27 +263,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('weight-sheet')), findsOneWidget);
     expect(find.text('Chưa lưu được cân nặng. Thử lại nhé.'), findsOneWidget);
-    expect(
-      tester
-          .widget<TextField>(find.byKey(const Key('weight-input')))
-          .controller!
-          .text,
-      '53,0',
-    );
-  });
-
-  testWidgets('a weigh-in can be logged for an earlier day', (tester) async {
-    await pump(tester, const TodayScreen());
-    await tester.tap(find.byKey(const Key('today-weight-update')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('weight-day')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.textContaining('Hôm qua').last);
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('weight-save')));
-    await tester.pumpAndSettle();
-    expect(weights.entries.keys.single, daysAgo(1, 0));
-    expect(find.text('53,0 kg · hôm qua'), findsOneWidget);
+    expect(shownWeight(tester), '53,0 kg');
   });
 
   testWidgets('meal sheet deletes after confirmation only', (tester) async {

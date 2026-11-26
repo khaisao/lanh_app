@@ -4,7 +4,8 @@ import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Seven-day strip under the Home title (Sleek "Hôm nay"): the last six days
-/// and today, a dot under days with a saved meal, the shown day filled.
+/// and today. The shown day is a filled circle, today keeps a ring while
+/// another day is shown, and days with a saved meal get a dot.
 class TodayDayStrip extends StatelessWidget {
   const TodayDayStrip({
     super.key,
@@ -30,8 +31,11 @@ class TodayDayStrip extends StatelessWidget {
     ];
     return AppGlassCard(
       key: const Key('today-day-strip'),
-      stadium: true,
-      padding: const EdgeInsets.all(AppSpacing.stepGap),
+      radius: AppRadii.glassInner,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.sm,
+      ),
       shadows: AppShadows.glassCard,
       child: Row(
         children: [
@@ -40,6 +44,7 @@ class TodayDayStrip extends StatelessWidget {
               child: _Day(
                 day: day,
                 selected: day == selected,
+                isToday: day == today,
                 hasMeal: mealDays.contains(day),
                 label: strings.dayStripLabel(
                   DateFormat.EEEE(strings.localeName).format(day),
@@ -59,6 +64,7 @@ class _Day extends StatelessWidget {
   const _Day({
     required this.day,
     required this.selected,
+    required this.isToday,
     required this.hasMeal,
     required this.label,
     required this.weekday,
@@ -67,6 +73,7 @@ class _Day extends StatelessWidget {
 
   final DateTime day;
   final bool selected;
+  final bool isToday;
   final bool hasMeal;
   final String label;
   final String weekday;
@@ -74,7 +81,6 @@ class _Day extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppColors.primaryForeground : AppColors.foreground;
     return Semantics(
       key: Key('today-day-${day.month}-${day.day}'),
       button: true,
@@ -83,48 +89,54 @@ class _Day extends StatelessWidget {
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
-        customBorder: const StadiumBorder(),
-        child: AnimatedContainer(
-          duration: AppMotion.of(context, AppMotion.selection),
-          curve: AppMotion.selectionCurve,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: AppSizes.action),
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-          decoration: ShapeDecoration(
-            shape: const StadiumBorder(),
-            gradient: selected
-                ? const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [AppColors.meterFillEnd, AppColors.primary],
-                  )
-                : null,
-          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            spacing: AppSpacing.xxs,
             children: [
               Text(
                 weekday,
                 style: AppTypography.micro.copyWith(
                   color: selected
-                      ? AppColors.primaryForeground
+                      ? AppColors.primary
                       : AppColors.mutedForeground,
+                  fontWeight: selected ? FontWeight.w700 : null,
                 ),
               ),
-              Text(
-                '${day.day}',
-                style: AppTypography.cardTitle.copyWith(color: color),
+              AnimatedContainer(
+                duration: AppMotion.of(context, AppMotion.selection),
+                curve: AppMotion.selectionCurve,
+                constraints: const BoxConstraints(
+                  minWidth: AppSizes.dayCircle,
+                  minHeight: AppSizes.dayCircle,
+                ),
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  shape: CircleBorder(
+                    side: isToday && !selected
+                        ? const BorderSide(color: AppColors.primary)
+                        : BorderSide.none,
+                  ),
+                  color: selected ? AppColors.primary : null,
+                ),
+                child: Text(
+                  '${day.day}',
+                  style: AppTypography.cardTitle.copyWith(
+                    color: selected
+                        ? AppColors.primaryForeground
+                        : AppColors.foreground,
+                  ),
+                ),
               ),
-              const SizedBox(height: AppSpacing.xxs),
+              // Kept empty on days without meals so every column aligns.
               DecoratedBox(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: hasMeal
-                      ? (selected
-                            ? AppColors.primaryForeground
-                            : AppColors.primary)
-                      : Colors.transparent,
+                  color: hasMeal ? AppColors.primary : Colors.transparent,
                 ),
-                child: const SizedBox.square(dimension: AppSpacing.stepGap),
+                child: const SizedBox.square(dimension: AppSpacing.xxs),
               ),
             ],
           ),

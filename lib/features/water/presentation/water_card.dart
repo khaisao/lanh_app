@@ -66,7 +66,7 @@ class _WaterCardState extends State<WaterCard> {
     );
     return AppGlassCard(
       key: const Key('today-water'),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.card),
       radius: AppRadii.glassInner,
       shadows: const [],
       child: Column(

@@ -15,11 +15,13 @@ class TodayDashboard extends StatelessWidget {
     this.onBackToToday,
   });
 
-  /// "Hôm nay", or the date of the past day on screen.
+  /// "Hôm nay", "Hôm qua" or the weekday of the day on screen.
   final String title;
-  final String? subtitle;
 
-  /// Shown on past days: the small text action back to today.
+  /// The date under [title]; always present so the header keeps its height.
+  final String subtitle;
+
+  /// Shown on past days: the compact pill back to today.
   final VoidCallback? onBackToToday;
   final Widget days;
   final Widget energy;
@@ -34,42 +36,56 @@ class TodayDashboard extends StatelessWidget {
       key: const Key('today-screen'),
       body: AppPageList(
         children: [
+          // The pill sits beside the title only, so the date line keeps the
+          // full width. On today its height is still reserved (not its width,
+          // so the title keeps room), and switching days never moves the
+          // content below.
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             spacing: AppSpacing.sm,
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Semantics(
-                      header: true,
-                      child: Text(
-                        title,
-                        key: const Key('today-title'),
-                        style: AppTypography.screenTitle,
-                      ),
+                // One line on every day: a long weekday beside the pill
+                // shrinks instead of wrapping and pushing the content down.
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      title,
+                      key: const Key('today-title'),
+                      maxLines: 1,
+                      style: AppTypography.screenTitle,
                     ),
-                    if (subtitle case final text?)
-                      Text(text, style: AppTypography.bodySmall),
-                  ],
+                  ),
                 ),
               ),
-              if (onBackToToday != null)
-                TextButton(
+              if (onBackToToday == null)
+                const SizedBox(height: AppSizes.compactAction)
+              else
+                TextButton.icon(
                   key: const Key('today-back-to-today'),
                   onPressed: onBackToToday,
                   style: TextButton.styleFrom(
+                    backgroundColor: AppColors.secondary,
                     foregroundColor: AppColors.primary,
-                    minimumSize: const Size(
-                      AppSizes.compactAction,
-                      AppSizes.compactAction,
+                    shape: const StadiumBorder(),
+                    textStyle: AppTypography.label,
+                    minimumSize: const Size(0, AppSizes.compactAction),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
                     ),
                   ),
-                  child: Text(strings.today),
+                  icon: const AppIcon.asset(
+                    'ph-arrow-counter-clockwise-bold',
+                    size: AppSizes.iconXs,
+                    color: AppColors.primary,
+                  ),
+                  label: Text(strings.today),
                 ),
             ],
           ),
+          Text(subtitle, style: AppTypography.bodySmall),
           const SizedBox(height: AppSpacing.md),
           days,
           const SizedBox(height: AppSpacing.md),
@@ -97,7 +113,7 @@ class TodayEmptyDayCard extends StatelessWidget {
     return TodayCard(
       key: const Key('today-empty-day'),
       padding: const EdgeInsets.all(AppSpacing.lg),
-      radius: AppRadii.glassCard,
+      radius: AppRadii.glassInner,
       raised: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +266,7 @@ class TodayMealRow extends StatelessWidget {
   Widget _content() => InkWell(
     onTap: onTap,
     child: Padding(
-      padding: const EdgeInsets.all(AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
       child: Row(
         spacing: AppSpacing.sm,
         children: [
@@ -259,9 +275,11 @@ class TodayMealRow extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadii.md),
               child: photo == null
-                  ? const ColoredBox(
-                      color: AppColors.secondary,
-                      child: Center(
+                  ? DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: AppGradients.well(AppColors.secondary),
+                      ),
+                      child: const Center(
                         child: AppIcon.asset(
                           'game-icons-bowl-of-rice',
                           size: AppSizes.iconLg,
@@ -282,6 +300,7 @@ class TodayMealRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name, style: AppTypography.cardTitle),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(time, style: AppTypography.caption),
               ],
             ),
@@ -314,7 +333,7 @@ class TodayFirstMealCard extends StatelessWidget {
     final strings = AppLocalizations.of(context);
     return TodayCard(
       key: const Key('today-first-meal'),
-      radius: AppRadii.glassCard,
+      radius: AppRadii.glassInner,
       raised: true,
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(

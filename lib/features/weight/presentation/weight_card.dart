@@ -14,6 +14,7 @@ class WeightCard extends StatelessWidget {
     required this.kg,
     required this.day,
     required this.today,
+    required this.shown,
     this.onUpdate,
     this.failed = false,
     this.onRetry,
@@ -27,6 +28,9 @@ class WeightCard extends StatelessWidget {
 
   /// The current local day, for "hôm nay" / "hôm qua".
   final DateTime today;
+
+  /// The day on screen; its own weigh-in needs no date, the header has it.
+  final DateTime shown;
   final VoidCallback? onUpdate;
   final bool failed;
   final VoidCallback? onRetry;
@@ -43,8 +47,8 @@ class WeightCard extends StatelessWidget {
     return AppGlassCard(
       key: const Key('today-weight'),
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
+        horizontal: AppSpacing.card,
+        vertical: AppSpacing.md,
       ),
       radius: AppRadii.glassInner,
       shadows: const [],
@@ -90,7 +94,7 @@ class WeightCard extends StatelessWidget {
                                 text: strings.weightKg(format.format(value)),
                                 style: AppTypography.cardTitle,
                               ),
-                              if (when != null)
+                              if (when != null && when != shown)
                                 TextSpan(
                                   text:
                                       ' · ${weightDayLabel(strings, when, today)}',
@@ -105,16 +109,19 @@ class WeightCard extends StatelessWidget {
                 if (failed && onRetry != null)
                   TextButton(onPressed: onRetry, child: Text(strings.retry))
                 else if (onUpdate != null)
-                  TextButton(
+                  IconButton(
                     key: const Key('today-weight-update'),
+                    tooltip: strings.weightUpdateTitle,
                     onPressed: onUpdate,
-                    style: TextButton.styleFrom(
+                    style: IconButton.styleFrom(
                       backgroundColor: AppColors.secondary,
-                      foregroundColor: AppColors.primary,
-                      shape: const StadiumBorder(),
-                      minimumSize: const Size(0, AppSizes.compactAction),
+                      fixedSize: const Size.square(AppSizes.compactAction),
                     ),
-                    child: Text(strings.weightUpdate),
+                    icon: const AppIcon.asset(
+                      'ph-pencil-simple',
+                      size: AppSizes.iconSm,
+                      color: AppColors.primary,
+                    ),
                   ),
               ],
             ),

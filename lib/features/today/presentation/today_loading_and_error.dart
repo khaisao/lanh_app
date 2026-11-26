@@ -17,7 +17,7 @@ class TodayEnergySkeleton extends StatelessWidget {
     child: ExcludeSemantics(
       child: TodayCard(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        radius: AppRadii.glassCard,
+        radius: AppRadii.glassInner,
         raised: true,
         child: _Pulse(
           child: Column(
@@ -108,7 +108,7 @@ class TodayEnergyErrorCard extends StatelessWidget {
     return TodayCard(
       key: const Key('today-energy-error'),
       padding: const EdgeInsets.all(AppSpacing.lg),
-      radius: AppRadii.glassCard,
+      radius: AppRadii.glassInner,
       raised: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

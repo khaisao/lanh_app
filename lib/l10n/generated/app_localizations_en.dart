@@ -1153,9 +1153,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weightTitle => 'Weight';
 
   @override
-  String get weightUpdate => 'Update';
-
-  @override
   String get weightUpdateTitle => 'Update weight';
 
   @override
@@ -1176,30 +1173,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weightUnit => 'kg';
 
   @override
-  String get weightDate => 'Weigh-in day';
-
-  @override
-  String weightReplaceWarning(String kg) {
-    return 'This day already has $kg kg; saving replaces it.';
-  }
-
-  @override
-  String get weightRange => 'Enter 20 to 300 kg';
-
-  @override
   String get weightSave => 'Save';
 
   @override
-  String get weightDelete => 'Delete weigh-in';
-
-  @override
   String get weightSaveError => 'Couldn\'t save your weight. Please try again.';
-
-  @override
-  String get weightDecrease => 'Decrease 0.1 kg';
-
-  @override
-  String get weightIncrease => 'Increase 0.1 kg';
 
   @override
   String get dayToday => 'today';

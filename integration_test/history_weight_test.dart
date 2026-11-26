@@ -17,6 +17,7 @@ import 'package:lanh_app/features/today/presentation/today_screen.dart';
 import 'package:lanh_app/features/water/data/sqlite_water_log_repository.dart';
 import 'package:lanh_app/features/water/water.dart';
 import 'package:lanh_app/features/weight/data/sqlite_weight_repository.dart';
+import 'package:lanh_app/features/weight/presentation/weight_ruler.dart';
 import 'package:lanh_app/features/weight/domain/weight_entry.dart';
 import 'package:lanh_app/features/weight/weight_providers.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
@@ -157,38 +158,35 @@ void main() {
     expect(await water.countForDate(today), 1);
   });
 
+  /// Moves the weight ruler by [ticks] of 0,1 kg, as a drag scrolls it.
+  Future<void> moveRuler(WidgetTester tester, int ticks) async {
+    final scroll = tester
+        .widget<ListView>(find.byKey(const Key('weight-ruler')))
+        .controller!;
+    scroll.jumpTo(scroll.offset + ticks * WeightRuler.tickGap);
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('weigh-ins persist one per day in SQLite', (tester) async {
     await pump(tester, const TodayScreen());
     expect(find.textContaining('53,0 kg'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('today-weight-update')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('weight-minus')));
-    await tester.pumpAndSettle();
+    await moveRuler(tester, -1);
     await tester.tap(find.byKey(const Key('weight-save')));
     await tester.pumpAndSettle();
-    expect(find.text('52,9 kg · hôm nay'), findsOneWidget);
+    expect(find.text('52,9 kg', findRichText: true), findsOneWidget);
 
+    // Saving again replaces today's number.
     await tester.tap(find.byKey(const Key('today-weight-update')));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('weight-sheet-replace')), findsOneWidget);
-    await tester.enterText(find.byKey(const Key('weight-input')), '301');
-    await tester.pumpAndSettle();
-    expect(find.text('Nhập từ 20 đến 300 kg'), findsOneWidget);
-    await tester.enterText(find.byKey(const Key('weight-input')), '52,7');
-    await tester.pumpAndSettle();
+    await moveRuler(tester, -2);
     await tester.tap(find.byKey(const Key('weight-save')));
     await tester.pumpAndSettle();
     final saved = await weights.readBetween(daysAgo(30), today);
     expect(saved.single.kg, 52.7);
     expect(saved.single.day, today);
-
-    await tester.tap(find.byKey(const Key('today-weight-update')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('weight-delete')));
-    await tester.pumpAndSettle();
-    expect(await weights.readBetween(daysAgo(30), today), isEmpty);
-    expect(find.textContaining('53,0 kg'), findsOneWidget);
   });
 
   testWidgets('deleting a meal removes its row and its photo file', (

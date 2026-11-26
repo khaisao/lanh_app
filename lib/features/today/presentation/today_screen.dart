@@ -77,8 +77,8 @@ class TodayScreen extends ConsumerWidget {
         .fold<double>(0, (sum, value) => sum + value);
 
     return TodayDashboard(
-      title: isToday ? strings.today : _dayTitle(strings, day),
-      subtitle: isToday ? _dayTitle(strings, day) : null,
+      title: _dayTitle(strings, day, today),
+      subtitle: _daySubtitle(strings, day, today),
       onBackToToday: isToday
           ? null
           : ref.read(todaySelectedDayProvider.notifier).showToday,
@@ -145,35 +145,24 @@ class TodayScreen extends ConsumerWidget {
                   )
                 : const TodayNoMealsCard()
           else
-            TodayCard(
-              padding: EdgeInsets.zero,
-              child: Column(
-                children: [
-                  for (var index = 0; index < loggedMeals.length; index++) ...[
-                    if (index > 0)
-                      const Divider(
-                        height: AppBorders.hairline,
-                        thickness: AppBorders.hairline,
-                        color: AppColors.border,
-                        indent: AppSpacing.md,
-                        endIndent: AppSpacing.md,
-                      ),
-                    _mealRow(
+            // One card per meal, spaced apart, so rows never run together.
+            Column(
+              spacing: AppSpacing.sm,
+              children: [
+                for (final meal in loggedMeals)
+                  TodayCard(
+                    padding: EdgeInsets.zero,
+                    child: _mealRow(
                       context,
-                      loggedMeals[index],
+                      meal,
                       numberFormat,
-                      highlighted: loggedMeals[index].id == justSaved?.id,
+                      highlighted: meal.id == justSaved?.id,
                       onTap: () => unawaited(
-                        showMealDetailSheet(
-                          context,
-                          loggedMeals[index],
-                          canDelete: isToday,
-                        ),
+                        showMealDetailSheet(context, meal, canDelete: isToday),
                       ),
                     ),
-                  ],
-                ],
-              ),
+                  ),
+              ],
             ),
         ],
       ),
@@ -185,11 +174,39 @@ class TodayScreen extends ConsumerWidget {
     return DateTime(local.year, local.month, local.day);
   }
 
-  /// "Thứ Bảy, 21/11" with the first letter capitalised.
-  static String _dayTitle(AppLocalizations strings, DateTime day) {
-    final text = DateFormat('EEEE, d/M', strings.localeName).format(day);
-    return text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
-  }
+  /// "Hôm nay", "Hôm qua", otherwise the weekday ("Thứ Ba").
+  static String _dayTitle(
+    AppLocalizations strings,
+    DateTime day,
+    DateTime today,
+  ) => switch (_daysBack(day, today)) {
+    0 => strings.today,
+    1 => _capitalised(strings.dayYesterday),
+    _ => _capitalised(DateFormat.EEEE(strings.localeName).format(day)),
+  };
+
+  /// The date under the title, without repeating a weekday the title shows:
+  /// "Thứ Năm, 26 tháng 11" for today and yesterday, "24 tháng 11" otherwise.
+  static String _daySubtitle(
+    AppLocalizations strings,
+    DateTime day,
+    DateTime today,
+  ) => _capitalised(
+    DateFormat(
+      _daysBack(day, today) <= 1 ? 'EEEE, d MMMM' : 'd MMMM',
+      strings.localeName,
+    ).format(day),
+  );
+
+  /// Whole calendar days from [day] to [today]; UTC so DST never shifts it.
+  static int _daysBack(DateTime day, DateTime today) => DateTime.utc(
+    today.year,
+    today.month,
+    today.day,
+  ).difference(DateTime.utc(day.year, day.month, day.day)).inDays;
+
+  static String _capitalised(String text) =>
+      text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
 
   /// The latest weigh-in up to [day]. Before any is logged, the weight from
   /// profile setup stands in, dated the day the goal was saved.
@@ -216,6 +233,7 @@ class TodayScreen extends ConsumerWidget {
       kg: latest?.kg ?? (useProfile ? goal!.currentWeight : null),
       day: latest?.day ?? (useProfile ? profileDay : null),
       today: today,
+      shown: day,
       failed: history.hasError && !history.hasValue,
       onRetry: () => ref.invalidate(weightHistoryProvider),
       onUpdate: isToday ? () => unawaited(showWeightSheet(context)) : null,

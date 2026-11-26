@@ -28,9 +28,4 @@ final class WeightEditor {
     await _ref.read(weightRepositoryProvider).save(entry);
     _ref.invalidate(weightHistoryProvider);
   }
-
-  Future<void> delete(DateTime day) async {
-    await _ref.read(weightRepositoryProvider).delete(day);
-    _ref.invalidate(weightHistoryProvider);
-  }
 }

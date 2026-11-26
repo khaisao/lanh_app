@@ -278,32 +278,24 @@ void main() {
       expect(await water.countForDate(today), 5);
     });
 
-    testWidgets('weight input accepts 20–300 kg with comma or dot', (
+    testWidgets('the weight ruler drags within 20–300 kg and saves', (
       tester,
     ) async {
       await pump(tester, const TodayScreen());
-      final input = find.byKey(const Key('weight-input'));
-      final save = find.byKey(const Key('weight-save'));
       await tester.tap(find.byKey(const Key('today-weight-update')));
       await tester.pumpAndSettle();
-      for (final (text, valid) in [
-        ('19,9', false),
-        ('300,1', false),
-        ('0', false),
-        ('abc', false), // filtered out: the field stays empty
-        ('20', true),
-        ('300', true),
-        ('52.84', true),
-      ]) {
-        await tester.enterText(input, text);
-        await tester.pump();
-        final enabled = tester.widget<AppButton>(save).onPressed != null;
-        expect(enabled, valid, reason: text);
-      }
-      await tester.tap(save);
+      final ruler = find.byKey(const Key('weight-ruler'));
+      // A finger flick far past either end stops at the limit.
+      await tester.drag(ruler, const Offset(-40000, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('300,0 kg', findRichText: true), findsOneWidget);
+      await tester.drag(ruler, const Offset(40000, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('20,0 kg', findRichText: true), findsOneWidget);
+      await tester.tap(find.byKey(const Key('weight-save')));
       await tester.pumpAndSettle();
       final saved = await weights.readBetween(daysAgo(1), today);
-      expect(saved.single.kg, 52.8);
+      expect(saved.single.kg, 20);
     });
 
     testWidgets('each day shows the latest weigh-in up to that day', (

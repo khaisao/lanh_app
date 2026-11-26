@@ -2060,12 +2060,6 @@ abstract class AppLocalizations {
   /// **'Cân nặng'**
   String get weightTitle;
 
-  /// No description provided for @weightUpdate.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cập nhật'**
-  String get weightUpdate;
-
   /// No description provided for @weightUpdateTitle.
   ///
   /// In vi, this message translates to:
@@ -2102,53 +2096,17 @@ abstract class AppLocalizations {
   /// **'kg'**
   String get weightUnit;
 
-  /// No description provided for @weightDate.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ngày cân'**
-  String get weightDate;
-
-  /// No description provided for @weightReplaceWarning.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ngày này đã có {kg} kg; lưu sẽ thay số cũ.'**
-  String weightReplaceWarning(String kg);
-
-  /// No description provided for @weightRange.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhập từ 20 đến 300 kg'**
-  String get weightRange;
-
   /// No description provided for @weightSave.
   ///
   /// In vi, this message translates to:
   /// **'Lưu'**
   String get weightSave;
 
-  /// No description provided for @weightDelete.
-  ///
-  /// In vi, this message translates to:
-  /// **'Xoá cân nặng'**
-  String get weightDelete;
-
   /// No description provided for @weightSaveError.
   ///
   /// In vi, this message translates to:
   /// **'Chưa lưu được cân nặng. Thử lại nhé.'**
   String get weightSaveError;
-
-  /// No description provided for @weightDecrease.
-  ///
-  /// In vi, this message translates to:
-  /// **'Giảm 0,1 kg'**
-  String get weightDecrease;
-
-  /// No description provided for @weightIncrease.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tăng 0,1 kg'**
-  String get weightIncrease;
 
   /// No description provided for @dayToday.
   ///

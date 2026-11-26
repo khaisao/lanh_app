@@ -81,8 +81,8 @@ class _TodayEnergyCardState extends State<TodayEnergyCard> {
           };
     return TodayCard(
       key: ValueKey('today-energy-${status.goal.name}'),
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      radius: AppRadii.glassCard,
+      padding: const EdgeInsets.all(AppSpacing.card),
+      radius: AppRadii.glassInner,
       raised: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -168,9 +168,14 @@ class TodayEnergyHeader extends StatelessWidget {
           child: SizedBox.square(
             dimension: AppSizes.energyIconWell,
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: warning ? AppColors.accent : AppColors.secondary,
-                borderRadius: BorderRadius.circular(AppRadii.md),
+              decoration: ShapeDecoration(
+                gradient: AppGradients.well(
+                  warning ? AppColors.accent : AppColors.secondary,
+                ),
+                shape: const AppSquircleBorder(
+                  radius: AppRadii.glassInner,
+                  side: BorderSide(color: AppMenu.wellEdge),
+                ),
               ),
               child: Center(
                 child: AppIcon.asset(
@@ -476,8 +481,8 @@ class TodayEnergyPlainCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TodayCard(
     key: const ValueKey('today-energy-plain'),
-    padding: const EdgeInsets.all(AppSpacing.lg),
-    radius: AppRadii.glassCard,
+    padding: const EdgeInsets.all(AppSpacing.card),
+    radius: AppRadii.glassInner,
     raised: true,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

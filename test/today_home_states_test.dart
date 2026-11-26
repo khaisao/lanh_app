@@ -287,7 +287,10 @@ void main() {
     expect(find.byKey(const Key('today-journal-error')), findsOneWidget);
     expect(find.text('Chưa đọc được nhật ký hôm nay.'), findsOneWidget);
     final reads = mealReads;
-    await tester.tap(find.byKey(const Key('today-journal-retry')));
+    final retry = find.byKey(const Key('today-journal-retry'));
+    await tester.ensureVisible(retry);
+    await tester.pumpAndSettle();
+    await tester.tap(retry);
     await tester.pumpAndSettle();
     expect(mealReads, reads + 1);
   });

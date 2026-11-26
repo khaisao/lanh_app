@@ -5,8 +5,8 @@ const maxWeightKg = 300.0;
 /// Weight is entered and shown in steps of 0,1 kg.
 const weightStepKg = 0.1;
 
-/// How many days back, today included, a weight can be logged or changed.
-const weightEditableDays = 14;
+/// Where the weight ruler starts when no weight is known at all.
+const weightRulerFallbackKg = 60.0;
 
 /// The local calendar day of [date], at midnight.
 DateTime weightDay(DateTime date) {

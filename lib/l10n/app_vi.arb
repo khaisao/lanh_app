@@ -631,7 +631,6 @@
   "waterReminderNotificationTitle": "Uống một cốc nước nhé 💧",
   "waterReminderNotificationBody": "Chạm để ghi vào Lành.",
   "weightTitle": "Cân nặng",
-  "weightUpdate": "Cập nhật",
   "weightUpdateTitle": "Cập nhật cân nặng",
   "weightOptionDescription": "Ghi số cân của hôm nay",
   "weightNone": "Chưa có số đo",
@@ -645,21 +644,8 @@
     }
   },
   "weightUnit": "kg",
-  "weightDate": "Ngày cân",
-  "weightReplaceWarning": "Ngày này đã có {kg} kg; lưu sẽ thay số cũ.",
-  "@weightReplaceWarning": {
-    "placeholders": {
-      "kg": {
-        "type": "String"
-      }
-    }
-  },
-  "weightRange": "Nhập từ 20 đến 300 kg",
   "weightSave": "Lưu",
-  "weightDelete": "Xoá cân nặng",
   "weightSaveError": "Chưa lưu được cân nặng. Thử lại nhé.",
-  "weightDecrease": "Giảm 0,1 kg",
-  "weightIncrease": "Tăng 0,1 kg",
   "dayToday": "hôm nay",
   "dayYesterday": "hôm qua",
   "dayStripWeekday": "{weekday, select, 1{T2} 2{T3} 3{T4} 4{T5} 5{T6} 6{T7} other{CN}}",
