@@ -39,8 +39,7 @@
   "mealPhotoCameraLoading": "Đang mở camera",
   "mealPhotoReviewLabel": "Ảnh bữa ăn đang xem lại",
   "mealPhotoCaptured": "Ảnh đã chụp",
-  "mealPhotoReadyTitle": "Ảnh đã sẵn sàng",
-  "mealPhotoReadyBody": "Lành sẽ ước lượng calo từ ảnh này. Kết quả là ước tính, bạn kiểm tra lại trước khi lưu.",
+  "mealPhotoChosen": "Ảnh đã chọn",
   "mealPhotoEstimate": "Ước lượng bữa ăn",
   "mealPhotoRetake": "Chụp lại",
   "mealPhotoReplace": "Chọn ảnh khác",
@@ -142,14 +141,14 @@
   "mealEstimatingBody": "Thường mất vài giây. Bạn sẽ kiểm tra lại trước khi lưu.",
   "mealEstimationErrorTitle": "Chưa ước lượng được",
   "mealEstimationErrorBody": "Lành chưa nhìn rõ bữa này. Thử chụp gần hơn hoặc dưới ánh sáng tốt hơn. Ảnh vẫn được giữ lại.",
-  "mealEstimationCancel": "Hủy phân tích",
+  "mealEstimationCancel": "Dừng lại",
   "mealEstimationReceived": "Đã nhận ảnh",
-  "mealEstimationRecognizing": "Nhận diện món trong ảnh",
-  "mealEstimationPortion": "Ước lượng khẩu phần",
-  "mealEstimationCalories": "Tính calo ước tính",
+  "mealEstimationRecognizing": "Đang tìm các món trong ảnh",
+  "mealEstimationPortion": "Xem bạn ăn bao nhiêu",
+  "mealEstimationCalories": "Tính lượng calo",
   "mealEstimationDone": "Xong",
-  "mealEstimationWorking": "Đang làm",
-  "mealEstimationWaiting": "Chờ",
+  "mealEstimationWorking": "Đang tính",
+  "mealEstimationWaiting": "Sắp tới",
   "mealEstimationNetworkBody": "Lành chưa kết nối được máy chủ phân tích. Kiểm tra mạng rồi thử lại. Ảnh vẫn được giữ lại.",
   "mealEstimationUnavailableBody": "Máy chủ phân tích đang bận hoặc phản hồi quá lâu. Vui lòng thử lại sau ít phút. Ảnh vẫn được giữ lại.",
   "mealEstimationInvalidPhotoBody": "Lành chưa đọc được ảnh này. Hãy chụp lại hoặc chọn ảnh khác.",
@@ -271,8 +270,8 @@
   "mealVoicePrivacy": "Chỉ chữ này được gửi lên Lành để ước lượng món. Kết quả chỉ là ước lượng.",
   "mealVoiceSend": "Gửi phân tích",
   "mealVoiceRecordAgain": "Ghi lại",
-  "mealEstimationReceivedText": "Đã nhận lời kể",
-  "mealEstimationRecognizingText": "Nhận diện món từ lời kể",
+  "mealEstimationReceivedText": "Đã nghe bạn kể",
+  "mealEstimationRecognizingText": "Đang tìm các món bạn ăn",
   "mealEstimationTextErrorBody": "Lành chưa nhận ra món nào trong lời kể. Thử ghi rõ tên món và lượng ăn. Lời kể vẫn được giữ lại.",
   "mealEstimationTextNetworkBody": "Lành chưa kết nối được máy chủ phân tích. Kiểm tra mạng rồi thử lại. Lời kể vẫn được giữ lại.",
   "mealEstimationTextUnavailableBody": "Máy chủ phân tích đang bận hoặc phản hồi quá lâu. Vui lòng thử lại sau ít phút. Lời kể vẫn được giữ lại.",
@@ -646,7 +645,6 @@
   "weightUnit": "kg",
   "weightSave": "Lưu",
   "weightSaveError": "Chưa lưu được cân nặng. Thử lại nhé.",
-  "dayToday": "hôm nay",
   "dayYesterday": "hôm qua",
   "dayStripWeekday": "{weekday, select, 1{T2} 2{T3} 3{T4} 4{T5} 5{T6} 6{T7} other{CN}}",
   "@dayStripWeekday": {
@@ -708,6 +706,26 @@
   "waterReachedDay": "Đã đủ nước",
   "mealDelete": "Xoá bữa",
   "mealDeleteTitle": "Xoá bữa này?",
+  "mealDeleteBody": "{meal} · {kcal} kcal sẽ bị xoá khỏi nhật ký.",
+  "@mealDeleteBody": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "mealDeleteBodyNoKcal": "{meal} sẽ bị xoá khỏi nhật ký.",
+  "@mealDeleteBodyNoKcal": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "mealDeleteKeep": "Giữ lại",
   "mealDeleteError": "Chưa xoá được bữa. Thử lại nhé.",
   "mealDetailEstimated": "Ước lượng AI",
   "mealProtein": "Đạm",

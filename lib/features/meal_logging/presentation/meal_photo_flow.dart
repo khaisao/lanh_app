@@ -328,7 +328,6 @@ class _MealPhotoFlowState extends ConsumerState<MealPhotoFlow> {
             MealPhotoStage.review => _MealPhotoReviewView(
               photo: _controller.photo!,
               captured: _controller.captured,
-              loadingPhoto: _controller.loadingPhoto,
               onBack: _controller.returnFromReview,
               onEstimate: busy ? null : _controller.startEstimation,
               onReplace: busy

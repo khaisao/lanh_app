@@ -179,7 +179,7 @@ void main() {
     await tester.pump();
     expect(_analysis.descriptions, ['Ăn một tô phở bò tái']);
     expect(find.text('Lành đang ước lượng'), findsOneWidget);
-    expect(find.text('Đã nhận lời kể'), findsOneWidget);
+    expect(find.text('Đã nghe bạn kể'), findsOneWidget);
     // Without a Material ancestor Flutter draws the yellow warning underline.
     expect(
       find.ancestor(

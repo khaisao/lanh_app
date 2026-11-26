@@ -39,8 +39,7 @@
   "mealPhotoCameraLoading": "Opening camera",
   "mealPhotoReviewLabel": "Meal photo preview",
   "mealPhotoCaptured": "Photo captured",
-  "mealPhotoReadyTitle": "Your photo is ready",
-  "mealPhotoReadyBody": "Lành will estimate calories from this photo. Results are estimates; review them before saving.",
+  "mealPhotoChosen": "Chosen photo",
   "mealPhotoEstimate": "Estimate meal",
   "mealPhotoRetake": "Retake photo",
   "mealPhotoReplace": "Choose another photo",
@@ -142,14 +141,14 @@
   "mealEstimatingBody": "This usually takes a few seconds. You’ll review the result before saving.",
   "mealEstimationErrorTitle": "Couldn’t estimate this meal",
   "mealEstimationErrorBody": "Lành couldn’t see this meal clearly. Try taking a closer photo or using better lighting. Your photo is still here.",
-  "mealEstimationCancel": "Cancel analysis",
+  "mealEstimationCancel": "Stop",
   "mealEstimationReceived": "Photo received",
-  "mealEstimationRecognizing": "Identifying foods in the photo",
-  "mealEstimationPortion": "Estimating portions",
-  "mealEstimationCalories": "Calculating estimated calories",
+  "mealEstimationRecognizing": "Finding the dishes in your photo",
+  "mealEstimationPortion": "Checking how much you ate",
+  "mealEstimationCalories": "Counting calories",
   "mealEstimationDone": "Done",
   "mealEstimationWorking": "Working",
-  "mealEstimationWaiting": "Waiting",
+  "mealEstimationWaiting": "Next",
   "mealEstimationNetworkBody": "Lành couldn’t reach the analysis server. Check your connection and try again. Your photo is still here.",
   "mealEstimationUnavailableBody": "The analysis server is busy or took too long. Please try again in a few minutes. Your photo is still here.",
   "mealEstimationInvalidPhotoBody": "Lành couldn’t read this photo. Retake it or choose another photo.",
@@ -224,8 +223,8 @@
   "mealVoicePrivacy": "Only this text is sent to Lành to estimate the dishes. Results are estimates.",
   "mealVoiceSend": "Send for analysis",
   "mealVoiceRecordAgain": "Record again",
-  "mealEstimationReceivedText": "Description received",
-  "mealEstimationRecognizingText": "Recognizing dishes in your description",
+  "mealEstimationReceivedText": "Heard your meal",
+  "mealEstimationRecognizingText": "Finding the dishes you ate",
   "mealEstimationTextErrorBody": "Lành couldn’t find any dish in your description. Try naming each dish and amount. Your description is kept.",
   "mealEstimationTextNetworkBody": "Lành couldn’t reach the analysis server. Check your connection and try again. Your description is kept.",
   "mealEstimationTextUnavailableBody": "The analysis server is busy or too slow. Please try again in a few minutes. Your description is kept.",
@@ -523,7 +522,6 @@
   "weightUnit": "kg",
   "weightSave": "Save",
   "weightSaveError": "Couldn't save your weight. Please try again.",
-  "dayToday": "today",
   "dayYesterday": "yesterday",
   "dayStripWeekday": "{weekday, select, 1{Mon} 2{Tue} 3{Wed} 4{Thu} 5{Fri} 6{Sat} other{Sun}}",
   "dayStripLabel": "{weekday}, {date}",
@@ -540,6 +538,26 @@
   "waterReachedDay": "Water goal reached",
   "mealDelete": "Delete meal",
   "mealDeleteTitle": "Delete this meal?",
+  "mealDeleteBody": "{meal} · {kcal} kcal will be removed from your journal.",
+  "@mealDeleteBody": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "String"
+      }
+    }
+  },
+  "mealDeleteBodyNoKcal": "{meal} will be removed from your journal.",
+  "@mealDeleteBodyNoKcal": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "mealDeleteKeep": "Keep it",
   "mealDeleteError": "Couldn't delete the meal. Please try again.",
   "mealDetailEstimated": "AI estimate",
   "mealProtein": "Protein",

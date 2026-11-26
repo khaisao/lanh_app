@@ -3,18 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:lanh_app/l10n/generated/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'weight_day_label.dart';
-
 /// Home weight row (Sleek "Hôm nay"): the latest weigh-in up to the day on
-/// screen and when it was taken. [onUpdate] is null on past days, which are
+/// screen, without a date. [onUpdate] is null on past days, which are
 /// read-only, so the action is hidden there.
 class WeightCard extends StatelessWidget {
   const WeightCard({
     super.key,
     required this.kg,
-    required this.day,
-    required this.today,
-    required this.shown,
     this.onUpdate,
     this.failed = false,
     this.onRetry,
@@ -23,14 +18,6 @@ class WeightCard extends StatelessWidget {
   /// Null when nothing was ever logged (or still loading).
   final double? kg;
 
-  /// The local day of [kg].
-  final DateTime? day;
-
-  /// The current local day, for "hôm nay" / "hôm qua".
-  final DateTime today;
-
-  /// The day on screen; its own weigh-in needs no date, the header has it.
-  final DateTime shown;
   final VoidCallback? onUpdate;
   final bool failed;
   final VoidCallback? onRetry;
@@ -43,7 +30,6 @@ class WeightCard extends StatelessWidget {
       decimalDigits: 1,
     );
     final value = kg;
-    final when = day;
     return AppGlassCard(
       key: const Key('today-weight'),
       padding: const EdgeInsets.symmetric(
@@ -86,22 +72,10 @@ class WeightCard extends StatelessWidget {
                       else if (value == null)
                         Text(strings.weightNone, style: AppTypography.bodySmall)
                       else
-                        Text.rich(
+                        Text(
+                          strings.weightKg(format.format(value)),
                           key: const Key('today-weight-value'),
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: strings.weightKg(format.format(value)),
-                                style: AppTypography.cardTitle,
-                              ),
-                              if (when != null && when != shown)
-                                TextSpan(
-                                  text:
-                                      ' · ${weightDayLabel(strings, when, today)}',
-                                  style: AppTypography.caption,
-                                ),
-                            ],
-                          ),
+                          style: AppTypography.cardTitle,
                         ),
                     ],
                   ),

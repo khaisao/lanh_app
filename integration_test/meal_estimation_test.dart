@@ -103,9 +103,9 @@ void main() {
     await tester.pump();
     expect(find.text('Lành đang ước lượng'), findsOneWidget);
     // On a 402 pt phone the cancel action sits below the fold.
-    await tester.ensureVisible(find.text('Hủy phân tích'));
+    await tester.ensureVisible(find.text('Dừng lại'));
     await tester.pump();
-    await tester.tap(find.text('Hủy phân tích'));
+    await tester.tap(find.text('Dừng lại'));
     await tester.pumpAndSettle();
     expect(estimate, findsOneWidget);
 

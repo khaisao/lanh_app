@@ -69,23 +69,23 @@ class _MealDetailSheetState extends ConsumerState<MealDetailSheet> {
 
   Future<void> _delete() async {
     final strings = AppLocalizations.of(context);
+    final meal = widget.meal;
+    final kcal = meal.totalCalories;
+    final name = meal.names.join(', ');
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(strings.mealDeleteTitle),
-        actions: [
-          TextButton(
-            key: const Key('meal-delete-cancel'),
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(strings.cancel),
-          ),
-          TextButton(
-            key: const Key('meal-delete-confirm'),
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.destructive),
-            child: Text(strings.mealDelete),
-          ),
-        ],
+      barrierColor: AppColors.modalBarrier,
+      builder: (dialogContext) => MealDeleteDialog(
+        title: strings.mealDeleteTitle,
+        body: kcal == null
+            ? strings.mealDeleteBodyNoKcal(name)
+            : strings.mealDeleteBody(
+                name,
+                NumberFormat.decimalPattern(strings.localeName)
+                    .format(kcal.round()),
+              ),
+        confirm: strings.mealDelete,
+        keep: strings.mealDeleteKeep,
       ),
     );
     if (confirmed != true || !mounted || _deleting) return;
@@ -298,4 +298,104 @@ class _EnergySplit extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Sleek "Dialog · Xoá bữa": a floating glass card with a soft rose trash
+/// tile, the meal being removed, a terracotta delete pill and a calm "keep"
+/// pill. Pops true to delete, false (or null when dismissed) to keep.
+class MealDeleteDialog extends StatelessWidget {
+  const MealDeleteDialog({
+    super.key,
+    required this.title,
+    required this.body,
+    required this.confirm,
+    required this.keep,
+  });
+
+  final String title;
+  final String body;
+  final String confirm;
+  final String keep;
+
+  @override
+  Widget build(BuildContext context) => Dialog(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    insetPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: AppSizes.dialogMax),
+      child: AppGlassCard(
+        radius: AppRadii.glassInner,
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: ExcludeSemantics(
+                child: DecoratedBox(
+                  decoration: ShapeDecoration(
+                    gradient: AppGradients.well(AppColors.proteinTint),
+                    shape: const AppSquircleBorder(
+                      radius: AppRadii.glassInner,
+                      side: BorderSide(color: AppMenu.wellEdge),
+                    ),
+                  ),
+                  child: const SizedBox.square(
+                    dimension: AppSizes.choiceIcon,
+                    // No Phosphor trash asset is exported yet; the Material
+                    // outline icon matches its weight until one is.
+                    child: Icon(
+                      Icons.delete_outline_rounded,
+                      size: AppSizes.iconMd,
+                      color: AppColors.protein,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Semantics(
+              header: true,
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AppTypography.title,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              body,
+              textAlign: TextAlign.center,
+              style: AppTypography.bodySmall,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            FilledButton.icon(
+              key: const Key('meal-delete-confirm'),
+              onPressed: () => Navigator.of(context).pop(true),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.destructive,
+                foregroundColor: AppColors.primaryForeground,
+                minimumSize: const Size.fromHeight(AppSizes.action),
+                shape: const StadiumBorder(),
+                textStyle: AppTypography.cardTitle,
+              ),
+              icon: const Icon(
+                Icons.delete_outline_rounded,
+                size: AppSizes.iconSm,
+              ),
+              label: Text(confirm),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            AppButton.surface(
+              key: const Key('meal-delete-cancel'),
+              fullWidth: true,
+              onPressed: () => Navigator.of(context).pop(false),
+              label: keep,
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }

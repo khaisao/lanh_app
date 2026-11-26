@@ -231,9 +231,6 @@ class TodayScreen extends ConsumerWidget {
         !profileDay.isAfter(day);
     return WeightCard(
       kg: latest?.kg ?? (useProfile ? goal!.currentWeight : null),
-      day: latest?.day ?? (useProfile ? profileDay : null),
-      today: today,
-      shown: day,
       failed: history.hasError && !history.hasValue,
       onRetry: () => ref.invalidate(weightHistoryProvider),
       onUpdate: isToday ? () => unawaited(showWeightSheet(context)) : null,

@@ -111,7 +111,7 @@ void main() {
       expect(find.bySemanticsLabel('Ảnh bữa ăn đang xem lại'), findsOneWidget);
       expect(find.byKey(const Key('meal-photo-preview')), findsOneWidget);
       expect(find.text('Ảnh đã chụp'), findsOneWidget);
-      expect(find.text('Ảnh đã sẵn sàng'), findsOneWidget);
+      expect(find.text('Ảnh đã sẵn sàng'), findsNothing); // no extra card
       if (captureDirectory != null && size.width == 390) {
         await _capture(tester, captureDirectory, 'review');
       }
@@ -122,11 +122,11 @@ void main() {
       await tester.tap(estimateButton);
       await tester.pump();
       expect(find.text('Lành đang ước lượng'), findsOneWidget);
-      expect(find.text('Nhận diện món trong ảnh'), findsOneWidget);
+      expect(find.text('Đang tìm các món trong ảnh'), findsOneWidget);
       if (captureDirectory != null && size.width == 390) {
         await _capture(tester, captureDirectory, 'estimating');
       }
-      await _tap(tester, find.text('Hủy phân tích'));
+      await _tap(tester, find.text('Dừng lại'));
       await tester.pump(const Duration(seconds: 4));
       expect(find.text(_estimate), findsOneWidget);
       expect(find.bySemanticsLabel('Ảnh bữa ăn đang xem lại'), findsOneWidget);
@@ -284,8 +284,8 @@ void main() {
       await tester.ensureVisible(find.byKey(const Key('meal-photo-estimate')));
       await tester.tap(find.byKey(const Key('meal-photo-estimate')));
       await tester.pump();
-      await tester.ensureVisible(find.text('Hủy phân tích'));
-      await tester.tap(find.text('Hủy phân tích'));
+      await tester.ensureVisible(find.text('Dừng lại'));
+      await tester.tap(find.text('Dừng lại'));
       await tester.pumpAndSettle();
       final estimateButton = find.byKey(const Key('meal-photo-estimate'));
       await tester.ensureVisible(estimateButton);
@@ -334,9 +334,7 @@ void main() {
       expect(rotation.value, 0);
       await tester.pump(const Duration(milliseconds: 200));
       expect(rotation.value, 0);
-      await tester.ensureVisible(
-        find.text(english ? 'Cancel analysis' : 'Hủy phân tích'),
-      );
+      await tester.ensureVisible(find.text(english ? 'Stop' : 'Dừng lại'));
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       _analysis.fail();

@@ -137,11 +137,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mealPhotoCaptured => 'Photo captured';
 
   @override
-  String get mealPhotoReadyTitle => 'Your photo is ready';
-
-  @override
-  String get mealPhotoReadyBody =>
-      'Lành will estimate calories from this photo. Results are estimates; review them before saving.';
+  String get mealPhotoChosen => 'Chosen photo';
 
   @override
   String get mealPhotoEstimate => 'Estimate meal';
@@ -407,19 +403,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Lành couldn’t see this meal clearly. Try taking a closer photo or using better lighting. Your photo is still here.';
 
   @override
-  String get mealEstimationCancel => 'Cancel analysis';
+  String get mealEstimationCancel => 'Stop';
 
   @override
   String get mealEstimationReceived => 'Photo received';
 
   @override
-  String get mealEstimationRecognizing => 'Identifying foods in the photo';
+  String get mealEstimationRecognizing => 'Finding the dishes in your photo';
 
   @override
-  String get mealEstimationPortion => 'Estimating portions';
+  String get mealEstimationPortion => 'Checking how much you ate';
 
   @override
-  String get mealEstimationCalories => 'Calculating estimated calories';
+  String get mealEstimationCalories => 'Counting calories';
 
   @override
   String get mealEstimationDone => 'Done';
@@ -428,7 +424,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mealEstimationWorking => 'Working';
 
   @override
-  String get mealEstimationWaiting => 'Waiting';
+  String get mealEstimationWaiting => 'Next';
 
   @override
   String get mealEstimationNetworkBody =>
@@ -660,11 +656,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mealVoiceRecordAgain => 'Record again';
 
   @override
-  String get mealEstimationReceivedText => 'Description received';
+  String get mealEstimationReceivedText => 'Heard your meal';
 
   @override
-  String get mealEstimationRecognizingText =>
-      'Recognizing dishes in your description';
+  String get mealEstimationRecognizingText => 'Finding the dishes you ate';
 
   @override
   String get mealEstimationTextErrorBody =>
@@ -1179,9 +1174,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weightSaveError => 'Couldn\'t save your weight. Please try again.';
 
   @override
-  String get dayToday => 'today';
-
-  @override
   String get dayYesterday => 'yesterday';
 
   @override
@@ -1249,6 +1241,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mealDeleteTitle => 'Delete this meal?';
+
+  @override
+  String mealDeleteBody(String meal, String kcal) {
+    return '$meal · $kcal kcal will be removed from your journal.';
+  }
+
+  @override
+  String mealDeleteBodyNoKcal(String meal) {
+    return '$meal will be removed from your journal.';
+  }
+
+  @override
+  String get mealDeleteKeep => 'Keep it';
 
   @override
   String get mealDeleteError => 'Couldn\'t delete the meal. Please try again.';

@@ -179,7 +179,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     // A fast service can answer before the waiting screen is seen; either
     // the waiting screen or the finished estimate is a valid next state.
-    final waiting = find.text('Đã nhận lời kể').evaluate().isNotEmpty;
+    final waiting = find.text('Đã nghe bạn kể').evaluate().isNotEmpty;
     notes['sawWaitingScreen'] = waiting;
     if (waiting) {
       await screenshot(tester, 'iphone-voice-estimating');

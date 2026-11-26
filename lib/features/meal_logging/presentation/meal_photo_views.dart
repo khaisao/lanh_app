@@ -267,7 +267,6 @@ class _MealPhotoReviewView extends StatelessWidget {
   const _MealPhotoReviewView({
     required this.photo,
     required this.captured,
-    required this.loadingPhoto,
     required this.onBack,
     required this.onEstimate,
     required this.onReplace,
@@ -275,7 +274,6 @@ class _MealPhotoReviewView extends StatelessWidget {
 
   final MealPhoto photo;
   final bool captured;
-  final bool loadingPhoto;
   final VoidCallback onBack;
   final VoidCallback? onEstimate;
   final VoidCallback? onReplace;
@@ -339,7 +337,9 @@ class _MealPhotoReviewView extends StatelessWidget {
                                 ),
                                 Flexible(
                                   child: Text(
-                                    strings.mealPhotoCaptured,
+                                    captured
+                                        ? strings.mealPhotoCaptured
+                                        : strings.mealPhotoChosen,
                                     style: AppTypography.label.copyWith(
                                       color: AppColors.secondaryForeground,
                                     ),
@@ -395,37 +395,6 @@ class _MealPhotoReviewView extends StatelessWidget {
                               ],
                             ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        decoration: ShapeDecoration(
-                          color: AppColors.card,
-                          shape: const AppSquircleBorder(
-                            radius: AppRadii.glassInner,
-                            side: BorderSide(color: AppColors.border),
-                          ),
-                          shadows: const [AppShadows.photoPreviewCard],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Semantics(
-                              header: true,
-                              child: Text(
-                                strings.mealPhotoReadyTitle,
-                                style: AppTypography.photoPreviewHeading,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.xxs),
-                            Text(
-                              loadingPhoto
-                                  ? strings.mealPhotoLoading
-                                  : strings.mealPhotoReadyBody,
-                              style: AppTypography.photoPreviewBody,
-                            ),
-                          ],
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),

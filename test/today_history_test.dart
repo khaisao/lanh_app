@@ -287,6 +287,11 @@ void main() {
 
     await tester.tap(find.byKey(const Key('meal-delete')));
     await tester.pumpAndSettle();
+    // The dialog names the meal and its kcal; "Giữ lại" keeps it.
+    expect(
+      find.text('Bún chả · 520 kcal sẽ bị xoá khỏi nhật ký.'),
+      findsOneWidget,
+    );
     await tester.tap(find.byKey(const Key('meal-delete-cancel')));
     await tester.pumpAndSettle();
     expect(meals.saved, hasLength(1));

@@ -298,6 +298,9 @@ abstract final class AppSizes {
   /// The day number circle in Home's seven-day strip.
   static const dayCircle = 36.0;
 
+  /// Widest a centered confirmation dialog grows on large screens.
+  static const dialogMax = 340.0;
+
   /// Weight sheet ruler: total height, tick lengths and the center line.
   static const weightRuler = 64.0;
   static const weightRulerMajor = 28.0;
@@ -401,12 +404,6 @@ abstract final class AppShadows {
     blurRadius: 60,
     spreadRadius: -26,
     offset: Offset(0, 32),
-  );
-  static const photoPreviewCard = BoxShadow(
-    color: Color(0x4D3B2F25),
-    blurRadius: 36,
-    spreadRadius: -20,
-    offset: Offset(0, 16),
   );
   // PhotoEstimating and PhotoEstimationError export shadows.
   static const estimationSteps = [
@@ -718,8 +715,6 @@ abstract final class AppTypography {
   /// Menu row title: `text-[15px] font-semibold`.
   static final menuRowTitle = cardTitle.copyWith(fontSize: 15);
   static final estimationBody = photoPermissionBody.copyWith(height: 1.625);
-  static final photoPreviewHeading = title.copyWith(fontSize: 20, height: 1.25);
-  static final photoPreviewBody = bodySmall.copyWith(fontSize: 14, height: 1.5);
   static final estimationStep = estimationBody.copyWith(
     color: AppColors.foreground,
     fontWeight: FontWeight.w500,

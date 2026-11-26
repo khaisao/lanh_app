@@ -136,11 +136,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mealPhotoCaptured => 'Ảnh đã chụp';
 
   @override
-  String get mealPhotoReadyTitle => 'Ảnh đã sẵn sàng';
-
-  @override
-  String get mealPhotoReadyBody =>
-      'Lành sẽ ước lượng calo từ ảnh này. Kết quả là ước tính, bạn kiểm tra lại trước khi lưu.';
+  String get mealPhotoChosen => 'Ảnh đã chọn';
 
   @override
   String get mealPhotoEstimate => 'Ước lượng bữa ăn';
@@ -404,28 +400,28 @@ class AppLocalizationsVi extends AppLocalizations {
       'Lành chưa nhìn rõ bữa này. Thử chụp gần hơn hoặc dưới ánh sáng tốt hơn. Ảnh vẫn được giữ lại.';
 
   @override
-  String get mealEstimationCancel => 'Hủy phân tích';
+  String get mealEstimationCancel => 'Dừng lại';
 
   @override
   String get mealEstimationReceived => 'Đã nhận ảnh';
 
   @override
-  String get mealEstimationRecognizing => 'Nhận diện món trong ảnh';
+  String get mealEstimationRecognizing => 'Đang tìm các món trong ảnh';
 
   @override
-  String get mealEstimationPortion => 'Ước lượng khẩu phần';
+  String get mealEstimationPortion => 'Xem bạn ăn bao nhiêu';
 
   @override
-  String get mealEstimationCalories => 'Tính calo ước tính';
+  String get mealEstimationCalories => 'Tính lượng calo';
 
   @override
   String get mealEstimationDone => 'Xong';
 
   @override
-  String get mealEstimationWorking => 'Đang làm';
+  String get mealEstimationWorking => 'Đang tính';
 
   @override
-  String get mealEstimationWaiting => 'Chờ';
+  String get mealEstimationWaiting => 'Sắp tới';
 
   @override
   String get mealEstimationNetworkBody =>
@@ -653,10 +649,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get mealVoiceRecordAgain => 'Ghi lại';
 
   @override
-  String get mealEstimationReceivedText => 'Đã nhận lời kể';
+  String get mealEstimationReceivedText => 'Đã nghe bạn kể';
 
   @override
-  String get mealEstimationRecognizingText => 'Nhận diện món từ lời kể';
+  String get mealEstimationRecognizingText => 'Đang tìm các món bạn ăn';
 
   @override
   String get mealEstimationTextErrorBody =>
@@ -1168,9 +1164,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get weightSaveError => 'Chưa lưu được cân nặng. Thử lại nhé.';
 
   @override
-  String get dayToday => 'hôm nay';
-
-  @override
   String get dayYesterday => 'hôm qua';
 
   @override
@@ -1238,6 +1231,19 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get mealDeleteTitle => 'Xoá bữa này?';
+
+  @override
+  String mealDeleteBody(String meal, String kcal) {
+    return '$meal · $kcal kcal sẽ bị xoá khỏi nhật ký.';
+  }
+
+  @override
+  String mealDeleteBodyNoKcal(String meal) {
+    return '$meal sẽ bị xoá khỏi nhật ký.';
+  }
+
+  @override
+  String get mealDeleteKeep => 'Giữ lại';
 
   @override
   String get mealDeleteError => 'Chưa xoá được bữa. Thử lại nhé.';

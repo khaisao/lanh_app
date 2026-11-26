@@ -332,17 +332,11 @@ abstract class AppLocalizations {
   /// **'Ảnh đã chụp'**
   String get mealPhotoCaptured;
 
-  /// No description provided for @mealPhotoReadyTitle.
+  /// No description provided for @mealPhotoChosen.
   ///
   /// In vi, this message translates to:
-  /// **'Ảnh đã sẵn sàng'**
-  String get mealPhotoReadyTitle;
-
-  /// No description provided for @mealPhotoReadyBody.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lành sẽ ước lượng calo từ ảnh này. Kết quả là ước tính, bạn kiểm tra lại trước khi lưu.'**
-  String get mealPhotoReadyBody;
+  /// **'Ảnh đã chọn'**
+  String get mealPhotoChosen;
 
   /// No description provided for @mealPhotoEstimate.
   ///
@@ -827,7 +821,7 @@ abstract class AppLocalizations {
   /// No description provided for @mealEstimationCancel.
   ///
   /// In vi, this message translates to:
-  /// **'Hủy phân tích'**
+  /// **'Dừng lại'**
   String get mealEstimationCancel;
 
   /// No description provided for @mealEstimationReceived.
@@ -839,19 +833,19 @@ abstract class AppLocalizations {
   /// No description provided for @mealEstimationRecognizing.
   ///
   /// In vi, this message translates to:
-  /// **'Nhận diện món trong ảnh'**
+  /// **'Đang tìm các món trong ảnh'**
   String get mealEstimationRecognizing;
 
   /// No description provided for @mealEstimationPortion.
   ///
   /// In vi, this message translates to:
-  /// **'Ước lượng khẩu phần'**
+  /// **'Xem bạn ăn bao nhiêu'**
   String get mealEstimationPortion;
 
   /// No description provided for @mealEstimationCalories.
   ///
   /// In vi, this message translates to:
-  /// **'Tính calo ước tính'**
+  /// **'Tính lượng calo'**
   String get mealEstimationCalories;
 
   /// No description provided for @mealEstimationDone.
@@ -863,13 +857,13 @@ abstract class AppLocalizations {
   /// No description provided for @mealEstimationWorking.
   ///
   /// In vi, this message translates to:
-  /// **'Đang làm'**
+  /// **'Đang tính'**
   String get mealEstimationWorking;
 
   /// No description provided for @mealEstimationWaiting.
   ///
   /// In vi, this message translates to:
-  /// **'Chờ'**
+  /// **'Sắp tới'**
   String get mealEstimationWaiting;
 
   /// No description provided for @mealEstimationNetworkBody.
@@ -1235,13 +1229,13 @@ abstract class AppLocalizations {
   /// No description provided for @mealEstimationReceivedText.
   ///
   /// In vi, this message translates to:
-  /// **'Đã nhận lời kể'**
+  /// **'Đã nghe bạn kể'**
   String get mealEstimationReceivedText;
 
   /// No description provided for @mealEstimationRecognizingText.
   ///
   /// In vi, this message translates to:
-  /// **'Nhận diện món từ lời kể'**
+  /// **'Đang tìm các món bạn ăn'**
   String get mealEstimationRecognizingText;
 
   /// No description provided for @mealEstimationTextErrorBody.
@@ -2108,12 +2102,6 @@ abstract class AppLocalizations {
   /// **'Chưa lưu được cân nặng. Thử lại nhé.'**
   String get weightSaveError;
 
-  /// No description provided for @dayToday.
-  ///
-  /// In vi, this message translates to:
-  /// **'hôm nay'**
-  String get dayToday;
-
   /// No description provided for @dayYesterday.
   ///
   /// In vi, this message translates to:
@@ -2209,6 +2197,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xoá bữa này?'**
   String get mealDeleteTitle;
+
+  /// No description provided for @mealDeleteBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'{meal} · {kcal} kcal sẽ bị xoá khỏi nhật ký.'**
+  String mealDeleteBody(String meal, String kcal);
+
+  /// No description provided for @mealDeleteBodyNoKcal.
+  ///
+  /// In vi, this message translates to:
+  /// **'{meal} sẽ bị xoá khỏi nhật ký.'**
+  String mealDeleteBodyNoKcal(String meal);
+
+  /// No description provided for @mealDeleteKeep.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giữ lại'**
+  String get mealDeleteKeep;
 
   /// No description provided for @mealDeleteError.
   ///
