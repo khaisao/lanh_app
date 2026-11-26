@@ -1,5 +1,24 @@
 part of '../app_ui.dart';
 
+/// Soft gradients (Sleek icon system): content icon tiles fade from their
+/// meaning tint to cream; primary actions fade from a fresh green to the
+/// brand green. Small secondary controls stay flat.
+abstract final class AppGradients {
+  /// A content icon tile tinted by [tint], top-left to bottom-right.
+  static LinearGradient well(Color tint) => LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [tint, AppColors.card],
+  );
+
+  /// Primary pills and the solid recommended card.
+  static const action = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [AppColors.meterFillEnd, AppColors.primary],
+  );
+}
+
 /// Sleek back/close recipe, shared by every feature navigation control.
 abstract final class AppNavigation {
   static const visualSize = 44.0;
@@ -275,6 +294,16 @@ abstract final class AppSizes {
   static const avatarLarge = 56.0;
   static const choiceIcon = 48.0;
   static const iconTile = 32.0;
+
+  /// The day number circle in Home's seven-day strip.
+  static const dayCircle = 36.0;
+
+  /// Weight sheet ruler: total height, tick lengths and the center line.
+  static const weightRuler = 64.0;
+  static const weightRulerMajor = 28.0;
+  static const weightRulerHalf = 20.0;
+  static const weightRulerMinor = 12.0;
+  static const weightRulerIndicator = 3.0;
   // Target Custom slider: `h-2` track and a `size-7` thumb.
   static const sliderTrack = 8.0;
   static const sliderThumb = 28.0;

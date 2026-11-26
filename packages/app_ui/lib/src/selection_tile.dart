@@ -87,8 +87,8 @@ class AppSelectionTile extends StatelessWidget {
   }
 }
 
-/// The `size-10 rounded-2xl` icon well of a choice card: secondary with a
-/// primary icon, cross-fading to primary with a light icon when [selected].
+/// The `size-10 rounded-2xl` icon well of a choice card: a soft secondary
+/// gradient with a primary icon, cross-fading to primary with a light icon when [selected].
 class AppIconWell extends StatelessWidget {
   const AppIconWell({super.key, required this.icon, this.selected = false});
 
@@ -105,8 +105,23 @@ class AppIconWell extends StatelessWidget {
         curve: AppMotion.selectionCurve,
         builder: (context, t, _) => DecoratedBox(
           decoration: ShapeDecoration(
-            shape: const AppSquircleBorder(radius: AppRadii.glassInner),
-            color: Color.lerp(AppChoice.wellIdle, AppChoice.wellSelected, t),
+            shape: AppSquircleBorder(
+              radius: AppRadii.glassInner,
+              side: BorderSide(
+                color: AppMenu.wellEdge.withValues(
+                  alpha: AppMenu.wellEdge.a * (1 - t),
+                ),
+              ),
+            ),
+            // Idle: soft tint-to-cream gradient; selected: solid primary.
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color.lerp(AppChoice.wellIdle, AppChoice.wellSelected, t)!,
+                Color.lerp(AppColors.card, AppChoice.wellSelected, t)!,
+              ],
+            ),
           ),
           child: Center(
             child: AppIcon.asset(

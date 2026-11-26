@@ -44,8 +44,16 @@ class AppOptionCard extends StatelessWidget {
                 decoration: ShapeDecoration(
                   color: primary
                       ? AppColors.primaryForeground.withValues(alpha: 0.15)
-                      : AppChoice.wellIdle,
-                  shape: const AppSquircleBorder(radius: AppRadii.glassInner),
+                      : null,
+                  gradient: primary
+                      ? null
+                      : AppGradients.well(AppChoice.wellIdle),
+                  shape: AppSquircleBorder(
+                    radius: AppRadii.glassInner,
+                    side: primary
+                        ? BorderSide.none
+                        : const BorderSide(color: AppMenu.wellEdge),
+                  ),
                 ),
                 child: Center(
                   child: AppIcon.asset(

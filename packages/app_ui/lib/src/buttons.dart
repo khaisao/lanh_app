@@ -131,10 +131,14 @@ class _AppButtonState extends State<AppButton> {
           if (widget._kind == _AppButtonKind.surface) {
             return AppColors.card.withValues(alpha: 0.6);
           }
-          return widget._kind == _AppButtonKind.secondary ||
-                  states.contains(WidgetState.disabled)
-              ? AppColors.secondary
-              : AppColors.primary;
+          if (widget._kind == _AppButtonKind.secondary ||
+              states.contains(WidgetState.disabled)) {
+            return AppColors.secondary;
+          }
+          // The gradient below shows through; high contrast stays solid.
+          return MediaQuery.highContrastOf(context)
+              ? AppColors.primary
+              : Colors.transparent;
         }),
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (widget._kind == _AppButtonKind.surface) {
@@ -170,13 +174,19 @@ class _AppButtonState extends State<AppButton> {
             iconSize: card ? AppSizes.buttonIconCard : AppSizes.buttonIcon,
           ),
     );
-    if (widget._kind == _AppButtonKind.primary &&
-        widget.onPressed != null &&
-        widget.showShadow) {
+    final filled =
+        widget._kind == _AppButtonKind.primary ||
+        widget._kind == _AppButtonKind.card;
+    if (filled && widget.onPressed != null) {
       button = DecoratedBox(
         decoration: ShapeDecoration(
           shape: shape,
-          shadows: AppShadows.primaryAction,
+          gradient: MediaQuery.highContrastOf(context)
+              ? null
+              : AppGradients.action,
+          shadows: widget._kind == _AppButtonKind.primary && widget.showShadow
+              ? AppShadows.primaryAction
+              : null,
         ),
         child: button,
       );

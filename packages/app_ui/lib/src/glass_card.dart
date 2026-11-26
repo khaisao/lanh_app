@@ -174,7 +174,9 @@ class _AppGlassCardState extends State<AppGlassCard>
     Widget surface = AnimatedContainer(
       duration: toneDuration,
       curve: AppMotion.selectionCurve,
-      decoration: ShapeDecoration(color: fill, shape: shape),
+      decoration: tone == AppGlassTone.primary && !highContrast
+          ? ShapeDecoration(gradient: AppGradients.action, shape: shape)
+          : ShapeDecoration(color: fill, shape: shape),
       child: content,
     );
     surface = CustomPaint(

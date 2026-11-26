@@ -373,7 +373,11 @@ class ProfileIconCircle extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox.square(
     dimension: dimension,
     child: DecoratedBox(
-      decoration: BoxDecoration(color: background, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        gradient: AppGradients.well(background),
+        shape: BoxShape.circle,
+        border: Border.all(color: AppMenu.wellEdge),
+      ),
       child: Center(
         child: AppIcon.asset(icon, size: iconSize, color: color),
       ),
